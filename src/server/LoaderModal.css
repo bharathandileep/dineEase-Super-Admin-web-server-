@@ -1,0 +1,56 @@
+/* LoaderModal.css */
+
+.loader-modal .modal-dialog {
+    max-width: 200px;
+  }
+  
+  .loader-modal .modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .loader-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .loader-spinner div {
+    width: 1rem;
+    height: 1rem;
+    background-color: #007bff; /* Adjust color as needed */
+    border-radius: 50%;
+    margin: 0.2rem;
+    animation: dot-flashing 1.5s infinite linear;
+  }
+  
+  .loader-spinner div:nth-child(1) {
+    animation-delay: -0.3s;
+  }
+  
+  .loader-spinner div:nth-child(2) {
+    animation-delay: -0.15s;
+  }
+  
+  .loader-spinner div:nth-child(3) {
+    animation-delay: 0s;
+  }
+  
+  .loader-text {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #007bff; /* Adjust color as needed */
+  }
+  
+  @keyframes dot-flashing {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
