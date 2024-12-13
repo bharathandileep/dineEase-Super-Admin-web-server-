@@ -1,5 +1,6 @@
 import React from "react";
-import Lightbox from "react-image-lightbox";
+// issues::change
+// import Lightbox from "react-image-lightbox";
 
 // styles
 import "react-image-lightbox/style.css";
@@ -24,7 +25,9 @@ const LightBox = ({
 }: LightBoxProps) => {
   return (
     <>
-      <Lightbox
+      {
+        // issues::change
+        /* <Lightbox
         mainSrc={images[photoIndex].src}
         nextSrc={images[(photoIndex + 1) % images.length].src}
         prevSrc={images[(photoIndex + images.length - 1) % images.length].src}
@@ -33,7 +36,8 @@ const LightBox = ({
         onMoveNextRequest={moveNext}
         imageTitle={<p>{images[photoIndex].caption}</p>}
         mainSrcThumbnail={images[photoIndex].caption}
-      />
+      /> */
+      }
     </>
   );
 };

@@ -8,7 +8,7 @@ import LineChart from "./LineChart";
 import LineAnnotationChart from "./LineAnnotationChart";
 import SplineAreaChart from "./SplineAreaChart";
 import StackedAreaChart from "./StackedAreaChart";
-import BarChart from "./BarChart";
+// import BarChart from "./BarChart";
 import StackedBarChart from "./StackedBarChart";
 import DonutChart from "./DonutChart";
 import PieChart from "./PieChart";
@@ -47,7 +47,7 @@ const ApexChart = () => {
 
       <Row>
         <Col xl={6}>
-          <BarChart />
+          {/* <BarChart /> */}
         </Col>
 
         <Col xl={6}>
