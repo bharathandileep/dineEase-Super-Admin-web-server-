@@ -20,10 +20,11 @@ const Navbar = ({ isMenuOpened }: NavbarProps) => {
   return (
     <React.Fragment>
       <div className="app-menu">
-        <AppMenu menuItems={getHorizontalMenuItems()} />
+        <AppMenu menuItems={getHorizontalMenuItems()} /> 
       </div>
     </React.Fragment>
   );
 };
 
 export default Navbar;
+ 

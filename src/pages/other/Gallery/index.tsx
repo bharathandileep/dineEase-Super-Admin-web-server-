@@ -7,7 +7,10 @@ import classNames from 'classnames';
 import PageTitle from '../../../components/PageTitle';
 import Loader from '../../../components/Loader';
 
-import LightBox from './LightBox';
+
+
+// issues::change
+// import LightBox from './LightBox';
 
 // dummy data
 import { gallery as data, GalleryItem, ImageType } from './data';
@@ -158,15 +161,16 @@ const Gallery = () => {
       </Row>
 
       {/* image lightbox */}
-      {isOpen && (
-        <LightBox
-          images={galleryImages}
-          photoIndex={photoIndex}
-          closeLightbox={closeLightbox}
-          moveNext={moveNext}
-          movePrev={movePrev}
-        />
-      )}
+      {/* {isOpen && (
+        // issues::change
+        // <LightBox
+        //   images={galleryImages}
+        //   photoIndex={photoIndex}
+        //   closeLightbox={closeLightbox}
+        //   moveNext={moveNext}
+        //   movePrev={movePrev}
+        // />
+      )} */}
     </>
   );
 };

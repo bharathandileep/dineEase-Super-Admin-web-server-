@@ -1,13 +1,14 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
-import { Bar, defaults as ChartjsDefaults } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, defaults } from "chart.js";
 
 // components
 import ChartStatistics from "../../../components/ChartStatistics";
 
 const PerformanceChart = () => {
-  ChartjsDefaults.color = "#8391a2";
-  ChartjsDefaults.scale.grid.color = "#8391a2";
+  defaults.color = "#8391a2";
+  defaults.scale.grid.color = "#8391a2";
 
   // chart data
   const barChartData = {
