@@ -8,16 +8,16 @@ import TodoList from "../../../components/TodoList";
 import ChatList from "../../../components/ChatList";
 
 import Statistics from "./Statistics";
-import PerformanceChart from "./PerformanceChart";
-import RevenueChart from "./RevenueChart";
+// import PerformanceChart from "./PerformanceChart";
+// import RevenueChart from "./RevenueChart";
 
 // dummy data
 import { chatMessages } from "./data";
 
-const Dashboard3 = () => {
+const Dashboard3 = () => { 
   return (
     <>
-      <PageTitle
+      {/* <PageTitle
         breadCrumbItems={[
           { label: "Dashboards", path: "/dashboard" },
           { label: "Dashboard", path: "/dashboard", active: true },
@@ -45,7 +45,7 @@ const Dashboard3 = () => {
         <Col lg={12} xl={4}>
           <ChatList messages={chatMessages} />
         </Col>
-      </Row>
+      </Row> */}
     </>
   );
 };

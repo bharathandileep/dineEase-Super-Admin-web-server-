@@ -19,7 +19,7 @@ import {
 
 // components
 import IconMenu from "./IconMenu";
-import MainMenu from "./MainMenu";
+import MainMenu from "./MainMenu";       
 
 interface Item {
   key: string;

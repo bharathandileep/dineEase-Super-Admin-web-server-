@@ -1,14 +1,14 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
-import { Line, defaults as ChartjsDefaults } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, defaults } from "chart.js";
 
 // components
 import ChartStatistics from "../../../components/ChartStatistics";
 
 const RevenueChart = () => {
-  
-  ChartjsDefaults.color = "#8391a2";
-  ChartjsDefaults.scale.grid.color = "#8391a2";
+  defaults.color = "#8391a2";
+  defaults.scale.grid.color = "#8391a2";
 
   // chart data
   const lineChartData = {

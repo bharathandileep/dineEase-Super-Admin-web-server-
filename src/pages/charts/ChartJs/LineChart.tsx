@@ -1,11 +1,13 @@
 import React from "react";
-import { defaults as ChartjsDefaults, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, defaults } from "chart.js";
+
 import { Card } from "react-bootstrap";
 
 const LineChart = () => {
   // changing chartjs defaults
-  ChartjsDefaults.color = "#8391a2";
-  ChartjsDefaults.scale.grid.color = "#8391a2";
+  defaults.color = "#8391a2";
+  defaults.scale.grid.color = "#8391a2";
 
   // chart data
   const lineChartData = {

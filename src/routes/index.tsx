@@ -41,9 +41,7 @@ const Dashboard3 = React.lazy(() => import("../pages/dashboard/Dashboard3/"));
 // apps
 const CalendarApp = React.lazy(() => import("../pages/apps/Calendar/"));
 const Projects = React.lazy(() => import("../pages/apps/Projects/"));
-const ProjectDetail = React.lazy(
-  () => import("../pages/apps/Company/Detail")
-);
+const ProjectDetail = React.lazy(() => import("../pages/apps/Company/Detail"));
 const ProjectForm = React.lazy(
   () => import("../pages/apps/Projects/ProjectForm")
 );
@@ -85,28 +83,37 @@ const EmailCompose = React.lazy(() => import("../pages/apps/Email/Compose"));
 // - social
 const SocialFeed = React.lazy(() => import("../pages/apps/SocialFeed/"));
 // settings
-const Settings =  React.lazy(() => import("../pages/apps/Settings"));
+const Settings = React.lazy(() => import("../pages/apps/Settings"));
 // Orders
 const FoodOrders = React.lazy(() => import("../pages/apps/orders/Orders"));
-
 
 // food
 const FoodDetails = React.lazy(() => import("../pages/apps/FoodMenu/Products"));
 const CartDetails = React.lazy(() => import("../pages/apps/FoodMenu/Cart"));
-const CheckoutDetails = React.lazy(() => import("../pages/apps/FoodMenu/Checkout"));
-const OrderDetailsFood = React.lazy(() => import("../pages/apps/FoodMenu/OrderDetails"));
+const CheckoutDetails = React.lazy(
+  () => import("../pages/apps/FoodMenu/Checkout")
+);
+const OrderDetailsFood = React.lazy(
+  () => import("../pages/apps/FoodMenu/OrderDetails")
+);
 // - companies
 const Companies = React.lazy(() => import("../pages/apps/Company"));
 const CompanyDetail = React.lazy(() => import("../pages/apps/Company/Detail"));
-const TotalRestaurants = React.lazy(()=> import('../pages/apps/Company/TotalRstaurant'))
+const TotalRestaurants = React.lazy(
+  () => import("../pages/apps/Company/TotalRstaurant")
+);
 // - Restaurants
 const Restaurants = React.lazy(() => import("../pages/apps/Restaurant"));
 // const List = React.lazy(() => import("../pages/apps/Restaurant/List"))
-const RestaurantDetails = React.lazy(() => import("../pages/apps/Restaurant/StaffDetails"));
-const TotalCompany = React.lazy(() => import("../pages/apps/Restaurant/TotalCompany"));
+const RestaurantDetails = React.lazy(
+  () => import("../pages/apps/Restaurant/StaffDetails")
+);
+const TotalCompany = React.lazy(
+  () => import("../pages/apps/Restaurant/TotalCompany")
+);
 // - Users
-const Users = React.lazy(() => import("../pages/apps/Users"))
-const UsersProfile = React.lazy(() => import("../pages/apps/Users/Profile"))
+const Users = React.lazy(() => import("../pages/apps/Users"));
+const UsersProfile = React.lazy(() => import("../pages/apps/Users/Profile"));
 
 // - Customers
 const Customer = React.lazy(() => import("../pages/apps/Customers/List/"));
@@ -198,14 +205,17 @@ const FontAwesomeIcons = React.lazy(
   () => import("../pages/icons/FontAwesomeIcons/")
 );
 const ThemifyIcons = React.lazy(() => import("../pages/icons/ThemifyIcons/"));
-const SimpleLineIcons = React.lazy(() => import("../pages/icons/SimpleLineIcons/"));
+const SimpleLineIcons = React.lazy(
+  () => import("../pages/icons/SimpleLineIcons/")
+);
 const WeatherIcons = React.lazy(() => import("../pages/icons/WeatherIcons/"));
 
 // forms
 const BasicForms = React.lazy(() => import("../pages/forms/Basic"));
 const FormAdvanced = React.lazy(() => import("../pages/forms/Advanced"));
 const FormValidation = React.lazy(() => import("../pages/forms/Validation"));
-const FormWizard = React.lazy(() => import("../pages/forms/Wizard"));
+// issues::change
+// const FormWizard = React.lazy(() => import("../pages/forms/Wizard"));
 const FileUpload = React.lazy(() => import("../pages/forms/FileUpload"));
 const Editors = React.lazy(() => import("../pages/forms/Editors"));
 
@@ -280,14 +290,13 @@ export interface RoutesProps {
 //     },
 //   ],
 // };
-const dashboardRoutes= {
+const dashboardRoutes = {
   path: "/",
   name: "Dashboard ",
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "airplay",
   element: <Dashboard3 />,
-
 };
 
 const calendarAppRoutes: RoutesProps = {
@@ -456,16 +465,16 @@ const socialAppRoutes = {
   element: <SocialFeed />,
 };
 // Settings
-const sttingsAppRoutes ={
+const sttingsAppRoutes = {
   path: "/apps/settings",
   name: "settings",
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "settings",
-  element: <Settings/>
-}
+  element: <Settings />,
+};
 // Food menu
-const foodAppRoutes ={
+const foodAppRoutes = {
   path: "/apps/food",
   name: "Employee",
   route: PrivateRoute,
@@ -482,7 +491,7 @@ const foodCartAppRoute = {
   icon: "users",
   element: <CartDetails />,
 };
-const foodCheckoutAppRoute ={
+const foodCheckoutAppRoute = {
   path: "/apps/food/checkout",
   name: "checkout",
   route: PrivateRoute,
@@ -493,17 +502,17 @@ const foodCheckoutAppRoute ={
 const ordersAppRoutes = {
   path: "/apps/orders",
   name: "Orders",
-  element: <FoodOrders/>,
+  element: <FoodOrders />,
   route: PrivateRoute,
-}
+};
 // Customers Details
-const customerAppRoute= {
+const customerAppRoute = {
   path: "/apps/customer",
   name: "customers",
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "users",
-  element: <Customer/>
+  element: <Customer />,
 };
 const CustomerProfileAppRoutes = {
   path: "/apps/customer/profile",
@@ -511,16 +520,16 @@ const CustomerProfileAppRoutes = {
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "profile",
-  element: <CustomerContactsProfile/>
+  element: <CustomerContactsProfile />,
 };
 // users Details
-const usersAppRoutes= {
+const usersAppRoutes = {
   path: "/apps/users",
   name: "users",
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "users",
-  element: <Users/>
+  element: <Users />,
 };
 const userProfileAppRoutes = {
   path: "/apps/users/profile",
@@ -528,45 +537,42 @@ const userProfileAppRoutes = {
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "profile",
-  element: <UsersProfile/>
+  element: <UsersProfile />,
 };
 // RestaurantDetails
-const restaurantsAppRoutes ={
+const restaurantsAppRoutes = {
   path: "/apps/restaurants",
-  name:"restaurants",
+  name: "restaurants",
   route: PrivateRoute,
-  roles : ["Admin"],
+  roles: ["Admin"],
   icon: "restaurant",
-  element: <Restaurants/>,
+  element: <Restaurants />,
 };
-const totalCompanyAppRoute ={
+const totalCompanyAppRoute = {
   path: "/apps/restaurants/company",
-  name:"totalCompany",
+  name: "totalCompany",
   route: PrivateRoute,
-  roles : ["Admin"],
+  roles: ["Admin"],
   icon: "totalCompany",
-  element: <TotalCompany/>,
+  element: <TotalCompany />,
 };
 
-const ListAppRouts={
-  path:"/apps/restaurants/lists",
-  name:"List",
+const ListAppRouts = {
+  path: "/apps/restaurants/lists",
+  name: "List",
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "list",
-  element: <List/>
-
-}
+  element: <List />,
+};
 const restaurantDetailsAppRoute = {
   path: "/apps/restaurants/details",
-  name:"restaurantsdetails",
+  name: "restaurantsdetails",
   route: PrivateRoute,
-  roles : ["Admin"],
+  roles: ["Admin"],
   icon: "restaurantdetails",
-  element: <PaginatedTable detailsInfo={detailsInfo}/>,
+  element: <PaginatedTable detailsInfo={detailsInfo} />,
 };
-
-
 
 const companiesAppRoutes = {
   path: "/apps/companies",
@@ -577,7 +583,6 @@ const companiesAppRoutes = {
   element: <Companies />,
 };
 
-
 const companyDetailsAppRoutes = {
   path: "/apps/company/details",
   name: "Detail",
@@ -585,8 +590,7 @@ const companyDetailsAppRoutes = {
   roles: ["Admin"],
   icon: "activity",
   element: <CompanyDetail />,
- 
-}
+};
 
 const totalRestaurantsAppRoutes = {
   path: "/apps/company/details/restaurants",
@@ -596,7 +600,6 @@ const totalRestaurantsAppRoutes = {
   icon: "activity",
   element: <TotalRestaurants />,
 };
-
 
 const projectAppRoutes = {
   path: "/apps/projects",
@@ -1071,12 +1074,13 @@ const uiRoutes = {
           element: <FormValidation />,
           route: PrivateRoute,
         },
-        {
-          path: "/ui/forms/wizard",
-          name: "Form Wizard",
-          element: <FormWizard />,
-          route: PrivateRoute,
-        },
+        // issues::change
+        // {
+        //   path: "/ui/forms/wizard",
+        //   name: "Form Wizard",
+        //   element: <FormWizard />,
+        //   route: PrivateRoute,
+        // },
         {
           path: "/ui/forms/upload",
           name: "File Upload",
