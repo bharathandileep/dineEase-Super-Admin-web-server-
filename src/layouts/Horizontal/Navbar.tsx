@@ -27,3 +27,4 @@ const Navbar = ({ isMenuOpened }: NavbarProps) => {
 };
 
 export default Navbar;
+ 
