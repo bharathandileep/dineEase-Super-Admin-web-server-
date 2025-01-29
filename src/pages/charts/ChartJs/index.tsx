@@ -5,7 +5,7 @@ import { Row, Col } from "react-bootstrap";
 import PageTitle from "../../../components/PageTitle";
 
 import LineChart from "./LineChart";
-import BarChart from "./BarChart";
+// import BarChart from "./BarChart";
 import DonutChart from "./DonutChart";
 import RadarChart from "./RadarChart";
 import PolarChart from "./PolarChart";
@@ -32,7 +32,7 @@ const ChartJs = () => {
         </Col>
 
         <Col xl={6}>
-          <BarChart />
+          {/* <BarChart /> */}
         </Col>
       </Row>
 

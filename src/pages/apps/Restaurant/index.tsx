@@ -8,14 +8,8 @@ import PaginatedTable from "./StaffDetails";
 const Restaurants = () => {
   return (
     <>
-      <PageTitle
-        breadCrumbItems={[
-          { label: "Apps", path: "/apps/restaurants" },
-          { label: "Restaurants", path: "/apps/restaurants", active: true },
-        ]}
-        title={"Restaurants"}
-      />
       <ListRestaurants/>
+      asdasd
       </>
   );
 };

@@ -351,13 +351,13 @@ const Topbar = ({
               <i className="mdi mdi-menu" />
             </button>
 
-            <div className="dropdown d-none d-xl-block">
+            {/* <div className="dropdown d-none d-xl-block">
               <CreateNew otherOptions={otherOptions} />
-            </div>
-
-            <div className="dropdown dropdown-mega d-none d-xl-block">
+            </div> */}
+            
+            {/* <div className="dropdown dropdown-mega d-none d-xl-block">
               <MegaMenu subMenus={MegaMenuOptions} />
-            </div>
+            </div> */}
           </div>
 
           <ul className="topbar-menu d-flex align-items-center">
@@ -367,15 +367,15 @@ const Topbar = ({
             {/* <li className="dropdown d-inline-block d-lg-none">
               <SearchDropdown />
             </li> */}
-            <li className="dropdown d-none d-lg-inline-block">
+            {/* <li className="dropdown d-none d-lg-inline-block">
               <MaximizeScreen />
-            </li>
-            <li className="dropdown d-none d-lg-inline-block topbar-dropdown">
+            </li> */}
+            {/* <li className="dropdown d-none d-lg-inline-block topbar-dropdown">
               <AppsDropdown />
-            </li>
-            <li className="dropdown d-none d-lg-inline-block topbar-dropdown">
+            </li> */}
+            {/* <li className="dropdown d-none d-lg-inline-block topbar-dropdown">
               <LanguageDropdown />
-            </li>
+            </li> */}
             <li className="dropdown notification-list">
               <NotificationDropdown notifications={Notifications} />
             </li>
@@ -387,15 +387,16 @@ const Topbar = ({
                 userTitle={"Founder"}
               />
             </li>
-            <li>
+            {/* <li>
               <button
                 className="nav-link dropdown-toggle right-bar-toggle waves-effect waves-light btn btn-link shadow-none"
                 onClick={handleRightSideBar}
               >
                 <i className="fe-settings noti-icon font-22"></i>
               </button>
-            </li>
+            </li> */}
           </ul>
+          
         </div>
       </div>
     </React.Fragment>
