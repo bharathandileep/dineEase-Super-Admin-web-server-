@@ -1,13 +1,5 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
 
-// components
-import PageTitle from "../../../components/PageTitle";
-import Messages from "../../../components/Messages";
-import TodoList from "../../../components/TodoList";
-import ChatList from "../../../components/ChatList";
-
-import Statistics from "./Statistics";
 // import PerformanceChart from "./PerformanceChart";
 // import RevenueChart from "./RevenueChart";
 
@@ -17,6 +9,7 @@ import { chatMessages } from "./data";
 const Dashboard3 = () => { 
   return (
     <>
+      sdfsdfsd
       {/* <PageTitle
         breadCrumbItems={[
           { label: "Dashboards", path: "/dashboard" },

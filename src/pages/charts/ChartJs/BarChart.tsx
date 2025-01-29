@@ -84,7 +84,7 @@ import React from "react";
 //       x: {
 //         stacked: false,
 //         grid: {
-//           color: "rgba(0,0,0,0.05)",
+//           color: "rgba(223, 14, 14, 0.05)",
 //         },
 //       },
 //     },
