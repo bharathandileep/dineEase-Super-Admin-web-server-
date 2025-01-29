@@ -44,6 +44,7 @@ export const fetchCustomerApi = async (page: number, limit: number): Promise<{
   const data = await response.json();
   return data;
 };
+
 // delete customers
 
 export const deleteCustomerApi = async (cust_id: string): Promise<Customer[]> => {

@@ -5,7 +5,7 @@ const chatMessages = [
   {
     id: 1,
     userPic: profilePic2,
-    userName: "Geneva",
+    userName: "Genevaa",
     text: "Hello!",
     postedOn: "10:00",
   },
@@ -33,7 +33,7 @@ const chatMessages = [
   {
     id: 5,
     userPic: profilePic2,
-    userName: "Geneva",
+    userName: "Genevaaa",
     text: "Cool!",
     postedOn: "10:03",
   },

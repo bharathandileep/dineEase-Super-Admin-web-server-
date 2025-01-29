@@ -292,7 +292,7 @@ export interface RoutesProps {
 // };
 const dashboardRoutes = {
   path: "/",
-  name: "Dashboard ",
+  name: "Dashboard",
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "airplay",

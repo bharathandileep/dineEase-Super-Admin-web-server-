@@ -7,7 +7,7 @@ const Footer = () => {
 
   return (
     <React.Fragment>
-      <footer className="footer">
+      {/* <footer className="footer">
         <div className="container-fluid">
           <Row>
             <Col md={6}>
@@ -24,7 +24,7 @@ const Footer = () => {
             </Col>
           </Row>
         </div>
-      </footer>
+      </footer> */}
     </React.Fragment>
   );
 };
