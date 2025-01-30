@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
-import { Customer, postCustomerApi } from "../../../../server/allApi";
+  import { Customer, postCustomerApi } from "../../../../server/allApi";
 
 interface AddMemberProps {
   show: boolean;

@@ -19,7 +19,7 @@ import {
   authProtectedFlattenRoutes,
   publicProtectedFlattenRoutes,
 } from "./index";
-import { APICore } from "../helpers/api/apiCore";
+
 
 interface IRoutesProps {}
 
@@ -49,7 +49,7 @@ const AllRoutes = (props: IRoutesProps) => {
   };
 
   let Layout = getLayout();
-  const api = new APICore();
+
 
   return (
     <React.Fragment>
@@ -73,11 +73,11 @@ const AllRoutes = (props: IRoutesProps) => {
             <Route
               path={route.path}
               element={
-                api.isUserAuthenticated() === false ? (
+             
+                false ? (
                   <Navigate
                     to={{
                       pathname: "/auth/login",
-                      // hash:route.path,
                       search: "next=" + route.path,
                     }}
                   />

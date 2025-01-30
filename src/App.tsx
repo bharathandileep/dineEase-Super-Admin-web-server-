@@ -2,7 +2,6 @@ import React from "react";
 
 import AllRoutes from "./routes/Routes";
 
-import { configureFakeBackend } from "./helpers";
 
 
 // For Default import Default.scss
@@ -13,8 +12,7 @@ import './assets/scss/Landing.scss';
 import "./assets/scss/Icons.scss";
 import { ToastContainer } from "react-toastify";
 
-// configure fake backend
-configureFakeBackend();
+
 
 const App = () => {
   return (
