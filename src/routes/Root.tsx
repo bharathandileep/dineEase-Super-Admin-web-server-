@@ -8,13 +8,6 @@ const Root = () => {
 
   const getRootUrl = () => {
     let url: string = "/dashboard-1";
-
-    // // check if user logged in or not and return url accordingly
-    // if (api.isUserAuthenticated() === false) {
-    //     url = 'landing';
-    // } else {
-    //     url = 'dashboard-1';
-    // }
     return url;
   };
 
