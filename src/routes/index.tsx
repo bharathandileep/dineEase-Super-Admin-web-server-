@@ -227,9 +227,26 @@ const AdvancedTables = React.lazy(() => import("../pages/tables/Advanced"));
 const ApexChart = React.lazy(() => import("../pages/charts/Apex"));
 const ChartJs = React.lazy(() => import("../pages/charts/ChartJs"));
 
-// maps
-// const GoogleMaps = React.lazy(() => import("../pages/maps/GoogleMaps"));
-// const VectorMaps = React.lazy(() => import("../pages/maps/VectorMaps"));
+// kithens
+const NewKitchen = React.lazy(() => import("../pages/apps/kitchen/NewKitchen"));
+const ListKitchens = React.lazy(
+  () => import("../pages/apps/kitchen/ListKitchens")
+);
+const Editkitchens = React.lazy(
+  () => import("../pages/apps/kitchen/Editkitchens")
+);
+
+//Organizations
+
+const NewOrganizations = React.lazy(
+  () => import("../pages/apps/Organizations/NewOrganizations")
+);
+const ListOrganizations = React.lazy(
+  () => import("../pages/apps/Organizations/ListOrganizations")
+);
+const EditOrganizations = React.lazy(
+  () => import("../pages/apps/Organizations/EditOrganizations")
+);
 
 export interface RoutesProps {
   path: RouteProps["path"];
@@ -243,56 +260,9 @@ export interface RoutesProps {
   children?: RoutesProps[];
 }
 
-// root routes
-// const rootRoute: RoutesProps = {
-//     path: '/',
-//     exact: true,
-//     element: () => <Root />,
-//     route: Route,
-// };
-
-// dashboards
-// const dashboardRoutes: RoutesProps = {
-//   path: "/dashboard",
-//   name: "Dashboards",
-//   icon: "airplay",
-//   header: "Navigation",
-//   children: [
-//     {
-//       path: "/",
-//       name: "Root",
-//       element: <Navigate to="/dashboard-1" />,
-//       route: PrivateRoute,
-//     },
-//     {
-//       path: "/dashboard-1",
-//       name: "Dashboard 1",
-//       element: <Dashboard1 />,
-//       route: PrivateRoute,
-//     },
-//     {
-//       path: "/dashboard-2",
-//       name: "Dashboard 2",
-//       element: <Dashboard2 />,
-//       route: PrivateRoute,
-//     },
-//     {
-//       path: "/dashboard-3",
-//       name: "Dashboard 3",
-//       element: <Dashboard3 />,
-//       route: PrivateRoute,
-//     },
-//     {
-//       path: "/dashboard-4",
-//       name: "Dashboard 4",
-//       element: <Dashboard4 />,
-//       route: PrivateRoute,
-//     },
-//   ],
-// };
 const dashboardRoutes = {
   path: "/",
-  name: "Dashboard ",
+  name: "Dashboard",
   route: PrivateRoute,
   roles: ["Admin"],
   icon: "airplay",
@@ -323,7 +293,6 @@ const ecommerceAppRoutes = {
   name: "eCommerce",
   route: PrivateRoute,
   roles: ["Admin"],
-  icon: "shopping-cart",
   children: [
     {
       path: "/apps/ecommerce/dashboard",
@@ -383,6 +352,59 @@ const ecommerceAppRoutes = {
       path: "/apps/ecommerce/checkout",
       name: "Checkout",
       element: <Checkout />,
+      route: PrivateRoute,
+    },
+  ],
+};
+const organizationsAppRoutes = {
+  path: "/apps/organizations",
+  name: "Organizations",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  children: [
+    {
+      path: "/apps/organizations/new",
+      name: "Add New Organizations",
+      element: <NewOrganizations />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/organizations/list",
+      name: "List of Organizations",
+      element: <ListOrganizations />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/organizations/edit",
+      name: "Edit Organizations",
+      element: <EditOrganizations />,
+      route: PrivateRoute,
+    },
+  ],
+};
+
+const kitchenAppRoutes = {
+  path: "/apps/kitchen",
+  name: "Kitchens",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  children: [
+    {
+      path: "/apps/Kitchen/new",
+      name: "Add New Kitchen",
+      element: <NewKitchen />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/Kitchen/list",
+      name: "List of Kitchens",
+      element: <ListKitchens />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/Kitchen/edit",
+      name: "edit Kitchens",
+      element: <Editkitchens />,
       route: PrivateRoute,
     },
   ],
@@ -715,6 +737,8 @@ const appRoutes = [
   calendarAppRoutes,
   chatAppRoutes,
   ecommerceAppRoutes,
+  organizationsAppRoutes,
+  kitchenAppRoutes,
   crmAppRoutes,
   emailAppRoutes,
   socialAppRoutes,

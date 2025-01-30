@@ -2,7 +2,6 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { FETCH_COMPANY_REQUEST, fetchCompanySuccess, fetchCompanyFailure } from './companyAction';
 import { Company } from './companyReducer';
-import axios from 'axios';
 
 const baseURL = ''; // replace with your actual base URL
 

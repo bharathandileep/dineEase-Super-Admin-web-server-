@@ -13,7 +13,6 @@ import { resetAuth, loginUser } from "../../redux/actions";
 // store
 import { RootState, AppDispatch } from "../../redux/store";
 
-import { useQuery } from "../../hooks/";
 
 // components
 import { VerticalForm, FormInput } from "../../components/";
@@ -89,8 +88,6 @@ const Login2 = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
 
-  const query = useQuery();
-  const next = query.get("next");
 
   useEffect(() => {
     dispatch(resetAuth());
@@ -124,10 +121,6 @@ const Login2 = () => {
 
   return (
     <>
-      {userLoggedIn || user ? (
-        <Navigate to={next ? next : "/"}></Navigate>
-      ) : null}
-
       <AuthLayout bottomLinks={<BottomLink />}>
         <h4 className="mt-0">{t("Sign In")}</h4>
         <p className="text-muted mb-4">
