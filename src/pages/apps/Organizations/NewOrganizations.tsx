@@ -11,6 +11,7 @@ import AddressForm from "./components/AddressForm";
 import Documentation from "./components/Documentation";
 import Preview from "./components/Preview";
 
+
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -161,9 +162,10 @@ function NewOrganizations() {
       const response = await createOrganisation(convertData(formData));
 
       if (response.status === "success") {
+        console.log(response);
         // Show success toast
         toast.success(response.message || "Organization created successfully!");
-        // navigate("/view-org"); // Navigate to view-org page
+        navigate(`/apps/organizations/list/`); // Navigate to view-org page
       } else {
         // Show error toast for API errors
         toast.error(response.message || "Failed to create the organization.");
@@ -172,7 +174,7 @@ function NewOrganizations() {
         }
       }
     } catch (error: any) {
-      // Show toast for unexpected errors
+   
       toast.error(error.message || "An unexpected error occurred.");
     }
   };

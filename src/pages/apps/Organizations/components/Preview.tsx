@@ -1,5 +1,4 @@
 import { Building2, MapPin, FileCheck } from 'lucide-react';
-
 type PreviewProps = {
   formData: any;
   onSubmit: () => void; // Add this prop for handling the submit action

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
   Building2,
   Users,
@@ -51,57 +52,97 @@ function ListOrganizations() {
   };
 
   const handleUpdate = (orgId: string) => {
-    navigate(`/edit-Org/${orgId}`); // Use navigate to redirect to the update page
+    navigate(`/apps/organizations/edit/${orgId}`); // Use navigate to redirect to the update page
   };
 
   return (
     <div className="container py-4">
-      <h1 className="mb-4">Organizations</h1>
-      <div className="row">
-        {organizationData?.map((org) => (
-          <div key={org?._id} className="col-md-12 mb-4">
-            <div className="card">
-              <div className="card-header bg-light d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center">
-                  <Building2 className="me-2" />
-                  <h5 className="mb-0">{org.name}</h5>
+    <h1 className="mb-4">Organizations</h1>
+    <div className="row">
+      {organizationData?.map((org) => (
+        <div key={org?._id} className="col-md-12 mb-4">
+          <div className="card">
+            <div className="card-header bg-light d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center">
+                <Building2 className="me-2" />
+                <h5 className="mb-0">{org.name}</h5>
+              </div>
+              <span className="badge bg-primary">Reg: {org.register_number}</span>
+            </div>
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-6">
+                  <p><Users className="me-2" /> {org.no_of_employees} Employees</p>
+                  <p><MapPin className="me-2" /> {org.location}</p>
+                  <p><Phone className="me-2" /> {org.contact_number}</p>
+                  <p><Mail className="me-2" /> {org.email}</p>
                 </div>
-                <span className="badge bg-primary">Reg: {org.register_number}</span>
-              </div>
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-md-6">
-                    <p><Users className="me-2" /> {org.no_of_employees} Employees</p>
-                    <p><MapPin className="me-2" /> {org.location}</p>
-                    <p><Phone className="me-2" /> {org.contact_number}</p>
-                    <p><Mail className="me-2" /> {org.email}</p>
-                  </div>
-                  <div className="col-md-6">
-                    <h6>Addresses</h6>
-                    {org.addressIds.map((address:any) => (
-                      <div key={address._id} className="border rounded p-2 mb-2">
-                        <span className="badge bg-info">{address.address_type}</span>
-                        <p>{address.street_address}, {address.city}, {address.district}</p>
-                        <p>{address.state}, {address.country} - {address.pincode}</p>
-                      </div>
-                    ))}
-                  </div>
+                <div className="col-md-6">
+                  <h6>Addresses</h6>
+                  {org.addressIds?.map((address:any) => (
+                    <div key={address._id} className="border rounded p-2 mb-2">
+                      <span className="badge bg-info">{address.address_type}</span>
+                      <p>{address.street_address}, {address.city}, {address.district}</p>
+                      <p>{address.state}, {address.country} - {address.pincode}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="card-footer d-flex justify-content-between">
-                <button className="btn btn-primary me-2" onClick={() => handleUpdate(org._id)}>
-                  <Edit className="me-1" /> Update
-                </button>
-                <button className="btn btn-danger" onClick={() => handleDelete(org._id)}>
-                  <Trash2 className="me-1" /> Delete
-                </button>
-              </div>
+              {/* PAN Details */}
+              {org.panDetails?.map((pan:any) => (
+                <div key={pan._id} className="border p-3 rounded mt-3">
+                  <div className="d-flex align-items-center">
+                    <FileCheck className="me-2" />
+                    <h6 className="mb-0">PAN Details</h6>
+                    {pan.is_verified ? (
+                      <CheckCircle className="text-success ms-2" />
+                    ) : (
+                      <XCircle className="text-danger ms-2" />
+                    )}
+                  </div>
+                  <p>Number: {pan.pan_card_number}</p>
+                  <p>Name: {pan.pan_card_user_name}</p>
+                  {pan.pan_card_image && (
+                    <img src={pan.pan_card_image} alt="PAN Card" className="img-fluid rounded shadow-sm" style={{ maxWidth: "300px" }} />
+                  )}
+                </div>
+              ))}
+              {/* GST Details */}
+              {org.gstDetails?.map((gst:any) => (
+                <div key={gst._id} className="border p-3 rounded mt-3">
+                  <div className="d-flex align-items-center">
+                    <Receipt className="me-2" />
+                    <h6 className="mb-0">GST Details</h6>
+                    {gst.is_verified ? (
+                      <CheckCircle className="text-success ms-2" />
+                    ) : (
+                      <XCircle className="text-danger ms-2" />
+                    )}
+                  </div>
+                  <p>Number: {gst.gst_number}</p>
+                  <p>Expires: {formatDate(gst.expiry_date)}</p>
+                  {gst.gst_certificate_image && (
+                    <img src={gst.gst_certificate_image} alt="GST Certificate" className="img-fluid rounded shadow-sm" style={{ maxWidth: "300px" }} />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="card-footer d-flex justify-content-between">
+              <button className="btn btn-primary" onClick={() => handleUpdate(org._id)}>
+                <Edit className="me-1" /> Update
+              </button>
+              <button className="btn btn-danger" onClick={() => handleDelete(org._id)}>
+                <Trash2 className="me-1" /> Delete
+              </button>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 }
 
+
 export default ListOrganizations;
+
