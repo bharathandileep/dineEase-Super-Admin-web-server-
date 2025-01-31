@@ -402,7 +402,7 @@ const kitchenAppRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/apps/Kitchen/edit",
+      path: "/apps/Kitchen/edit/:id",
       name: "edit Kitchens",
       element: <Editkitchens />,
       route: PrivateRoute,
