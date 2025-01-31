@@ -19,6 +19,8 @@ import {
   authProtectedFlattenRoutes,
   publicProtectedFlattenRoutes,
 } from "./index";
+import { ToastContainer } from "react-toastify";
+
 
 
 interface IRoutesProps {}
@@ -90,6 +92,7 @@ const AllRoutes = (props: IRoutesProps) => {
           ))}
         </Route>
       </Routes>
+     
     </React.Fragment>
   );
 };

@@ -11,9 +11,8 @@ import AddressForm from "./components/AddressForm";
 import Documentation from "./components/Documentation";
 import Preview from "./components/Preview";
 
-
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { createOrganisation } from "../../../services/api";
 
@@ -25,6 +24,7 @@ type FormData = {
   contact_number: string;
   email: string;
   no_of_employees: number;
+  logo: string;
   // Address
   street_address: string;
   city: string;
@@ -53,6 +53,7 @@ const initialFormData: FormData = {
   contact_number: "",
   email: "",
   no_of_employees: 0,
+  logo:"",
   street_address: "",
   city: "",
   state: "",
@@ -121,6 +122,7 @@ function NewOrganizations() {
       phone: inputData.contact_number,
       website: "",
       no_of_employees: parseInt(inputData.no_of_employees),
+      logo: inputData.logo,
       contact_number: inputData.contact_number,
       location:
         inputData.street_address +
@@ -140,6 +142,7 @@ function NewOrganizations() {
           city: inputData.city,
           state: inputData.state,
           pincode: inputData.pincode,
+          landmark: inputData.landmark,
           country: inputData.country,
         },
       ],
@@ -174,79 +177,80 @@ function NewOrganizations() {
         }
       }
     } catch (error: any) {
-   
       toast.error(error.message || "An unexpected error occurred.");
     }
   };
-
   return (
-    <div className="min-vh-100 bg-light py-5 px-3">
-    <div className="container">
-      {/* Progress Steps */}
-      <div className="mb-4">
-        <div className="d-flex flex-wrap justify-content-between align-items-center">
-          {steps.map((s, i) => (
-            <div key={s.number} className="flex-grow-1 position-relative mb-3 mb-md-0">
-              <div className={`d-flex align-items-center ${i !== 0 ? "ms-md-4 ms-2" : ""}`}>
+    <div className='min-vh-100 bg-light py-5 px-3'>
+      <div className='container'>
+        {/* Progress Steps */}
+        <div className='mb-4'>
+          <div className='d-flex flex-wrap justify-content-between align-items-center'>
+            {steps.map((s, i) => (
+              <div
+                key={s.number}
+                className='flex-grow-1 position-relative mb-3 mb-md-0'
+              >
                 <div
-                  className={`rounded-circle d-flex align-items-center justify-content-center ${
-                    step >= s.number ? "bg-primary text-white" : "bg-secondary text-muted"
+                  className={`d-flex align-items-center ${
+                    i !== 0 ? "ms-md-4 ms-2" : ""
                   }`}
-                  style={{ width: '40px', height: '40px' }}
                 >
-                  <s.icon className="w-5 h-5" />
+                  <div
+                    className={`rounded-circle d-flex align-items-center justify-content-center ${
+                      step >= s.number
+                        ? "bg-primary text-white"
+                        : "bg-secondary text-muted"
+                    }`}
+                    style={{ width: "40px", height: "40px" }}
+                  >
+                    <s.icon className='w-5 h-5' />
+                  </div>
+                  <div className='ms-3'>
+                    <p className='mb-0 fw-bold'>{s.title}</p>
+                    <p className='mb-0 text-muted'>Step {s.number}</p>
+                  </div>
                 </div>
-                <div className="ms-3">
-                  <p className="mb-0 fw-bold">{s.title}</p>
-                  <p className="mb-0 text-muted">Step {s.number}</p>
-                </div>
+                {i < steps.length - 1 && (
+                  <div
+                    className={`position-absolute top-50 start-50 translate-middle-x w-100 ${
+                      step > s.number ? "bg-primary" : "bg-secondary"
+                    }`}
+                    style={{ height: "2px" }}
+                  />
+                )}
               </div>
-              {i < steps.length - 1 && (
-                <div
-                  className={`position-absolute top-50 start-50 translate-middle-x w-100 ${
-                    step > s.number ? "bg-primary" : "bg-secondary"
-                  }`}
-                  style={{ height: '2px' }}
-                />
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        {/* Form Content */}
+        <div className='bg-white shadow rounded p-4 mb-4'>
+          {renderStepContent()}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className='d-flex justify-content-between'>
+          <button
+            onClick={prevStep}
+            disabled={step === 1}
+            className={`btn ${
+              step === 1 ? "btn-secondary disabled" : "btn-primary"
+            }`}
+          >
+            <ChevronLeft className='me-2' />
+            Previous
+          </button>
+          {step < 4 && (
+            <button onClick={nextStep} className='btn btn-primary'>
+              Next
+              <ChevronRight className='ms-2' />
+            </button>
+          )}
         </div>
       </div>
-  
-      {/* Form Content */}
-      <div className="bg-white shadow rounded p-4 mb-4">
-        {renderStepContent()}
-      </div>
-  
-      {/* Navigation Buttons */}
-      <div className="d-flex justify-content-between">
-        <button
-          onClick={prevStep}
-          disabled={step === 1}
-          className={`btn ${step === 1 ? "btn-secondary disabled" : "btn-primary"}`}
-        >
-          <ChevronLeft className="me-2" />
-          Previous
-        </button>
-        {step < 4 && (
-          <button onClick={nextStep} className="btn btn-primary">
-            Next
-            <ChevronRight className="ms-2" />
-          </button>
-        )}
-      </div>
     </div>
-  </div>
-  
   );
 }
 
 export default NewOrganizations;
-
-
-
-
-
-
-

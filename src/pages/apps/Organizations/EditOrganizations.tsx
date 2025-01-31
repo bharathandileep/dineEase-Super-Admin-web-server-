@@ -10,7 +10,7 @@ function EditOrganization() {
     location: "",
     contact_number: "",
     email: "",
-    no_of_employees: 0,
+    no_of_employees: "",
     addressIds: [], // Initialize as an empty array
   });
   const { id } = useParams(); // Get the organization ID from the URL
