@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
 // components
@@ -18,31 +18,36 @@ interface CompanyInfo {
 }
 
 interface CompanyDetailsProps {
-  companyInfo: CompanyInfo[];
+  companyInfo: any[];
 }
 
 const CompanyDetails = (props: CompanyDetailsProps) => {
-  const [companyInfo, setCompanyInfo] = useState<Array<CompanyInfo>>(
-    props.companyInfo
-  );
+  const [companyInfo, setCompanyInfo] = useState<Array<any>>(props.companyInfo);
   const [show, setShow] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  /*
-   * search on data
-   */
   const onSearchData = (value: string) => {
-    if (value === "") setCompanyInfo(props.companyInfo);
-    else {
-      var modifiedProducts = props.companyInfo;
-      modifiedProducts = modifiedProducts.filter(
-        (item) =>
-          item.name.toLowerCase().includes(value) ||
-          item.location.toLowerCase().includes(value) ||
-          item.category.toLowerCase().includes(value)
-      );
-      setCompanyInfo(modifiedProducts);
+    if (value.trim() === "") {
+      setCompanyInfo(props.companyInfo); // Reset if empty
+      return;
     }
+  
+    const searchTerm = value.toLowerCase();
+    
+    const filteredResults = props.companyInfo.filter((item) => {
+      return (
+        item.kitchen_name.toLowerCase().includes(searchTerm) ||
+        item.owner_email.toLowerCase().includes(searchTerm) ||
+        item.kitchen_phone_number.includes(searchTerm) ||
+        item.addresses.some((address:any) =>
+          address.street_address.toLowerCase().includes(searchTerm)
+        )
+      );
+    });
+  
+    setCompanyInfo(filteredResults);
   };
+  
 
   /*
    * change order status group
@@ -57,18 +62,8 @@ const CompanyDetails = (props: CompanyDetailsProps) => {
     setCompanyInfo(updatedData);
   };
 
-  /*
-   *   modal handeling
-   */
-  const onCloseModal = () => setShow(false);
-  const onOpenModal = () => setShow(true);
+  const onOpenModal = () => navigate("/apps/kitchen/new");
 
-  /*
-    handle form submission
-    */
-  const onHandleSubmit = () => {
-    onCloseModal();
-  };
 
   return (
     <>
@@ -110,12 +105,6 @@ const CompanyDetails = (props: CompanyDetailsProps) => {
             <Col lg={4}>
               <div className="text-lg-end mt-3 mt-lg-0">
                 <Button
-                  variant="success"
-                  className="waves-effect waves-light me-1"
-                >
-                  <i className="mdi mdi-cog"></i>
-                </Button>
-                <Button
                   variant="danger"
                   className="waves-effect waves-light"
                   onClick={onOpenModal}
@@ -130,81 +119,79 @@ const CompanyDetails = (props: CompanyDetailsProps) => {
 
       {(companyInfo || []).map((item, index) => {
         return (
-          <Card key={index} className="mb-2">
-            <Card.Body>
-              <Row className="align-items-center">
-                <Col sm={4}>
-                  <div className="d-flex align-items-start">
-                    <img
-                      className="d-flex align-self-center me-3 rounded-circle"
-                      src={item.logo}
-                      alt=""
-                      height="64"
-                    />
-                    <div className="w-100">
-                      <h4 className="mt-0 mb-2 font-16">{item.name}</h4>
-                      <p className="mb-1">
-                        <b>Location:</b> {item.location}
-                      </p>
-                      <p className="mb-0">
-                        <b>Category:</b> {item.category}
-                      </p>
+          <Link to={`/apps/kitchen/${item._id}`}>
+            <Card key={index} className="mb-2">
+              <Card.Body>
+                <Row className="align-items-center justify-content-sm-between">
+                  <Col sm={4}>
+                    <div className="d-flex align-items-start">
+                      <img
+                        className="d-flex align-self-center me-3 rounded-circle"
+                        src={item.kitchen_image}
+                        alt=""
+                        style={{
+                          objectFit: "cover",
+                          width: "100px",
+                          height: "100px",
+                        }}
+                      />
+                      <div className="w-100">
+                        <h4 className="mt-0 mb-2 font-16">
+                          {item?.kitchen_name}
+                        </h4>
+                        <p className="mb-1">
+                          <b>Location:</b>
+                          {item?.addresses[0]?.street_address},
+                          {item?.addresses[0]?.city},
+                          {item?.addresses[0]?.country}
+                        </p>
+                        <p className="mb-0">
+                          <b>Category:</b> {item?.kitchen_type}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Col>
-                <Col sm={4}>
-                  <p className="mb-1 mt-3 mt-sm-0">
-                    <i className="mdi mdi-email me-1"></i> {item.email}
-                  </p>
-                  <p className="mb-0">
-                    <i className="mdi mdi-phone-classic me-1"></i> {item.phone}
-                  </p>
-                </Col>
-                <Col sm={2}>
-                  <div className="text-center mt-3 mt-sm-0">
-                    <div
-                      className={classNames("badge", "font-14", "p-1", {
-                        "bg-soft-info text-info": item.status === "Hot",
-                        "bg-soft-primary text-primary": item.status === "Cold",
-                        "bg-soft-warning text-warning":
-                          item.status === "In-progress",
-                        "bg-soft-danger text-danger": item.status === "Lost",
-                        "bg-soft-success text-success": item.status === "Won",
-                      })}
-                    >
-                      {item.status}
+                  </Col>
+                  <Col sm={4}>
+                    <p className="mb-1 mt-3 mt-sm-0">
+                      <i className="mdi mdi-email me-1"></i> {item?.owner_email}
+                    </p>
+                    <p className="mb-0">
+                      <i className="mdi mdi-phone-classic me-1"></i>{" "}
+                      {item?.kitchen_phone_number}
+                    </p>
+                  </Col>
+                  <Col sm={2}>
+                    <div className="text-center mt-3 mt-sm-0">
+                      <div
+                        className={classNames("badge", "font-14", "p-1", {
+                          "bg-soft-info text-info":
+                            item?.kitchen_status === "Hot",
+                          "bg-soft-primary text-primary":
+                            item?.kitchen_status === "Cold",
+                          "bg-soft-warning text-warning":
+                            item.status === "In-progress",
+                          "bg-soft-danger text-danger":
+                            item?.kitchen_status === "Lost",
+                          "bg-soft-success text-success":
+                            item?.kitchen_status === "Active",
+                        })}
+                      >
+                        {"Active"}
+                      </div>
                     </div>
-                  </div>
-                </Col>
-                <Col sm={2}>
-                  <div className="text-sm-end">
-                    <Link to="#" className="action-icon">
-                      {" "}
-                      <i className="mdi mdi-square-edit-outline"></i>
-                    </Link>
-                    <Link to="#" className="action-icon">
-                      {" "}
-                      <i className="mdi mdi-delete"></i>
-                    </Link>
-                  </div>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Link>
         );
       })}
 
-      <div className="text-center my-4">
+      {/* <div className="text-center my-4">
         <Link to="#" className="text-danger">
           <i className="mdi mdi-spin mdi-loading me-1"></i> Load more{" "}
         </Link>
-      </div>
-
-      <AddOpportunities
-        show={show}
-        onHide={onCloseModal}
-        onSubmit={onHandleSubmit}
-      />
+      </div>   */}
     </>
   );
 };

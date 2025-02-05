@@ -1,9 +1,10 @@
 import React from 'react'
+import { WizardForm } from './Form/WizardForm'
 
 function NewKitchen() {
   return (
     <div>
-      new kitchen
+      <WizardForm/>
     </div>
   )
 }

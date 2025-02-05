@@ -1,11 +1,13 @@
 import React from "react";
 import PageTitle from "../../../components/PageTitle";
 import CompanyDetails from "./CompanyDetails";
+import { companyInfo } from "./data";
+
 
 const Companies: React.FC = () => {
   return (
     <>
-      <CompanyDetails />
+      <CompanyDetails companyInfo={companyInfo} />
     </>
   );
 };

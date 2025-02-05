@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, Alert, Row, Col } from "react-bootstrap";
-import { Navigate, Link, useLocation } from "react-router-dom";
+import { Navigate, Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,9 +17,12 @@ import { RootState, AppDispatch } from "../../redux/store";
 import { VerticalForm, FormInput } from "../../components/";
 
 import AuthLayout from "./AuthLayout";
+import { AuthAdminCredentials } from "../../server/admin/auth";
+import { toast } from "react-toastify";
+
 
 interface UserData {
-  username: string;
+  userName: string;
   password: string;
 }
 
@@ -93,6 +96,7 @@ const SocialLinks = () => {
 const Login = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const { user, userLoggedIn, loading, error } = useSelector(
     (state: RootState) => ({
@@ -112,7 +116,7 @@ const Login = () => {
   */
   const schemaResolver = yupResolver(
     yup.object().shape({
-      username: yup.string().required(t("Please enter Username")),
+      userName: yup.string().required(t("Please enter userName")),
       password: yup.string().required(t("Please enter Password")),
     })
   );
@@ -120,10 +124,21 @@ const Login = () => {
   /*
   handle form submission
   */
-  const onSubmit = (formData: UserData) => {
-    dispatch(loginUser(formData["username"], formData["password"]));
+  const onSubmit = async (formData: UserData) => {
+    try {
+      const response = await AuthAdminCredentials(formData);
+      if (response.status && response.data?.token) {
+        localStorage.setItem("token", response.data.token);
+        toast.success("Login successful! Redirecting...");
+        navigate("/");
+      } else {
+        toast.error(response.message || "Login failed. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Login Error:", error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "Something went wrong.");
+    }
   };
-
   const location = useLocation();
   //
   // const redirectUrl = location.state && location.state.from ? location.state.from.pathname : '/';
@@ -148,13 +163,13 @@ const Login = () => {
         <VerticalForm<UserData>
           onSubmit={onSubmit}
           resolver={schemaResolver}
-          defaultValues={{ username: "test", password: "test" }}
+          defaultValues={{ userName: "test", password: "test" }}
         >
           <FormInput
-            label={t("Username")}
+            label={t("userName")}
             type="text"
-            name="username"
-            placeholder="Enter your Username"
+            name="userName"
+            placeholder="Enter your userName"
             containerClass={"mb-3"}
           />
           <FormInput
