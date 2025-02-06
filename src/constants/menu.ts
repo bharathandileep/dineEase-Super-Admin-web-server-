@@ -28,17 +28,18 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "shopping-cart",
     children: [
       {
-        key: "kitchen-add",
-        label: "Add New Kitchen",
-        url: "/apps/Kitchen/new",
+        key: "kitchen-list",
+        label: "List of Kitchens",
+        url: "/apps/kitchen/list",
         parentKey: "apps-kitchen",
       },
       {
-        key: "kitchen-list",
-        label: "List of Kitchens",
-        url: "/apps/Kitchen/list",
+        key: "kitchen-add",
+        label: "Add New Kitchen",
+        url: "/apps/kitchen/new",
         parentKey: "apps-kitchen",
       },
+      
     ],
   },
   {
@@ -48,15 +49,15 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "shopping-cart",
     children: [
       {
-        key: "Organizations-add",
-        label: "Add New Organizations",
-        url: "/apps/organizations/new",
-        parentKey: "apps-Organizations",
-      },
-      {
         key: "Organizations-list",
         label: "List of Organizations",
         url: "/apps/organizations/list",
+        parentKey: "apps-Organizations",
+      },
+      {
+        key: "Organizations-add",
+        label: "Add New Organizations",
+        url: "/apps/organizations/new",
         parentKey: "apps-Organizations",
       },
     ],

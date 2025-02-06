@@ -19,6 +19,7 @@ import {
   authProtectedFlattenRoutes,
   publicProtectedFlattenRoutes,
 } from "./index";
+import { isUserAuthenticated } from "../helpers/api/apiCore";
 
 
 interface IRoutesProps {}
@@ -73,12 +74,10 @@ const AllRoutes = (props: IRoutesProps) => {
             <Route
               path={route.path}
               element={
-             
-                false ? (
+                isUserAuthenticated() === false ? (
                   <Navigate
                     to={{
                       pathname: "/auth/login",
-                      search: "next=" + route.path,
                     }}
                   />
                 ) : (
