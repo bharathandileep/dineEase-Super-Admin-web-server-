@@ -19,8 +19,12 @@ import {
   authProtectedFlattenRoutes,
   publicProtectedFlattenRoutes,
 } from "./index";
+<<<<<<< HEAD
 import { ToastContainer } from "react-toastify";
 
+=======
+import { isUserAuthenticated } from "../helpers/api/apiCore";
+>>>>>>> 333cf02b85072ed6f3a4acb4b2a08840f6bce36e
 
 
 interface IRoutesProps {}
@@ -75,12 +79,10 @@ const AllRoutes = (props: IRoutesProps) => {
             <Route
               path={route.path}
               element={
-             
-                false ? (
+                isUserAuthenticated() === false ? (
                   <Navigate
                     to={{
                       pathname: "/auth/login",
-                      search: "next=" + route.path,
                     }}
                   />
                 ) : (

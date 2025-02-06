@@ -6,6 +6,7 @@ import PrivateRoute from "./PrivateRoute";
 import { Details, detailsInfo } from "../pages/apps/Restaurant/Staffdata";
 import PaginatedTable from "../pages/apps/Restaurant/StaffDetails";
 import List from "../pages/apps/Restaurant/List/";
+
 // import Root from './Root';
 
 // lazy load all the views
@@ -227,10 +228,12 @@ const AdvancedTables = React.lazy(() => import("../pages/tables/Advanced"));
 const ApexChart = React.lazy(() => import("../pages/charts/Apex"));
 const ChartJs = React.lazy(() => import("../pages/charts/ChartJs"));
 
-// kithens
 const NewKitchen = React.lazy(() => import("../pages/apps/kitchen/NewKitchen"));
 const ListKitchens = React.lazy(
   () => import("../pages/apps/kitchen/ListKitchens")
+);
+const KitchensDetails = React.lazy(
+  () => import("../pages/apps/kitchen/KitchensDetails")
 );
 const Editkitchens = React.lazy(
   () => import("../pages/apps/kitchen/Editkitchens")
@@ -244,9 +247,10 @@ const NewOrganizations = React.lazy(
 const ListOrganizations = React.lazy(
   () => import("../pages/apps/Organizations/ListOrganizations")
 );
-const EditOrganizations = React.lazy(
-  () => import("../pages/apps/Organizations/EditOrganizations")
-);
+const EditOrganizations = React.lazy(() => import("../pages/apps/Organizations/EditOrganizations"));
+const OrganizationDetails = React.lazy(() => import("../pages/apps/Organizations/OrganizationDetails"));
+
+
 
 export interface RoutesProps {
   path: RouteProps["path"];
@@ -380,6 +384,12 @@ const organizationsAppRoutes = {
       element: <EditOrganizations />,
       route: PrivateRoute,
     },
+    {
+      path: "/apps/organizations/:id",
+      name: "Edit Organizations",
+      element: <OrganizationDetails />,
+      route: PrivateRoute,
+    },
   ],
 };
 
@@ -390,21 +400,27 @@ const kitchenAppRoutes = {
   roles: ["Admin"],
   children: [
     {
-      path: "/apps/Kitchen/new",
+      path: "/apps/kitchen/new",
       name: "Add New Kitchen",
       element: <NewKitchen />,
       route: PrivateRoute,
     },
     {
-      path: "/apps/Kitchen/list",
+      path: "/apps/kitchen/list",
       name: "List of Kitchens",
       element: <ListKitchens />,
       route: PrivateRoute,
     },
     {
-      path: "/apps/Kitchen/edit",
+      path: "/apps/kitchen/edit/:id",
       name: "edit Kitchens",
       element: <Editkitchens />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/kitchen/:id",
+      name: "details Kitchens",
+      element: <KitchensDetails />,
       route: PrivateRoute,
     },
   ],

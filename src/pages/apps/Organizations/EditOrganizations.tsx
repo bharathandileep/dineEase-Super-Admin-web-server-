@@ -1,3 +1,9 @@
+import React from "react";
+import { WizardForm } from "./Form/WizardForm";
+
+function EditOrganizations() {
+  const isEditing = true;
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -88,6 +94,8 @@ function EditOrganization() {
   }
 
   return (
+    <div>
+      <WizardForm initialData={isEditing} />
     <div className="min-vh-100 bg-light py-5 px-3">
     <div className="container">
       <h1 className="display-4 text-dark mb-4">Edit Organization</h1>
@@ -267,9 +275,12 @@ function EditOrganization() {
         </form>
       </div>
     </div>
+  );
   </div>
   );
 }
+
+export default EditOrganizations;
 
 export default EditOrganization;
  
