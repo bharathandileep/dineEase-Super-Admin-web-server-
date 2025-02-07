@@ -83,7 +83,7 @@ function KitchensDetails() {
     navigate(`/apps/kitchen/edit/${id}`);
   };
   const onDelete = async () => {
-    setLoading(true); // Start loading state
+    setLoading(true);
 
     try {
       const response = await deletekitchenDetails(id);
@@ -191,7 +191,6 @@ function KitchensDetails() {
       </Card>
 
       <Row>
-        {/* Address Section */}
         <Col md={6}>
           <Card className="mb-4">
             <Card.Header className="d-flex align-items-center">
@@ -231,8 +230,6 @@ function KitchensDetails() {
             </Card.Body>
           </Card>
         </Col>
-
-        {/* FSSAI Details */}
         <Col md={6}>
           <Card className="mb-4">
             <Card.Header className="d-flex align-items-center">
@@ -287,7 +284,6 @@ function KitchensDetails() {
       </Row>
 
       <Row>
-        {/* PAN Details */}
         <Col md={6}>
           <Card className="mb-4">
             <Card.Header className="d-flex align-items-center">

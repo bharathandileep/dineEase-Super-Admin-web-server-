@@ -1,4 +1,7 @@
 export const apiConfig = {
+  token:{
+    getAccessToken : "/api/refresh-token"
+  },
   admin: {
     login: "/auth/admin/login",
   },
