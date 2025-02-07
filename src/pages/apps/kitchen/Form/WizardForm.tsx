@@ -58,7 +58,7 @@ const initialFormData: FormData = {
   owner_email: "",
   owner_phone_number: "",
   restaurant_type: "",
-  kitchen_type: "Veg",
+  kitchen_type: " ",
   kitchen_phone_number: "",
   address_type: "Home",
   street_address: "",
@@ -192,7 +192,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const kitchesFormData = appendToFormData(formData);
       const response = await createNewkitchen(kitchesFormData);
@@ -440,9 +440,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
                             onChange={handleChange}
                             className="form-select"
                           >
-                            <option value="Home">Veg</option>
-                            <option value="Office">Non-Veg</option>
-                            <option value="Other">Both</option>
+                            <option value="Veg">Veg</option>
+                            <option value="Non-Veg">Non-Veg</option>
+                            <option value="Both">Both</option>
                           </select>
                         </div>
                       </div>

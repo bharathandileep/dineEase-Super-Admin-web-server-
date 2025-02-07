@@ -1,6 +1,7 @@
 import axios from "axios";
 import config from "../../config";
 import jwtDecode from "jwt-decode";
+import { apiConfig } from "./apis";
 
 // Create axios instance
 const baseURL = "http://localhost:5000/api/v1";
@@ -28,19 +29,17 @@ const processQueue = (error: any, token = null) => {
   failedQueue = [];
 };
 
-const refreshTokenLogic = async () => {
+export const refreshTokenLogic = async () => {
   try {
     const response = await axios.post(
-      "/api/refresh-token",
+      `${apiConfig.token.getAccessToken}`,
       {},
       {
         withCredentials: true,
       }
     );
-
     const { accessToken } = response.data;
     localStorage.setItem("token", accessToken);
-
     return accessToken;
   } catch (error) {
     localStorage.removeItem("token");
@@ -52,7 +51,6 @@ const refreshTokenLogic = async () => {
 axiosInstance.interceptors.request.use(
   async (config) => {
     const token = localStorage.getItem("token");
-
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
