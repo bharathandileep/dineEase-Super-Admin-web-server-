@@ -7,9 +7,14 @@ import {
   toggleSubcategoryStatus,
 } from "../../../server/admin/menu";
 import { toast } from "react-toastify";
-import AddCategory from "./modal/AddCategory";
+import AddCategory from "../menu/modal/AddCategory";
+import AddkitchenCategory from "./modal/AddkitchenCategory";
+import {
+  kitchensDeleteSubcategory,
+  kitchensGetSubcategories,
+} from "../../../server/admin/kitchens";
 
-function MenuSubCategory() {
+function KitchensSubCategories() {
   const isSubCategory = true;
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState("");
@@ -77,7 +82,7 @@ function MenuSubCategory() {
     if (!window.confirm("Are you sure you want to delete this subcategory?"))
       return;
     try {
-      const response = await deleteSubcategory(id);
+      const response = await kitchensDeleteSubcategory(id);
       if (response.status) {
         toast.success(response.message);
         setIsDeleted((prev) => !prev);
@@ -95,7 +100,7 @@ function MenuSubCategory() {
     const fetchAllCategories = async () => {
       setLoading(true);
       try {
-        const response = await getSubcategories();
+        const response = await kitchensGetSubcategories();
         if (response.status) {
           setMenuItems(response.data);
         } else {
@@ -212,7 +217,7 @@ function MenuSubCategory() {
         </div>
       </div>
 
-      <AddCategory
+      <AddkitchenCategory
         show={show}
         onHide={() => setShow(false)}
         isSubCategory={isSubCategory}
@@ -223,4 +228,4 @@ function MenuSubCategory() {
   );
 }
 
-export default MenuSubCategory;
+export default KitchensSubCategories;

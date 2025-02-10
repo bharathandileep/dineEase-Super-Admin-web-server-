@@ -8,6 +8,8 @@ import PaginatedTable from "../pages/apps/Restaurant/StaffDetails";
 import List from "../pages/apps/Restaurant/List/";
 import MenuCategory from "../pages/apps/menu/MenuCategory";
 import MenuSubCategory from "../pages/apps/menu/MenuSubCategory";
+import KitchensSubCategories from "../pages/apps/kitchen/KitchensSubCategories";
+import KitchensCategories from "../pages/apps/kitchen/KitchensCategories";
 
 // import Root from './Root';
 
@@ -329,6 +331,18 @@ const kitchenAppRoutes = {
       path: "/apps/kitchen/:id",
       name: "details Kitchens",
       element: <KitchensDetails />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/kitchen/category",
+      name: "details Kitchens",
+      element: <KitchensCategories />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/kitchen/subcategory",
+      name: "details Kitchens",
+      element: <KitchensSubCategories />,
       route: PrivateRoute,
     },
   ],

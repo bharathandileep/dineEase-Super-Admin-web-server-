@@ -28,23 +28,23 @@ const CompanyDetails = (props: CompanyDetailsProps) => {
 
   const onSearchData = (value: string) => {
     if (value.trim() === "") {
-      setCompanyInfo(props.companyInfo); // Reset if empty
+      setCompanyInfo(props.companyInfo);
       return;
     }
-  
+
     const searchTerm = value.toLowerCase();
-    
+
     const filteredResults = props.companyInfo.filter((item) => {
       return (
         item.kitchen_name.toLowerCase().includes(searchTerm) ||
         item.owner_email.toLowerCase().includes(searchTerm) ||
         item.kitchen_phone_number.includes(searchTerm) ||
-        item.addresses.some((address:any) =>
+        item.addresses.some((address: any) =>
           address.street_address.toLowerCase().includes(searchTerm)
         )
       );
     });
-  
+
     setCompanyInfo(filteredResults);
   };
   
@@ -63,7 +63,6 @@ const CompanyDetails = (props: CompanyDetailsProps) => {
   };
 
   const onOpenModal = () => navigate("/apps/kitchen/new");
-
 
   return (
     <>

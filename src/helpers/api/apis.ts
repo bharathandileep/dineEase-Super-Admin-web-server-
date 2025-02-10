@@ -27,6 +27,26 @@ export const apiConfig = {
     getAllkitchens: "/kitchens/all",
     getkitchensById: (kitchenId: string | undefined) =>
       `/kitchens/${kitchenId}`,
+
+    createCategory: "/kitchens/categories",
+    getAllCategories: "/kitchens/categories/all",
+    updateCategory: (id: string | undefined) => `/kitchens/categories/${id}`,
+    deleteCategory: (id: string | undefined) => `/kitchens/categories/${id}`,
+    toggleCategoryStatus: (id: string | undefined) =>
+      `/kitchens/categories/${id}/toggle-status`,
+
+    createSubcategory: "/kitchens/subcategories",
+    getAllSubCategories: "/kitchens/subcategories/all",
+    getSubcategoriesByCategory: (categoryId: string | undefined) =>
+      `/kitchens/categories/${categoryId}/subcategories`,
+    getSubcategoryById: (id: string | undefined) =>
+      `/kitchens/subcategories/${id}`,
+    updateSubcategory: (id: string | undefined) =>
+      `/kitchens/subcategories/${id}`,
+    deleteSubcategory: (id: string | undefined) =>
+      `/kitchens/subcategories/${id}`,
+    toggleSubcategoryStatus: (id: string | undefined) =>
+      `/kitchens/subcategories/${id}/toggle-status`,
   },
   organization: {
     newOrganization: "/organization/new",
@@ -52,9 +72,12 @@ export const apiConfig = {
     getAllSubCategories: "/sub-menu-category/subcategories",
     getSubcategoriesByCategory: (categoryId: string | undefined) =>
       `/sub-menu-category/categories/${categoryId}/subcategories`,
-    getSubcategoryById: (id: string | undefined) => `/sub-menu-category/subcategories/${id}`,
-    updateSubcategory: (id: string | undefined) => `/sub-menu-category/subcategories/${id}`,
-    deleteSubcategory: (id: string | undefined) => `/sub-menu-category/subcategories/${id}`,
+    getSubcategoryById: (id: string | undefined) =>
+      `/sub-menu-category/subcategories/${id}`,
+    updateSubcategory: (id: string | undefined) =>
+      `/sub-menu-category/subcategories/${id}`,
+    deleteSubcategory: (id: string | undefined) =>
+      `/sub-menu-category/subcategories/${id}`,
     toggleSubcategoryStatus: (id: string | undefined) =>
       `/sub-menu-category/subcategories/${id}/toggle-status`,
   },
