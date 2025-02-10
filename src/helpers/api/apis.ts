@@ -69,6 +69,7 @@ export const apiConfig = {
       `/menu-category/categories/${id}/toggle-status`,
 
     createSubcategory: "/sub-menu-category/subcategories",
+    getAllCategoriesByStatus: "/sub-menu-category/category/status",
     getAllSubCategories: "/sub-menu-category/subcategories",
     getSubcategoriesByCategory: (categoryId: string | undefined) =>
       `/sub-menu-category/categories/${categoryId}/subcategories`,

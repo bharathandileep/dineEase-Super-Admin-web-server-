@@ -7,6 +7,7 @@ import {
   createCategory,
   createSubcategory,
   getAllCategories,
+  getAllCategoriesByStatus,
   updateCategory,
   updateSubcategory,
 } from "../../../../server/admin/menu";
@@ -38,7 +39,7 @@ const AddCategory = ({
 
   const fetchAllCategories = async () => {
     try {
-      const response = await getAllCategories();
+      const response = await getAllCategoriesByStatus();
       if (response.status) {
         setMenuItems(response.data);
       }

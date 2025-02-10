@@ -23,6 +23,7 @@ function MenuSubCategory() {
   const handleToggleStatus = async (id: string) => {
     try {
       const response = await toggleSubcategoryStatus(id);
+      console.log(response);
       if (response.status) {
         setMenuItems((prevItems) =>
           prevItems.map((item) =>
@@ -30,11 +31,11 @@ function MenuSubCategory() {
           )
         );
       } else {
-        toast.error("Failed to toggle status.");
+        toast.error(response);
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
-      toast.error("Error toggling status.");
+      toast.error(error);
     }
   };
 
@@ -168,6 +169,7 @@ function MenuSubCategory() {
                   <tr>
                     <th scope="col">Index</th>
                     <th scope="col">Subcategory Name</th>
+                    <th scope="col">Category</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Status</th>
                     <th scope="col">Actions</th>
@@ -178,6 +180,7 @@ function MenuSubCategory() {
                     <tr key={item._id}>
                       <td>{index + 1}</td>
                       <td>{item.subcategoryName}</td>
+                      <td>{item?.category?.category}</td>
                       <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                       <td>
                         <button

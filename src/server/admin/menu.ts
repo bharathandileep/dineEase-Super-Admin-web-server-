@@ -21,6 +21,16 @@ export const getAllCategories = async () => {
     console.error("Error:", error.response?.data || error.message);
   }
 };
+export const getAllCategoriesByStatus = async () => {
+  try {
+    const response = await axiosInstance.get(
+      apiConfig.menu.getAllCategoriesByStatus
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Error:", error.response?.data || error.message);
+  }
+};
 
 export const updateCategory = async (id: string | undefined, data: any) => {
   console.log(id, data);
@@ -58,7 +68,7 @@ export const toggleCategoryStatus = async (id: string | undefined) => {
 };
 
 export const createSubcategory = async (data: any | undefined) => {
-  console.log(data)
+  console.log(data);
   try {
     const response = await axiosInstance.post(
       apiConfig.menu.createSubcategory,
@@ -106,7 +116,7 @@ export const getSubcategoryById = async (id: string | undefined) => {
 };
 
 export const updateSubcategory = async (id: string | undefined, data: any) => {
-  console.log(data)
+  console.log(data);
   try {
     const response = await axiosInstance.put(
       apiConfig.menu.updateSubcategory(id),
@@ -137,5 +147,6 @@ export const toggleSubcategoryStatus = async (id: string | undefined) => {
     return response.data;
   } catch (error: any) {
     console.error("Error:", error.response?.data || error.message);
+    return error;
   }
 };
