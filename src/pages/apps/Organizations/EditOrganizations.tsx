@@ -1,11 +1,14 @@
-import React from 'react'
+import React from "react";
+import { WizardForm } from "./Form/WizardForm";
 
 function EditOrganizations() {
+  const isEditing = true;
+
   return (
     <div>
-       edit organisation
+      <WizardForm initialData={isEditing} />
     </div>
-  )
+  );
 }
 
-export default EditOrganizations
+export default EditOrganizations;

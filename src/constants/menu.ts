@@ -28,15 +28,15 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "shopping-cart",
     children: [
       {
-        key: "kitchen-add",
-        label: "Add New Kitchen",
-        url: "/apps/Kitchen/new",
+        key: "kitchen-list",
+        label: "List of Kitchens",
+        url: "/apps/kitchen/list",
         parentKey: "apps-kitchen",
       },
       {
-        key: "kitchen-list",
-        label: "List of Kitchens",
-        url: "/apps/Kitchen/list",
+        key: "kitchen-add",
+        label: "Add New Kitchen",
+        url: "/apps/kitchen/new",
         parentKey: "apps-kitchen",
       },
     ],
@@ -48,61 +48,86 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "shopping-cart",
     children: [
       {
-        key: "Organizations-add",
-        label: "Add New Organizations",
-        url: "/apps/organizations/new",
-        parentKey: "apps-Organizations",
-      },
-      {
         key: "Organizations-list",
         label: "List of Organizations",
         url: "/apps/organizations/list",
         parentKey: "apps-Organizations",
       },
+      {
+        key: "Organizations-add",
+        label: "Add New Organizations",
+        url: "/apps/organizations/new",
+        parentKey: "apps-Organizations",
+      },
     ],
   },
-  // {
-  //   key: "apps-companies",
-  //   label: "Companies",
-  //   isTitle: false,
-  //   icon: "activity",
-  //   url: "/apps/companies",
-  // },
-  // // {
-  // //   key: "kitchens",
-  // //   label: "Kitchens",
-  // //   isTitle: false,
-  // //   icon: "slack",
-  // //   url: "/apps/restaurants",
-  // // },
-  // {
-  //   key: "apps-foodMenu",
-  //   label: "Food Menu",
-  //   isTitle: false,
-  //   icon: "aperture",
-  //   url: "/apps/food",
-  // },
-  // {
-  //   key: "apps-ordrs",
-  //   label: "Orders",
-  //   isTitle: false,
-  //   icon: "clipboard",
-  //   url: "/apps/orders",
-  // },
-  // {
-  //   key: "Staffs",
-  //   label: "Staffs",
-  //   isTitle: false,
-  //   icon: "users",
-  //   url: "/apps/users",
-  // },
-  // {
-  //   key: "Customers",
-  //   label: "Customers",
-  //   isTitle: false,
-  //   icon: "users",
-  //   url: "/apps/customer",
-  // },
+  {
+    key: "apps-menu",
+    label: "Master",
+    isTitle: false,
+    icon: "user",
+    children: [
+      {
+        key: "Menu-list",
+        label: "Menu",
+        url: "/apps/menu/category",
+        parentKey: "apps-menu",
+        children: [
+          {
+            key: "Menu-list",
+            label: "Category",
+            url: "/apps/menu/category",
+            parentKey: "apps-menu",
+          },
+          {
+            key: "Menu-add",
+            label: "Subcategory",
+            url: "/apps/menu/subcategory",
+            parentKey: "apps-menu",
+          },
+        ],
+      },
+      {
+        key: "app-orgaization-category",
+        label: "Organiztion",
+        url: "/apps/menu/category",
+        parentKey: "apps-menu",
+        children: [
+          {
+            key: "orgaization-category",
+            label: "Category",
+            url: "/apps/menu/category",
+            parentKey: "app-orgaization-category",
+          },
+          {
+            key: "orgaization-category",
+            label: "Subcategory",
+            url: "/apps/menu/subcategory",
+            parentKey: "app-orgaization-category",
+          },
+        ],
+      },
+      {
+        key: "app-menu-category",
+        label: "Kitchens",
+        parentKey: "apps-menu",
+        children: [
+          {
+            key: "Menu-category",
+            label: "Category",
+            url: "/apps/kitchen/category",
+            parentKey: "app-menu-category",
+          },
+          {
+            key: "Menu-subcategory",
+            label: "Subcategory",
+            url: "/apps/kitchen/subcategory",
+            parentKey: "app-menu-category",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [

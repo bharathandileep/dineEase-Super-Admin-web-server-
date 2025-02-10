@@ -1,20 +1,29 @@
 import axios from "axios";
 import { log } from "console";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import PageTitle from "../../../components/PageTitle";
+import CompanyDetails from "../Company/CompanyDetails";
+import { companyInfo } from "../Company/data";
+import { getAllOrg } from "../../../server/admin/organization";
 
 function ListOrganizations() {
-  const connect = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/v1/health");
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [orgDetails, setOrgDetails] = useState([]);
+  useEffect(() => {
+    const fetchAllkitchens = async () => {
+      try {
+        const response = await getAllOrg();
+        console.log(response.data.kitchens);
+        setOrgDetails(response.data.kitchens);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllkitchens();
+  }, []);
   return (
-    <div>
-      <button onClick={connect}>Click</button>
-    </div>
+    <>
+      <CompanyDetails companyInfo={orgDetails} />
+    </>
   );
 }
 

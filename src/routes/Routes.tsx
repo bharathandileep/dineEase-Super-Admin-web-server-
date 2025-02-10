@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -19,11 +19,13 @@ import {
   authProtectedFlattenRoutes,
   publicProtectedFlattenRoutes,
 } from "./index";
+import { isUserAuthenticated } from "../helpers/api/apiCore";
 
 
 interface IRoutesProps {}
 
 const AllRoutes = (props: IRoutesProps) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(isUserAuthenticated());
   const { layout } = useSelector((state: RootState) => ({
     layout: state.Layout,
   }));
@@ -47,10 +49,19 @@ const AllRoutes = (props: IRoutesProps) => {
     }
     return layoutCls;
   };
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsAuthenticated(isUserAuthenticated());
+    };
+
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth); 
+    };
+  }, []);
 
   let Layout = getLayout();
-
-
   return (
     <React.Fragment>
       <Routes>
@@ -73,12 +84,10 @@ const AllRoutes = (props: IRoutesProps) => {
             <Route
               path={route.path}
               element={
-             
                 false ? (
                   <Navigate
                     to={{
                       pathname: "/auth/login",
-                      search: "next=" + route.path,
                     }}
                   />
                 ) : (
