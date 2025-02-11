@@ -115,6 +115,7 @@ function KitchensDetails() {
       const response = await deletekitchenDetails(id);
       if (response.status) {
         toast.success(response.message);
+        navigate("/apps/kitchen/list");
       } else {
         toast.error(response.message);
       }
@@ -304,6 +305,7 @@ function KitchensDetails() {
                   fontSize: "0.9rem",
                   height: "35px",
                 }}
+                onClick={onEdit}
               >
                 <i className="mdi mdi-pencil"></i>
                 Edit
@@ -339,19 +341,19 @@ function KitchensDetails() {
               <div className="mb-3">
                 <p className="mb-2">
                   <strong>Certificate Number:</strong>{" "}
-                  {kitchenData?.fssaiDetails[0].ffsai_certificate_number}
+                  {kitchenData?.fssaiDetails[0]?.ffsai_certificate_number}
                 </p>
                 <p className="mb-2">
                   <strong>Licence owner:</strong>{" "}
-                  {kitchenData?.fssaiDetails[0].ffsai_card_owner_name}
+                  {kitchenData?.fssaiDetails[0]?.ffsai_card_owner_name}
                 </p>
                 <p className="mb-2">
                   <strong>Expiry Date:</strong>{" "}
-                  {kitchenData?.fssaiDetails[0].expiry_date}
+                  {kitchenData?.fssaiDetails[0]?.expiry_date}
                 </p>
               </div>
               <img
-                src={kitchenData?.fssaiDetails[0].ffsai_certificate_image}
+                src={kitchenData?.fssaiDetails[0]?.ffsai_certificate_image}
                 alt="FSSAI Dashboard"
                 className="img-fluid rounded"
                 style={{
@@ -374,11 +376,11 @@ function KitchensDetails() {
               <div className="mb-3">
                 <p className="mb-2">
                   <strong>PAN Number:</strong>{" "}
-                  {kitchenData?.panDetails[0].pan_card_number}
+                  {kitchenData?.panDetails[0]?.pan_card_number}
                 </p>
                 <p className="mb-2">
                   <strong>Card Holder:</strong>{" "}
-                  {kitchenData?.panDetails[0].pan_card_user_name}
+                  {kitchenData?.panDetails[0]?.pan_card_user_name}
                 </p>
               </div>
               <img

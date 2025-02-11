@@ -52,6 +52,7 @@ export const updateOrgDetails = async (
     return response.data;
   } catch (error: any) {
     console.error("Error:", error.response?.data || error.message);
+    return error
   }
 };
 export const deleteOrgDetails = async (id: string | undefined) => {

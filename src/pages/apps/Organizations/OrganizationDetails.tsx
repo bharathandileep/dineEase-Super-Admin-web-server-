@@ -308,6 +308,7 @@ function OrganizationDetails() {
                   fontSize: "0.9rem",
                   height: "35px",
                 }}
+                onClick={onEdit}
               >
                 <i className="mdi mdi-pencil"></i>
                 Edit
@@ -321,6 +322,7 @@ function OrganizationDetails() {
                   fontSize: "0.9rem",
                   height: "35px",
                 }}
+                onClick={onDelete}
               >
                 <i className="mdi mdi-delete"></i>
                 Delete

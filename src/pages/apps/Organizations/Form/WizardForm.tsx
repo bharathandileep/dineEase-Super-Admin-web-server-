@@ -131,21 +131,14 @@ export function WizardForm({ initialData }: WizardFormProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // const handleNext = () => {
-  //   if (currentStep === 1 && validateStep1()) {
-  //     setCurrentStep(2);
-  //   } else if (currentStep === 2 && validateStep2()) {
-  //     initialData ? handleEdit() : handleSubmit();
-  //   }
-  // };
-
   const handleNext = () => {
-    if (currentStep === 1) {
+    if (currentStep === 1 && validateStep1()) {
       setCurrentStep(2);
-    } else if (currentStep === 2) {
+    } else if (currentStep === 2 && validateStep2()) {
       initialData ? handleEdit() : handleSubmit();
     }
   };
+
 
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
@@ -159,11 +152,14 @@ export function WizardForm({ initialData }: WizardFormProps) {
       if (response.status) {
         toast.success(response.message);
         navigate("/apps/organizations/list");
+        console.log(response,"s")
       } else {
         toast.error(response.message || "Update failed. Please try again.");
+        console.log(response,"e")
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
+      console.log(error,"f")
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
       setLoading(false); // Stop loading
