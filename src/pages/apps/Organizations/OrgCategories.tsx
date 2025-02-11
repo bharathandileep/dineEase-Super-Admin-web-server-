@@ -146,8 +146,8 @@ function OrgCategories() {
         </Card>
 
         <div className="card shadow">
-          <div className="card-header bg-primary text-white">
-            <h2 className="h5 mb-0">Menu Items</h2>
+        <div className="card-header bg-primary text-white">
+            <h2 className="h5 mb-0 text-white">Organisation Category</h2>
           </div>
           <div className="table-responsive">
             {loading ? (

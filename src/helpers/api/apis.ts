@@ -105,4 +105,16 @@ export const apiConfig = {
     toggleSubcategoryStatus: (id: string | undefined) =>
       `/sub-menu-category/subcategories/${id}/toggle-status`,
   },
-};
+
+    designation: {
+      createDesignation: "/designation/designations",
+      getAllDesignations: "/designation/designations/all",
+      getDesignationById: (id: string | undefined) => `/designation/designations/${id}`,
+      updateDesignation: (id: string | undefined) => `/designation/designations/${id}`,
+      deleteDesignation: (id: string | undefined) => `/designation/designations/${id}`,
+      toggleDesignationStatus: (id: string | undefined) =>
+        `/designation/designations/${id}/toggle-status`,
+    },
+  };
+  
+

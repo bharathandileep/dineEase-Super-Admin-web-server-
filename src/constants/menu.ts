@@ -49,6 +49,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
       },
     ],
   },
+ 
   {
     key: "apps-menu",
     label: "Master",
@@ -116,6 +117,20 @@ const MENU_ITEMS: MenuItemTypes[] = [
       },
     ],
   },
+  {
+    key: "apps-Designations",
+    label: "Designations",
+    isTitle: false,
+    icon: "user",
+    url: "/apps/designations",
+  },
+  // {
+  //   key: "apps-employee",
+  //   label: "Employee managment",
+  //   isTitle: false,
+  //   icon: "user",
+  //   url: "/apps/employee",
+  // },
 ];
 
 const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [

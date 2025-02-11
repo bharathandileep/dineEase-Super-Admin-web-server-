@@ -13,6 +13,7 @@ import KitchensCategories from "../pages/apps/kitchen/KitchensCategories";
 import OrgCategories from "../pages/apps/Organizations/OrgCategories";
 import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
 
+
 // import Root from './Root';
 
 // lazy load all the views
@@ -260,6 +261,11 @@ const OrganizationDetails = React.lazy(
   () => import("../pages/apps/Organizations/OrganizationDetails")
 );
 
+const Designations = React.lazy(
+  () => import("../pages/apps/Designations/listdesignations")
+);
+
+
 export interface RoutesProps {
   path: RouteProps["path"];
   name?: string;
@@ -394,6 +400,13 @@ const menuAppRoutes = {
     },
   ],
 };
+const designationRoutes = {
+  path: "/apps/designations",
+  name: "List designations",
+  element: <Designations />,
+  route: PrivateRoute,
+};
+
 
 const dashboardRoutes = {
   path: "/",
@@ -815,6 +828,7 @@ const appRoutes = [
   ecommerceAppRoutes,
   organizationsAppRoutes,
   kitchenAppRoutes,
+  designationRoutes,
   menuAppRoutes,
   crmAppRoutes,
   emailAppRoutes,

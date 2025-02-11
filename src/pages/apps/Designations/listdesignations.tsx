@@ -1,93 +1,93 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Edit2, Trash2 } from "lucide-react";
-import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
-import {
-  deleteSubcategory,
-  getSubcategories,
-  toggleSubcategoryStatus,
-} from "../../../server/admin/menu";
+import { Card, Row, Col, Button, Spinner, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
-import AddCategory from "../menu/modal/AddCategory";
-import AddkitchenCategory from "./modal/AddkitchenCategory";
 import {
-  kitchensDeleteSubcategory,
-  kitchensGetSubcategories,
-} from "../../../server/admin/kitchens";
-import {
-  orgDeleteSubcategory,
-  orgGetSubcategories,
-  orgToggleSubcategoryStatus,
-} from "../../../server/admin/organization";
+  getAllDesignations,
+  createDesignation,
+  updateDesignation,
+  deleteDesignation,
+  toggleDesignationStatus,
+} from "../../../server/admin/designations";
+import DesignationModal from "./modal/DesignationModal";
 
-function OrgSubCategories() {
-  const isSubCategory = true;
-  const [show, setShow] = useState<boolean>(false);
+function Designations() {
   const [action, setAction] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [isDeleted, setIsDeleted] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [show, setShow] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [designations, setDesignations] = useState<any[]>([]);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isDeleted, setIsDeleted] = useState(false);
+  
+  const [designationName, setDesignationName] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
+
+  useEffect(() => {
+    const fetchAllDesignations = async () => {
+      setLoading(true);
+      try {
+        const response = await getAllDesignations();
+        if (response.status) {
+          setDesignations(response.data);
+        } else {
+          toast.error("Failed to load designations.");
+        }
+      } catch (error: any) {
+        console.error("Error:", error.response?.data || error.message);
+        toast.error("An error occurred while fetching designations.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllDesignations();
+  }, [isDeleted, show]);
+
+  useEffect(() => {
+    if (action === "edit" && selectedItem) {
+      setDesignationName(selectedItem.designation_name);
+      setCreatedBy(selectedItem.created_by);
+    } else {
+      setDesignationName("");
+      setCreatedBy("");
+    }
+  }, [show, action, selectedItem]);
 
   const handleToggleStatus = async (id: string) => {
     try {
-      const response = await orgToggleSubcategoryStatus(id);
-      if (response.status) {
-        setMenuItems((prevItems) =>
+      const response = await toggleDesignationStatus(id);
+      
+      if (response.status && response.data) {
+        setDesignations((prevItems) =>
           prevItems.map((item) =>
-            item._id === id ? { ...item, status: !item.status } : item
+            item._id === id ? { ...item, status: response.data.status } : item
           )
         );
+        toast.success("Status updated successfully!");
       } else {
-        toast.error(response);
+        toast.error("Failed to toggle status.");
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
       toast.error("Error toggling status.");
     }
   };
+  
+   
 
-  const onSearchData = (searchValue: string) => {
-    setSearchTerm(searchValue.toLowerCase());
-  };
-
-  const filteredMenuItems = useMemo(() => {
-    return menuItems.filter((value) => {
-      // Search filter
-      const categoryMatch = value.subcategoryName
-        .toLowerCase()
-        .includes(searchTerm);
-      const createdAtString =
-        value.createdAt && !isNaN(new Date(value.createdAt).getTime())
-          ? new Date(value.createdAt).toLocaleDateString()
-          : "";
-      const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
-
-      // Status filter
-      const statusMatch =
-        statusFilter === "all" ||
-        (statusFilter === "active" && value.status) ||
-        (statusFilter === "inactive" && !value.status);
-
-      return (categoryMatch || createdAtMatch) && statusMatch;
-    });
-  }, [searchTerm, statusFilter, menuItems]);
-
-  // Handle edit
   const handleEdit = (id: string) => {
-    const item = menuItems.find((menu) => menu._id === id);
+    const item = designations.find((designation) => designation._id === id);
     setAction("edit");
     setSelectedItem(item);
     setShow(true);
   };
 
-  // Handle delete
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this subcategory?"))
+  const handleDelete = async (id: any) => {
+    if (!window.confirm("Are you sure you want to delete this designation?"))
       return;
     try {
-      const response = await orgDeleteSubcategory(id);
+      const response = await deleteDesignation(id);
       if (response.status) {
         toast.success(response.message);
         setIsDeleted((prev) => !prev);
@@ -100,26 +100,44 @@ function OrgSubCategories() {
     }
   };
 
-  // Fetch subcategories
-  useEffect(() => {
-    const fetchAllCategories = async () => {
-      setLoading(true);
-      try {
-        const response = await orgGetSubcategories();
-        if (response.status) {
-          setMenuItems(response.data);
-        } else {
-          toast.error("Failed to load subcategories.");
-        }
-      } catch (error: any) {
-        console.error("Error:", error.response?.data || error.message);
-        toast.error("An error occurred while fetching subcategories.");
-      } finally {
-        setLoading(false);
+  const handleSubmit = async () => {
+    if (!designationName || !createdBy) {
+      toast.error("All fields are required.");
+      return;
+    }
+
+    const payload = { designation_name: designationName, created_by: createdBy };
+
+    try {
+      if (action === "edit") {
+        await updateDesignation(selectedItem._id, payload);
+        toast.success("Designation updated successfully!");
+      } else {
+        await createDesignation(payload);
+        toast.success("Designation created successfully!");
       }
-    };
-    fetchAllCategories();
-  }, [isDeleted, show]);
+      setShow(false);
+    } catch (error) {
+      toast.error("Operation failed.");
+    }
+  };
+
+  const filteredDesignations = useMemo(() => {
+    return designations.filter((value) => {
+      const designationMatch = value.designation_name
+        .toLowerCase()
+        .includes(searchTerm);
+      const createdByMatch = value.created_by
+        .toLowerCase()
+        .includes(searchTerm);
+      const statusMatch =
+        statusFilter === "all" ||
+        (statusFilter === "active" && value.status) ||
+        (statusFilter === "inactive" && !value.status);
+
+      return (designationMatch || createdByMatch) && statusMatch;
+    });
+  }, [searchTerm, statusFilter, designations]);
 
   return (
     <>
@@ -132,9 +150,8 @@ function OrgSubCategories() {
                   type="search"
                   className="form-control"
                   placeholder="Search..."
-                  onChange={(e) => onSearchData(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
                 />
-
                 <Form.Select
                   className="w-auto"
                   value={statusFilter}
@@ -147,49 +164,49 @@ function OrgSubCategories() {
               </Col>
 
               <Col md={4} className="text-md-end">
-                <Button variant="danger" onClick={() => setShow(true)}>
+                <Button variant="danger" onClick={() => {
+                  setAction("add");
+                  setShow(true);
+                }}>
                   <i className="mdi mdi-plus-circle me-1"></i> Add New
                 </Button>
               </Col>
             </Row>
           </Card.Body>
         </Card>
+
         <div className="card shadow">
           <div className="card-header bg-primary text-white">
-            <h2 className="h5 mb-0 text-white">Organisation Sub Category</h2>
+            <h2 className="h5 mb-0 text-white">Designations</h2>
           </div>
           <div className="table-responsive">
             {loading ? (
               <div className="text-center my-4">
                 <Spinner animation="border" />
-                <p>Loading subcategories...</p>
+                <p>Loading designations...</p>
               </div>
-            ) : menuItems.length === 0 ? (
+            ) : designations.length === 0 ? (
               <div className="text-center my-4">
-                <p>No Subcategories Found</p>
-              </div>
-            ) : filteredMenuItems.length === 0 ? (
-              <div className="text-center my-4">
-                <p>No results found for "{searchTerm}"</p>
+                <p>No Designations Found</p>
               </div>
             ) : (
               <table className="table table-striped table-hover mb-0">
                 <thead className="table-light">
                   <tr>
                     <th scope="col">Index</th>
-                    <th scope="col">Subcategory Name</th>
-                    <th scope="col">Category</th>
+                    <th scope="col">Designation Name</th>
+                    <th scope="col">Created By</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredMenuItems.map((item, index) => (
+                  {filteredDesignations.map((item, index) => (
                     <tr key={item._id}>
                       <td>{index + 1}</td>
-                      <td>{item.subcategoryName}</td>
-                      <td>{item?.category?.category}</td>
+                      <td>{item.designation_name}</td>
+                      <td>{item.created_by}</td>
                       <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                       <td>
                         <button
@@ -224,10 +241,9 @@ function OrgSubCategories() {
         </div>
       </div>
 
-      <AddkitchenCategory
+      <DesignationModal
         show={show}
         onHide={() => setShow(false)}
-        isSubCategory={isSubCategory}
         action={action}
         selectedItem={selectedItem}
       />
@@ -235,4 +251,4 @@ function OrgSubCategories() {
   );
 }
 
-export default OrgSubCategories;
+export default Designations;
