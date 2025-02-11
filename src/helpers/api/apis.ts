@@ -57,6 +57,29 @@ export const apiConfig = {
     getAllOrganization: "/organization/all",
     getOrganizationById: (orgId: string | undefined) =>
       `/organization/${orgId}`,
+    getAllCategoriesByStatus: "/organization/category/status",
+
+    createCategory: "/organization/categories",
+    getAllCategories: "/organization/categories/all",
+    updateCategory: (id: string | undefined) =>
+      `/organization/categories/${id}`,
+    deleteCategory: (id: string | undefined) =>
+      `/organization/categories/${id}`,
+    toggleCategoryStatus: (id: string | undefined) =>
+      `/organization/categories/${id}/toggle-status`,
+
+    createSubcategory: "/organization/subcategories",
+    getAllSubCategories: "/organization/subcategories/all",
+    getSubcategoriesByCategory: (categoryId: string | undefined) =>
+      `/organization/categories/${categoryId}/subcategories`,
+    getSubcategoryById: (id: string | undefined) =>
+      `/organization/subcategories/${id}`,
+    updateSubcategory: (id: string | undefined) =>
+      `/organization/subcategories/${id}`,
+    deleteSubcategory: (id: string | undefined) =>
+      `/organization/subcategories/${id}`,
+    toggleSubcategoryStatus: (id: string | undefined) =>
+      `/organization/subcategories/${id}/toggle-status`,
   },
   menu: {
     createCategory: "/menu-category/categories",

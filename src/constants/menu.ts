@@ -33,12 +33,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/apps/kitchen/list",
         parentKey: "apps-kitchen",
       },
-      {
-        key: "kitchen-add",
-        label: "Add New Kitchen",
-        url: "/apps/kitchen/new",
-        parentKey: "apps-kitchen",
-      },
     ],
   },
   {
@@ -51,12 +45,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
         key: "Organizations-list",
         label: "List of Organizations",
         url: "/apps/organizations/list",
-        parentKey: "apps-Organizations",
-      },
-      {
-        key: "Organizations-add",
-        label: "Add New Organizations",
-        url: "/apps/organizations/new",
         parentKey: "apps-Organizations",
       },
     ],
@@ -96,13 +84,13 @@ const MENU_ITEMS: MenuItemTypes[] = [
           {
             key: "orgaization-category",
             label: "Category",
-            url: "/apps/menu/category",
+            url: "/apps/org/category",
             parentKey: "app-orgaization-category",
           },
           {
             key: "orgaization-category",
             label: "Subcategory",
-            url: "/apps/menu/subcategory",
+            url: "/apps/org/subcategory",
             parentKey: "app-orgaization-category",
           },
         ],

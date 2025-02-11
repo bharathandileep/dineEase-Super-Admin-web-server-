@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, CheckCircle } from "lucide-react";
 import { FileUpload } from "../../../../components/FileUpload";
 import {
   createNewOrg,
@@ -9,6 +9,9 @@ import {
 import { toast } from "react-toastify";
 import { appendToFormData } from "../../../../helpers/formdataAppend";
 import { useNavigate, useParams } from "react-router-dom";
+import { Col, ProgressBar, Row } from "react-bootstrap";
+import "./FormWizard.scss";
+import { Stepper } from "../../../../components/Stepper";
 
 interface WizardFormProps {
   initialData?: any;
@@ -68,6 +71,10 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
+  const steps = [
+    { number: 1, title: "Personal Info" },
+    { number: 2, title: "Documents" },
+  ];
   const validateStep1 = () => {
     const newErrors: Partial<FormData> = {};
 
@@ -124,10 +131,18 @@ export function WizardForm({ initialData }: WizardFormProps) {
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleNext = () => {
+  //   if (currentStep === 1 && validateStep1()) {
+  //     setCurrentStep(2);
+  //   } else if (currentStep === 2 && validateStep2()) {
+  //     initialData ? handleEdit() : handleSubmit();
+  //   }
+  // };
+
   const handleNext = () => {
-    if (currentStep === 1 && validateStep1()) {
+    if (currentStep === 1) {
       setCurrentStep(2);
-    } else if (currentStep === 2 && validateStep2()) {
+    } else if (currentStep === 2) {
       initialData ? handleEdit() : handleSubmit();
     }
   };
@@ -140,7 +155,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
     try {
       const kitchesFormData = appendToFormData(formData);
       const response = await updateOrgDetails(id, kitchesFormData);
-      
+
       if (response.status) {
         toast.success(response.message);
         navigate("/apps/organizations/list");
@@ -154,13 +169,13 @@ export function WizardForm({ initialData }: WizardFormProps) {
       setLoading(false); // Stop loading
     }
   };
-  
+
   const handleSubmit = async () => {
     setLoading(true); // Start loading
     try {
       const orgFormData = appendToFormData(formData);
       const response = await createNewOrg(orgFormData);
-      
+
       if (response.status) {
         toast.success(response.message);
         navigate("/apps/organizations/list");
@@ -171,7 +186,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
       console.error("Error:", error.response?.data || error.message);
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -228,44 +243,18 @@ export function WizardForm({ initialData }: WizardFormProps) {
   }, [id]);
 
   return (
-    <div className="container py-5">
+    <div className="container py-2">
       <div className="row justify-content-center">
-        <div className="col-lg-8">
-          {/* Progress Bar */}
-          <div className="mb-4">
-            <div className="progress mb-3" style={{ height: "8px" }}>
-              <div
-                className="progress-bar"
-                style={{ width: `${(currentStep / 2) * 100}%` }}
-              />
+        <div className="col-lg-12">
+          <div className="card d-flex flex-column align-items-center">
+            <div className="col-lg-8 justify-content-center">
+              <Stepper steps={steps} currentStep={currentStep} />
             </div>
-            <div className="d-flex justify-content-between">
-              <span
-                className={`small fw-semibold ${
-                  currentStep >= 1 ? "text-primary" : "text-muted"
-                }`}
-              >
-                Basic Details
-              </span>
-              <span
-                className={`small fw-semibold ${
-                  currentStep >= 2 ? "text-primary" : "text-muted"
-                }`}
-              >
-                PAN & GST Details
-              </span>
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="card">
             <div className="card-body p-4">
               <form onSubmit={(e) => e.preventDefault()}>
                 {currentStep === 1 && (
                   <div>
                     <h2 className="card-title mb-4">Basic Details</h2>
-
-                    {/* Organization Details */}
                     <div className="row g-3">
                       <div className="col-md-6">
                         <div className="form-group">
@@ -689,8 +678,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
                     </div>
                   </div>
                 )}
-
-                {/* Navigation Buttons */}
                 <div className="d-flex justify-content-between mt-4">
                   {currentStep > 1 && (
                     <button

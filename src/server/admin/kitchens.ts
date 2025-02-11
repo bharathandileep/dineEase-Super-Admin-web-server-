@@ -124,8 +124,6 @@ export const kitchensToggleCategoryStatus = async (id: string | undefined) => {
   }
 };
 
-
-
 export const kitchensCreateSubcategory = async (data: any | undefined) => {
   console.log(data);
   try {
@@ -205,7 +203,7 @@ export const kitchensToggleSubcategoryStatus = async (
 ) => {
   try {
     const response = await axiosInstance.patch(
-      apiConfig.menu.toggleSubcategoryStatus(id)
+      apiConfig.kitchens.toggleSubcategoryStatus(id)
     );
     return response.data;
   } catch (error: any) {

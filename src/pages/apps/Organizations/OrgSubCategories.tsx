@@ -13,8 +13,13 @@ import {
   kitchensDeleteSubcategory,
   kitchensGetSubcategories,
 } from "../../../server/admin/kitchens";
+import {
+  orgDeleteSubcategory,
+  orgGetSubcategories,
+  orgToggleSubcategoryStatus,
+} from "../../../server/admin/organization";
 
-function KitchensSubCategories() {
+function OrgSubCategories() {
   const isSubCategory = true;
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState("");
@@ -27,7 +32,7 @@ function KitchensSubCategories() {
 
   const handleToggleStatus = async (id: string) => {
     try {
-      const response = await toggleSubcategoryStatus(id);
+      const response = await orgToggleSubcategoryStatus(id);
       if (response.status) {
         setMenuItems((prevItems) =>
           prevItems.map((item) =>
@@ -82,7 +87,7 @@ function KitchensSubCategories() {
     if (!window.confirm("Are you sure you want to delete this subcategory?"))
       return;
     try {
-      const response = await kitchensDeleteSubcategory(id);
+      const response = await orgDeleteSubcategory(id);
       if (response.status) {
         toast.success(response.message);
         setIsDeleted((prev) => !prev);
@@ -100,7 +105,7 @@ function KitchensSubCategories() {
     const fetchAllCategories = async () => {
       setLoading(true);
       try {
-        const response = await kitchensGetSubcategories();
+        const response = await orgGetSubcategories();
         if (response.status) {
           setMenuItems(response.data);
         } else {
@@ -228,4 +233,4 @@ function KitchensSubCategories() {
   );
 }
 
-export default KitchensSubCategories;
+export default OrgSubCategories;

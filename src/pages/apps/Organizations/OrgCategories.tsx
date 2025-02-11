@@ -1,33 +1,63 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Edit2, Trash2 } from "lucide-react";
 import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
-import {
-  deleteSubcategory,
-  getSubcategories,
-  toggleSubcategoryStatus,
-} from "../../../server/admin/menu";
 import { toast } from "react-toastify";
+
+import {
+  getAllCategories,
+  deleteCategory,
+  toggleCategoryStatus,
+} from "../../../server/admin/menu";
 import AddCategory from "../menu/modal/AddCategory";
+import {
+  kitchensDeleteCategory,
+  kitchensGetAllCategories,
+  kitchensToggleCategoryStatus,
+} from "../../../server/admin/kitchens";
 import AddkitchenCategory from "./modal/AddkitchenCategory";
 import {
-  kitchensDeleteSubcategory,
-  kitchensGetSubcategories,
-} from "../../../server/admin/kitchens";
+  orgDeleteCategory,
+  orgGetAllCategories,
+  orgToggleCategoryStatus,
+} from "../../../server/admin/organization";
 
-function KitchensSubCategories() {
-  const isSubCategory = true;
-  const [show, setShow] = useState<boolean>(false);
+function OrgCategories() {
+  const isSubCategory = false;
   const [action, setAction] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [isDeleted, setIsDeleted] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [show, setShow] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isDeleted, setIsDeleted] = useState(false);
 
+  useEffect(() => {
+    const fetchAllCategories = async () => {
+      setLoading(true);
+      try {
+        const response = await orgGetAllCategories();
+        if (response.status) {
+          setMenuItems(response.data);
+        } else {
+          toast.error("Failed to load menu categories.");
+        }
+      } catch (error: any) {
+        console.error("Error:", error.response?.data || error.message);
+        toast.error("An error occurred while fetching categories.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllCategories();
+  }, [isDeleted, show]);
+
+  const onSearchData = (searchValue: string) => {
+    setSearchTerm(searchValue.toLowerCase());
+  };
   const handleToggleStatus = async (id: string) => {
     try {
-      const response = await toggleSubcategoryStatus(id);
+      const response = await orgToggleCategoryStatus(id);
       if (response.status) {
         setMenuItems((prevItems) =>
           prevItems.map((item) =>
@@ -35,31 +65,28 @@ function KitchensSubCategories() {
           )
         );
       } else {
-        toast.error(response);
+        toast.error("Failed to toggle status.");
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
       toast.error("Error toggling status.");
     }
   };
-
-  const onSearchData = (searchValue: string) => {
-    setSearchTerm(searchValue.toLowerCase());
+  const handleEdit = (id: string) => {
+    const item = menuItems.find((menu) => menu._id === id);
+    setAction("edit");
+    setSelectedItem(item);
+    setShow(true);
   };
 
   const filteredMenuItems = useMemo(() => {
     return menuItems.filter((value) => {
-      // Search filter
-      const categoryMatch = value.subcategoryName
-        .toLowerCase()
-        .includes(searchTerm);
+      const categoryMatch = value.category.toLowerCase().includes(searchTerm);
       const createdAtString =
         value.createdAt && !isNaN(new Date(value.createdAt).getTime())
           ? new Date(value.createdAt).toLocaleDateString()
           : "";
       const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
-
-      // Status filter
       const statusMatch =
         statusFilter === "all" ||
         (statusFilter === "active" && value.status) ||
@@ -68,21 +95,11 @@ function KitchensSubCategories() {
       return (categoryMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, menuItems]);
-
-  // Handle edit
-  const handleEdit = (id: string) => {
-    const item = menuItems.find((menu) => menu._id === id);
-    setAction("edit");
-    setSelectedItem(item);
-    setShow(true);
-  };
-
-  // Handle delete
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this subcategory?"))
+  const handleDelete = async (id: any) => {
+    if (!window.confirm("Are you sure you want to delete this category?"))
       return;
     try {
-      const response = await kitchensDeleteSubcategory(id);
+      const response = await orgDeleteCategory(id);
       if (response.status) {
         toast.success(response.message);
         setIsDeleted((prev) => !prev);
@@ -94,27 +111,6 @@ function KitchensSubCategories() {
       toast.error("Delete failed. Please try again.");
     }
   };
-
-  // Fetch subcategories
-  useEffect(() => {
-    const fetchAllCategories = async () => {
-      setLoading(true);
-      try {
-        const response = await kitchensGetSubcategories();
-        if (response.status) {
-          setMenuItems(response.data);
-        } else {
-          toast.error("Failed to load subcategories.");
-        }
-      } catch (error: any) {
-        console.error("Error:", error.response?.data || error.message);
-        toast.error("An error occurred while fetching subcategories.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllCategories();
-  }, [isDeleted, show]);
 
   return (
     <>
@@ -129,7 +125,6 @@ function KitchensSubCategories() {
                   placeholder="Search..."
                   onChange={(e) => onSearchData(e.target.value)}
                 />
-
                 <Form.Select
                   className="w-auto"
                   value={statusFilter}
@@ -149,19 +144,20 @@ function KitchensSubCategories() {
             </Row>
           </Card.Body>
         </Card>
+
         <div className="card shadow">
           <div className="card-header bg-primary text-white">
-            <h2 className="h5 mb-0 text-white">Menu Sub Items</h2>
+            <h2 className="h5 mb-0">Menu Items</h2>
           </div>
           <div className="table-responsive">
             {loading ? (
               <div className="text-center my-4">
                 <Spinner animation="border" />
-                <p>Loading subcategories...</p>
+                <p>Loading menu categories...</p>
               </div>
             ) : menuItems.length === 0 ? (
               <div className="text-center my-4">
-                <p>No Subcategories Found</p>
+                <p>No Menu Category Found</p>
               </div>
             ) : filteredMenuItems.length === 0 ? (
               <div className="text-center my-4">
@@ -172,7 +168,7 @@ function KitchensSubCategories() {
                 <thead className="table-light">
                   <tr>
                     <th scope="col">Index</th>
-                    <th scope="col">Subcategory Name</th>
+                    <th scope="col">Menu Name</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Status</th>
                     <th scope="col">Actions</th>
@@ -182,7 +178,7 @@ function KitchensSubCategories() {
                   {filteredMenuItems.map((item, index) => (
                     <tr key={item._id}>
                       <td>{index + 1}</td>
-                      <td>{item.subcategoryName}</td>
+                      <td>{item.category}</td>
                       <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                       <td>
                         <button
@@ -220,7 +216,6 @@ function KitchensSubCategories() {
       <AddkitchenCategory
         show={show}
         onHide={() => setShow(false)}
-        isSubCategory={isSubCategory}
         action={action}
         selectedItem={selectedItem}
       />
@@ -228,4 +223,4 @@ function KitchensSubCategories() {
   );
 }
 
-export default KitchensSubCategories;
+export default OrgCategories;

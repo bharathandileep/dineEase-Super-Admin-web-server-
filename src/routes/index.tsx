@@ -10,6 +10,8 @@ import MenuCategory from "../pages/apps/menu/MenuCategory";
 import MenuSubCategory from "../pages/apps/menu/MenuSubCategory";
 import KitchensSubCategories from "../pages/apps/kitchen/KitchensSubCategories";
 import KitchensCategories from "../pages/apps/kitchen/KitchensCategories";
+import OrgCategories from "../pages/apps/Organizations/OrgCategories";
+import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
 
 // import Root from './Root';
 
@@ -298,6 +300,18 @@ const organizationsAppRoutes = {
       path: "/apps/organizations/:id",
       name: "Edit Organizations",
       element: <OrganizationDetails />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/org/category",
+      name: "Edit Organizations",
+      element: <OrgCategories />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/org/subcategory",
+      name: "Edit Organizations",
+      element: <OrgSubCategories />,
       route: PrivateRoute,
     },
   ],
