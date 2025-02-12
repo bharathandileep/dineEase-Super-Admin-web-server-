@@ -3,6 +3,10 @@
 // constants
 import { AuthActionTypes } from "./constants";
 
+const INIT_STATE = {
+  user: null,
+  loading: false,
+};
 
 interface UserData {
   id: number;
@@ -29,12 +33,13 @@ interface AuthActionType {
 }
 
 interface State {
-  user?: UserData | {};
+  user?: any | {};
   loading?: boolean;
   value?: boolean;
 }
 
-const Auth = (state: State = {}, action: AuthActionType): any => {
+const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
+  console.log("📩 Reducer Received Action:", action,state);
   switch (action.type) {
     case AuthActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
@@ -72,7 +77,6 @@ const Auth = (state: State = {}, action: AuthActionType): any => {
         default:
           return { ...state };
       }
-
     case AuthActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
         case AuthActionTypes.LOGIN_USER: {
@@ -104,6 +108,7 @@ const Auth = (state: State = {}, action: AuthActionType): any => {
       }
 
     case AuthActionTypes.LOGIN_USER:
+      console.log("🔄 LOGIN_USER action received in reducer", state);
       return { ...state, loading: true, userLoggedIn: false };
     case AuthActionTypes.LOGOUT_USER:
       return { ...state, loading: true, userLogout: false };

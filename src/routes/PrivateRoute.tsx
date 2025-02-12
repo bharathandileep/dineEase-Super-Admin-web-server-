@@ -19,7 +19,6 @@ const PrivateRoute = ({ component: Component, roles, ...rest }: any) => {
 
         // const loggedInUser = api.getLoggedInUser();
 
-        // check if route is restricted by role
         if (roles) {
           // role not authorised so redirect to login page
           return <Navigate to={{ pathname: "/" }} />;

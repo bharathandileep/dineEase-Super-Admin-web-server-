@@ -1387,6 +1387,8 @@ const otherPublicRoutes = [
   },
 ];
 
+
+
 // flatten the list of all nested routes
 const flattenRoutes = (routes: RoutesProps[]) => {
   let flatRoutes: RoutesProps[] = [];

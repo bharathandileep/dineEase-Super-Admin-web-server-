@@ -1,19 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Edit2, Trash2 } from "lucide-react";
 import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-import {
-  getAllCategories,
-  deleteCategory,
-  toggleCategoryStatus,
-} from "../../../server/admin/menu";
-import AddCategory from "../menu/modal/AddCategory";
-import {
-  kitchensDeleteCategory,
-  kitchensGetAllCategories,
-  kitchensToggleCategoryStatus,
-} from "../../../server/admin/kitchens";
 import AddkitchenCategory from "./modal/AddkitchenCategory";
 import {
   orgDeleteCategory,
@@ -23,7 +11,6 @@ import {
 import { Link } from "react-router-dom";
 import PageTitle from "../../../components/PageTitle";
 import Table from "../../../components/Table";
-import classNames from "classnames";
 
 function OrgCategories() {
   const isSubCategory = false;
@@ -120,20 +107,20 @@ function OrgCategories() {
 
   /* order column render */
   const CategoryColumn = ({ row }: { row: any }) => {
-    return <span className="fw-bold">{row.original.category}</span>;
+    return <span className="fw-bold">{row?.original?.category}</span>;
   };
 
   const CreatedAtColumn = ({ row }: { row: any }) => {
-    return <span>{new Date(row.original.createdAt).toLocaleString()}</span>;
+    return <span>{new Date(row?.original?.createdAt).toLocaleString()}</span>;
   };
 
   const StatusColumn = ({ row }: { row: any }) => {
     return (
       <button
         className={`badge border-0 text-white ${
-          row.original.status ? "bg-success" : "bg-secondary"
+          row?.original?.status ? "bg-success" : "bg-secondary"
         }`}
-        onClick={() => handleToggleStatus(row.original._id)}
+        onClick={() => handleToggleStatus(row?.original?._id)}
       >
         {row.original.status ? "Active" : "Inactive"}
       </button>
@@ -145,13 +132,13 @@ function OrgCategories() {
       <>
         <button
           className="action-icon border-0 bg-transparent"
-          onClick={() => handleEdit(row.original._id)}
+          onClick={() => handleEdit(row?.original?._id)}
         >
           <i className="mdi mdi-square-edit-outline"></i>
         </button>
         <button
           className="action-icon border-0 bg-transparent"
-          onClick={() => handleDelete(row.original._id)}
+          onClick={() => handleDelete(row?.original?._id)}
         >
           <i className="mdi mdi-delete text-danger"></i>
         </button>
@@ -290,7 +277,7 @@ function OrgCategories() {
                     <Card.Body className="p-0">
                       <Table
                         columns={columns}
-                        data={orderList}
+                        data={menuItems}
                         isSearchable={false}
                         pageSize={10}
                         sizePerPageList={sizePerPageList}

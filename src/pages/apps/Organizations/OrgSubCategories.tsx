@@ -125,25 +125,25 @@ function OrgSubCategories() {
   }, [isDeleted, show]);
 
   const SubCategoryColumn = ({ row }: { row: any }) => {
-    return <span className="fw-bold">{row.original.subcategoryName}</span>;
+    return <span className="fw-bold">{row?.original?.subcategoryName}</span>;
   };
   const CategoryColumn = ({ row }: { row: any }) => {
-    return <span className="fw-bold">{row.original.category.category}</span>;
+    return <span className="fw-bold">{row?.original?.category?.category}</span>;
   };
 
   const CreatedAtColumn = ({ row }: { row: any }) => {
-    return <span>{new Date(row.original.createdAt).toLocaleString()}</span>;
+    return <span>{new Date(row?.original?.createdAt).toLocaleString()}</span>;
   };
 
   const StatusColumn = ({ row }: { row: any }) => {
     return (
       <button
         className={`badge border-0 text-white ${
-          row.original.status ? "bg-success" : "bg-secondary"
+          row?.original?.status ? "bg-success" : "bg-secondary"
         }`}
-        onClick={() => handleToggleStatus(row.original._id)}
+        onClick={() => handleToggleStatus(row?.original?._id)}
       >
-        {row.original.status ? "Active" : "Inactive"}
+        {row.original?.status ? "Active" : "Inactive"}
       </button>
     );
   };
@@ -153,13 +153,13 @@ function OrgSubCategories() {
       <>
         <button
           className="action-icon border-0 bg-transparent"
-          onClick={() => handleEdit(row.original._id)}
+          onClick={() => handleEdit(row?.original?._id)}
         >
           <i className="mdi mdi-square-edit-outline"></i>
         </button>
         <button
           className="action-icon border-0 bg-transparent"
-          onClick={() => handleDelete(row.original._id)}
+          onClick={() => handleDelete(row?.original?._id)}
         >
           <i className="mdi mdi-delete text-danger"></i>
         </button>
@@ -294,50 +294,6 @@ function OrgSubCategories() {
                 <p>No results found for "{searchTerm}"</p>
               </div>
             ) : (
-              // <table className="table table-striped table-hover mb-0">
-              //   <thead className="table-light">
-              //     <tr>
-              //       <th scope="col">Index</th>
-              //       <th scope="col">Subcategory Name</th>
-              //       <th scope="col">Created At</th>
-              //       <th scope="col">Status</th>
-              //       <th scope="col">Actions</th>
-              //     </tr>
-              //   </thead>
-              //   <tbody>
-              //     {filteredMenuItems.map((item, index) => (
-              //       <tr key={item._id}>
-              //         <td>{index + 1}</td>
-              //         <td>{item.subcategoryName}</td>
-              //         <td>{new Date(item.createdAt).toLocaleDateString()}</td>
-              //         <td>
-              //           <button
-              //             onClick={() => handleToggleStatus(item._id)}
-              //             className={`btn btn-sm ${
-              //               item.status ? "btn-success" : "btn-secondary"
-              //             }`}
-              //           >
-              //             {item.status ? "Active" : "Inactive"}
-              //           </button>
-              //         </td>
-              //         <td>
-              //           <button
-              //             onClick={() => handleEdit(item._id)}
-              //             className="btn btn-sm btn-outline-primary me-2"
-              //           >
-              //             <Edit2 size={16} />
-              //           </button>
-              //           <button
-              //             onClick={() => handleDelete(item._id)}
-              //             className="btn btn-sm btn-outline-danger"
-              //           >
-              //             <Trash2 size={16} />
-              //           </button>
-              //         </td>
-              //       </tr>
-              //     ))}
-              //   </tbody>
-              // </table>
               <Row>
                 <Col>
                   <Card>
