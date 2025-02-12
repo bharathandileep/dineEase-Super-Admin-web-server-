@@ -12,6 +12,10 @@ import KitchensSubCategories from "../pages/apps/kitchen/KitchensSubCategories";
 import KitchensCategories from "../pages/apps/kitchen/KitchensCategories";
 import OrgCategories from "../pages/apps/Organizations/OrgCategories";
 import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
+import EmployeeManagment from "../pages/apps/employee/EmpManagment";
+import EmployeeList from "../pages/apps/employee/listemployee";
+import EmployeeEdit from "../pages/apps/employee/editemployee";
+
 
 
 // import Root from './Root';
@@ -405,6 +409,33 @@ const designationRoutes = {
   name: "List designations",
   element: <Designations />,
   route: PrivateRoute,
+};
+
+const employeeRoutes = {
+  path: "/apps/employee",
+  name: "Employee",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  children: [
+    {
+      path: "/apps/employee/add",
+      name: "Add Employee",
+      element: <EmployeeManagment />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/employee/list",
+      name: "Employee List",
+      element: <EmployeeList />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/employee/edit",
+      name: "Employee edit",
+      element: <EmployeeEdit />,
+      route: PrivateRoute,
+    },
+  ],
 };
 
 
@@ -829,6 +860,7 @@ const appRoutes = [
   organizationsAppRoutes,
   kitchenAppRoutes,
   designationRoutes,
+  employeeRoutes,
   menuAppRoutes,
   crmAppRoutes,
   emailAppRoutes,

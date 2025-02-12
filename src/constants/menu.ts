@@ -124,13 +124,27 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "user",
     url: "/apps/designations",
   },
-  // {
-  //   key: "apps-employee",
-  //   label: "Employee managment",
-  //   isTitle: false,
-  //   icon: "user",
-  //   url: "/apps/employee",
-  // },
+  {
+    key: "apps-employee",
+    label: "Employee",
+    isTitle: false,
+    icon: "user",
+    url: "/apps/employee/add",
+  },
+  {
+    key: "apps-employee",
+    label: "Employee-list",
+    isTitle: false,
+    icon: "user",
+    url: "/apps/employee/list",
+  },
+  {
+    key: "apps-employee",
+    label: "Employee-edit",
+    isTitle: false,
+    icon: "user",
+    url: "/apps/employee/edit",
+  },
 ];
 
 const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [
