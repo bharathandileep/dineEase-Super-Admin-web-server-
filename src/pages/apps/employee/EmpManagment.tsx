@@ -94,7 +94,7 @@ const EmployeeManagement = () => {
 
       if (response.status) {
         toast.success("Employee added successfully!");
-        navigate("/employees/list");
+        navigate("/apps/employee/list");
       } else {
         toast.error(response.message || "Failed to add employee.");
       }
@@ -215,7 +215,7 @@ const EmployeeManagement = () => {
         {/* Submit Button */}
         <Row>
           <Col className="text-center">
-            <Button variant="light" className="me-2" onClick={() => navigate("/employees/list")}>Cancel</Button>
+            <Button variant="light" className="me-2" onClick={() => navigate("/apps/employee/list")}>Cancel</Button>
             <Button type="submit" variant="success">Save</Button>
           </Col>
         </Row>

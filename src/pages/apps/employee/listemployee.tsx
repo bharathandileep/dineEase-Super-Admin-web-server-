@@ -12,6 +12,7 @@ interface Employee {
   phone_number: string;
   designation: { designation_name: string };
   employee_status: string;
+  profile_picture: string;
 }
 
 const EmployeeList = () => {
@@ -39,7 +40,7 @@ const EmployeeList = () => {
   }, []);
 
   const handleEdit = (id: string) => {
-    navigate(`/employees/edit/${id}`);
+    navigate(`/apps/employee/edit/${id}`);
   };
 
   const handleDelete = async (id: string) => {
@@ -76,6 +77,7 @@ const EmployeeList = () => {
 
   return (
     <React.Fragment>
+      {/* Breadcrumb Navigation */}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb m-2">
           <li className="breadcrumb-item">
@@ -87,15 +89,17 @@ const EmployeeList = () => {
         </ol>
       </nav>
 
+      {/* Page Header */}
       <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
         <div className="d-flex align-items-center justify-content-between">
           <h3 className="page-title m-0" style={{ color: "#fff" }}>Employees</h3>
-          <Link to="/employees/add" className="btn btn-danger waves-effect waves-light">
+          <Link to="/apps/employee/add" className="btn btn-danger waves-effect waves-light">
             <i className="mdi mdi-plus-circle me-1"></i> Add New Employee
           </Link>
         </div>
       </div>
 
+      {/* Loading Spinner */}
       {loading ? (
         <div className="text-center my-3">
           <Spinner animation="border" />
@@ -105,41 +109,78 @@ const EmployeeList = () => {
           {employees.length > 0 ? (
             employees.map((employee) => (
               <Col md={6} xl={3} className="mb-3" key={employee._id}>
-                <Card className="product-box h-100">
-                  <Card.Body className="d-flex flex-column">
-                    <div className="product-action">
-                      <Button variant="success" size="sm" className="me-1" onClick={() => handleEdit(employee._id)}>
-                        <Pencil size={16} />
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => handleDelete(employee._id)}>
-                        <Trash size={16} />
-                      </Button>
-                      <Button
-                        variant={employee.employee_status === "Active" ? "warning" : "secondary"}
-                        size="sm"
-                        onClick={() => handleToggleStatus(employee._id)}
-                      >
-                        {employee.employee_status === "Active" ? <ToggleLeft size={16} /> : <ToggleRight size={16} />}
-                      </Button>
+                <Card
+                  className="product-box h-100 shadow-sm position-relative"
+                  style={{ transition: "all 0.3s ease-in-out", cursor: "pointer" }}
+                  onClick={() => navigate(`/apps/employee/details/${employee._id}`)}
+                >
+                  <Card.Body className="d-flex flex-column align-items-center text-center">
+                    {/* Profile Picture */}
+                    <div className="position-relative">
+                      <img
+                        src={employee.profile_picture || "https://via.placeholder.com/150"}
+                        alt={employee.username}
+                        className="rounded-circle mb-2"
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "cover",
+                          transition: "transform 0.3s ease-in-out",
+                        }}
+                      />
                     </div>
-                    <div className="product-info mt-auto">
+
+                    {/* User Details */}
+                    <div className="product-info mt-auto w-100">
                       <h5 className="font-16 mt-0 sp-line-1">
-                        <Link to="#" className="text-dark">{employee.username}</Link>
+                        <Link to="#" className="text-dark text-decoration-none">{employee.username}</Link>
                       </h5>
-                      <h6 className="m-0">
-                        <span className="text-muted">Email: {employee.email}</span>
-                      </h6>
-                      <h6 className="m-0">
-                        <span className="text-muted">Phone: {employee.phone_number}</span>
-                      </h6>
-                      <h6 className="m-0">
-                        <span className="text-muted">Designation: {employee.designation?.designation_name || "Unknown"}</span>
+                      <h6 className="m-0 text-muted">Email: {employee.email}</h6>
+                      <h6 className="m-0 text-muted">Phone: {employee.phone_number}</h6>
+                      <h6 className="m-0 text-muted">
+                        Designation: {employee.designation?.designation_name || "Unknown"}
                       </h6>
                       <h6 className="m-0">
                         <span className={`badge ${employee.employee_status === "Active" ? "bg-success" : "bg-danger"}`}>
                           {employee.employee_status}
                         </span>
                       </h6>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="product-action d-flex justify-content-center mt-2">
+                      <Button
+                        variant="success"
+                        size="sm"
+                        className="me-1"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevents triggering card click
+                          handleEdit(employee._id);
+                        }}
+                      >
+                        <Pencil size={16} />
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        className="me-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(employee._id);
+                        }}
+                      >
+                        <Trash size={16} />
+                      </Button>
+                      <Button
+                        variant={employee.employee_status === "Active" ? "warning" : "secondary"}
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleStatus(employee._id);
+                        }}
+                      >
+                        {employee.employee_status === "Active" ? <ToggleLeft size={16} /> : <ToggleRight size={16} />}
+                      </Button>
                     </div>
                   </Card.Body>
                 </Card>

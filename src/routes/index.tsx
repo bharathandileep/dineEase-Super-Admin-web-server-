@@ -15,6 +15,7 @@ import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
 import EmployeeManagment from "../pages/apps/employee/EmpManagment";
 import EmployeeList from "../pages/apps/employee/listemployee";
 import EmployeeEdit from "../pages/apps/employee/editemployee";
+import EmployeeDetails from "../pages/apps/employee/employeedetails";
 
 
 
@@ -430,9 +431,15 @@ const employeeRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/apps/employee/edit",
+      path: "/apps/employee/edit/:id",
       name: "Employee edit",
       element: <EmployeeEdit />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/employee/details/:id",
+      name: "Employee details",
+      element: <EmployeeDetails />,
       route: PrivateRoute,
     },
   ],

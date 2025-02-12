@@ -16,7 +16,15 @@ export const getAllEmployees = async () => {
 export const getEmployeeById = async (id: string) => {
   try {
     const response = await axiosInstance.get(apiConfig.employee.getEmployeeById(id));
-    return response.data;
+    const employee = response.data;
+
+    // Extract address information from the employee data
+    const address = employee.address || {};
+
+    return {
+      ...employee,
+      address,
+    };
   } catch (error: any) {
     console.error("Error fetching employee:", error.response?.data || error.message);
     throw error.response?.data || error;
@@ -40,16 +48,18 @@ export const createEmployee = async (data: any) => {
   
 
 // ✅ Update employee details
-export const updateEmployee = async (id: string, data: any) => {
+export const updateEmployee = async (id: string, data: FormData) => {
   try {
-    const response = await axiosInstance.put(apiConfig.employee.updateEmployee(id), data);
+    const response = await axiosInstance.put(apiConfig.employee.updateEmployee(id), data,  {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error: any) {
-    console.error("Error updating employee:", error.response?.data || error.message);
     throw error.response?.data || error;
   }
 };
-
 // ✅ Toggle employee status (Activate/Deactivate)
 export const toggleEmployeeStatus = async (id: string) => {
   try {
