@@ -2,7 +2,7 @@ import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
 interface UserData {
-  userName: string;
+  username: string;
   password: string;
 }
 export const AuthAdminCredentials = async (adminCredentials: UserData) => {
@@ -11,7 +11,7 @@ export const AuthAdminCredentials = async (adminCredentials: UserData) => {
       `${apiConfig.admin.login}`,
       adminCredentials
     );
-    localStorage.setItem("token", response.data.data.token);
+    // localStorage.setItem("token", response.data.data.token);
     return response.data;
   } catch (error: any) {
     console.error("Login Error:", error.response?.data || error.message);

@@ -12,8 +12,8 @@ import AuthLayout from "./AuthLayout";
 import { AuthAdminCredentials } from "../../server/admin/auth";
 import { toast } from "react-toastify";
 // import { isUserAuthenticated } from "../../helpers/api/apiCore";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
 import { loginUser } from "../../redux/actions";
 
 interface UserData {
@@ -31,9 +31,17 @@ const Login = () => {
       password: yup.string().required(t("Please enter Password")),
     })
   );
+  const { userLoggedIn, user, loading } = useSelector(
+    (state: RootState) => state.Auth
+  );
   const onSubmit = (formData: UserData) => {
     dispatch(loginUser(formData["userName"], formData["password"]));
   };
+  useEffect(() => {
+    if (userLoggedIn && user) {
+      navigate("/"); // ✅ Redirect to Dashboard
+    }
+  }, [userLoggedIn, user, navigate]); // Run when these values change
 
   // const onSubmit = async (formData: UserData) => {
   //   try {

@@ -13,10 +13,6 @@ export interface AuthActionType {
     | AuthActionTypes.SIGNUP_USER;
   payload: {} | string;
 }
-export const FETCH_CUSTOMERS_REQUEST = 'FETCH_CUSTOMERS_REQUEST';
-export const FETCH_CUSTOMERS_SUCCESS = 'FETCH_CUSTOMERS_SUCCESS';
-export const FETCH_CUSTOMERS_FAILURE = 'FETCH_CUSTOMERS_FAILURE';
-
 
 interface UserData {
   id: number;
@@ -27,7 +23,6 @@ interface UserData {
   role: string;
   token: string;
 }
-// -customer fetch
 
 // common success
 export const authApiResponseSuccess = (

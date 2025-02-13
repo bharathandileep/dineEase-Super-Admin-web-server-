@@ -1,10 +1,13 @@
 // apicore
+import { APICore } from "../../helpers/api/apiCore";
 
 // constants
 import { AuthActionTypes } from "./constants";
 
+const api = new APICore();
+
 const INIT_STATE = {
-  user: null,
+  user: api.getLoggedInUser(),
   loading: false,
 };
 
@@ -33,23 +36,22 @@ interface AuthActionType {
 }
 
 interface State {
-  user?: any | {};
+  user?: UserData | {};
   loading?: boolean;
   value?: boolean;
 }
 
 const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
-  console.log("📩 Reducer Received Action:", action,state);
   switch (action.type) {
     case AuthActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case AuthActionTypes.LOGIN_USER: {
+        case AuthActionTypes.LOGIN_USER:{
           return {
             ...state,
             user: action.payload.data,
-            userLoggedIn: true,
-            loading: false,
-          };
+            userLoggedIn: true,       
+            loading: false,    
+          };               
         }
         case AuthActionTypes.SIGNUP_USER: {
           return {
@@ -77,6 +79,7 @@ const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
         default:
           return { ...state };
       }
+
     case AuthActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
         case AuthActionTypes.LOGIN_USER: {
@@ -108,7 +111,6 @@ const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
       }
 
     case AuthActionTypes.LOGIN_USER:
-      console.log("🔄 LOGIN_USER action received in reducer", state);
       return { ...state, loading: true, userLoggedIn: false };
     case AuthActionTypes.LOGOUT_USER:
       return { ...state, loading: true, userLogout: false };

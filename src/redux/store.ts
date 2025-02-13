@@ -13,7 +13,6 @@ const middlewares = [sagaMiddleware];
 let store: any;
 
 export function configureStore(initialState: {}) {
-  console.log('🔨 Configuring Store');
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -22,11 +21,9 @@ export function configureStore(initialState: {}) {
     initialState,
     composeEnhancers(applyMiddleware(...middlewares))
   );
-
-  
   sagaMiddleware.run(rootSaga);
   store = localstore;
-  return localstore;
+  return localstore;  
 }
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
