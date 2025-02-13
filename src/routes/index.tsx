@@ -15,7 +15,7 @@ import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
 import EmployeeManagment from "../pages/apps/employee/EmpManagment";
 import EmployeeList from "../pages/apps/employee/listemployee";
 import EmployeeEdit from "../pages/apps/employee/editemployee";
-import EmployeeDetails from "../pages/apps/employee/employeedetails";
+
 
 
 
@@ -268,6 +268,9 @@ const OrganizationDetails = React.lazy(
 
 const Designations = React.lazy(
   () => import("../pages/apps/Designations/listdesignations")
+);
+const EmployeeDetails = React.lazy(
+  () => import("../pages/apps/employee/employeedetails")
 );
 
 

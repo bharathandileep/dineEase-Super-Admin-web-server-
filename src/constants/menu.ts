@@ -138,14 +138,6 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "user",
     url: "/apps/employee/list",
   },
-
-  {
-    key: "apps-employee",
-    label: "Employee-details",
-    isTitle: false,
-    icon: "user",
-    url: "/apps/employee/details/:id",
-  },
 ];
 
 const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [

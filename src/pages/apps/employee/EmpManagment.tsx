@@ -2,20 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 
 import FileUploader from "../../../components/FileUploader";
 import { FormInput } from "../../../components/";
 import { createEmployee } from "../../../server/admin/employeemanagment";
-import { getAllDesignations } from "../../../server/admin/designations"; // Import the API to fetch designations
+import { getAllDesignations } from "../../../server/admin/designations";
 
 const EmployeeManagement = () => {
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [designations, setDesignations] = useState<{ _id: string; designation_name: string }[]>([]); // State to store designations
-  const [loading, setLoading] = useState(false); // Loading state for designations
+  const [designations, setDesignations] = useState<{ _id: string; designation_name: string }[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // Fetch designations on component mount
   useEffect(() => {
@@ -24,7 +22,7 @@ const EmployeeManagement = () => {
       try {
         const response = await getAllDesignations();
         if (response.status) {
-          setDesignations(response.data); // Set fetched designations
+          setDesignations(response.data);
         } else {
           toast.error("Failed to load designations.");
         }
@@ -38,31 +36,15 @@ const EmployeeManagement = () => {
     fetchDesignations();
   }, []);
 
-  // Validation Schema
-  const schema = yup.object().shape({
-    username: yup.string().required("Employee name is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
-    phone_number: yup.string().required("Phone number is required"),
-    designation: yup.string().required("Designation is required"),
-    street_address: yup.string().required("Street address is required"),
-    city: yup.string().required("City is required"),
-    pincode: yup.string().required("Pincode is required"),
-    state: yup.string().required("State is required"),
-    country: yup.string().required("Country is required"),
-    aadhar_number: yup.string().required("Aadhaar number is required"),
-    pan_number: yup.string().required("PAN number is required"),
-  });
-
+  // React Hook Form setup
   const {
     handleSubmit,
     register,
-    control,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm();
 
   // Handle Form Submission
   const onSubmit = async (data: any) => {
-    console.log(data);
     try {
       const formData = new FormData();
 
@@ -80,7 +62,7 @@ const EmployeeManagement = () => {
       // Address Fields
       formData.append("street_address", data.street_address);
       formData.append("city", data.city);
-      formData.append("district", data.District);
+      formData.append("district", data.district);
       formData.append("pincode", data.pincode);
       formData.append("state", data.state);
       formData.append("country", data.country);
@@ -126,18 +108,48 @@ const EmployeeManagement = () => {
             <Card>
               <Card.Body>
                 <h5 className="text-uppercase mt-0 mb-3">General Information</h5>
-                <FormInput name="username" label="Employee Name" placeholder="Enter full name" containerClass="mb-3" register={register} errors={errors} control={control} />
-                <FormInput name="email" label="Email" placeholder="Enter email" containerClass="mb-3" register={register} errors={errors} control={control} type="email" />
-                <FormInput name="phone_number" label="Phone Number" placeholder="Enter phone number" containerClass="mb-3" register={register} errors={errors} control={control} />
+                <FormInput
+                  name="username"
+                  label="Employee Name"
+                  placeholder="Enter full name"
+                  containerClass="mb-3"
+                  register={register}
+                  errors={errors}
+                  validation={{ required: "Employee name is required" }}
+                />
+                <FormInput
+                  name="email"
+                  label="Email"
+                  placeholder="Enter email"
+                  containerClass="mb-3"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address",
+                    },
+                  }}
+                />
+                <FormInput
+                  name="phone_number"
+                  label="Phone Number"
+                  placeholder="Enter phone number"
+                  containerClass="mb-3"
+                  register={register}
+                  errors={errors}
+                  validation={{ required: "Phone number is required" }}
+                />
                 <FormInput
                   name="designation"
                   label="Designation"
                   containerClass="mb-3"
                   register={register}
                   errors={errors}
-                  control={control}
                   type="select"
                   defaultValue=""
+                  validation={{ required: "Designation is required" }}
                 >
                   <option value="">Select Designation</option>
                   {designations.map((designation) => (
@@ -169,23 +181,70 @@ const EmployeeManagement = () => {
                 <h5 className="text-uppercase mt-0 mb-3">Address Information</h5>
                 <Row>
                   <Col md={6}>
-                    <FormInput name="street_address" label="Street Address" placeholder="Enter street address" containerClass="mb-3" register={register} errors={errors} control={control} />
+                    <FormInput
+                      name="street_address"
+                      label="Street Address"
+                      placeholder="Enter street address"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "Street address is required" }}
+                    />
                   </Col>
-            
-                  <Col md={4}>
-                    <FormInput name="city" label="City" placeholder="Enter city" containerClass="mb-3" register={register} errors={errors} control={control} />
+                  <Col md={6}>
+                    <FormInput
+                      name="city"
+                      label="City"
+                      placeholder="Enter city"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "City is required" }}
+                    />
                   </Col>
-                  <Col md={4}>
-                    <FormInput name="pincode" label="Pincode" placeholder="Enter pincode" containerClass="mb-3" register={register} errors={errors} control={control} />
+                  <Col md={6}>
+                    <FormInput
+                      name="pincode"
+                      label="Pincode"
+                      placeholder="Enter pincode"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "Pincode is required" }}
+                    />
                   </Col>
-                  <Col md={4}>
-                    <FormInput name="District" label="District" placeholder="Enter District" containerClass="mb-3" register={register} errors={errors} control={control} />
+                  <Col md={6}>
+                    <FormInput
+                      name="district"
+                      label="District"
+                      placeholder="Enter district"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "District is required" }}
+                    />
                   </Col>
-                  <Col md={4}>
-                    <FormInput name="state" label="State" placeholder="Enter state" containerClass="mb-3" register={register} errors={errors} control={control} />
+                  <Col md={6}>
+                    <FormInput
+                      name="state"
+                      label="State"
+                      placeholder="Enter state"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "State is required" }}
+                    />
                   </Col>
-                  <Col md={12}>
-                    <FormInput name="country" label="Country" placeholder="Enter country" containerClass="mb-3" register={register} errors={errors} control={control} />
+                  <Col md={6}>
+                    <FormInput
+                      name="country"
+                      label="Country"
+                      placeholder="Enter country"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "Country is required" }}
+                    />
                   </Col>
                 </Row>
               </Card.Body>
@@ -201,10 +260,26 @@ const EmployeeManagement = () => {
                 <h5 className="text-uppercase mt-0 mb-3">Identification Details</h5>
                 <Row>
                   <Col md={6}>
-                    <FormInput name="aadhar_number" label="Aadhaar Number" placeholder="Enter Aadhaar number" containerClass="mb-3" register={register} errors={errors} control={control} />
+                    <FormInput
+                      name="aadhar_number"
+                      label="Aadhaar Number"
+                      placeholder="Enter Aadhaar number"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "Aadhaar number is required" }}
+                    />
                   </Col>
                   <Col md={6}>
-                    <FormInput name="pan_number" label="PAN Number" placeholder="Enter PAN number" containerClass="mb-3" register={register} errors={errors} control={control} />
+                    <FormInput
+                      name="pan_number"
+                      label="PAN Number"
+                      placeholder="Enter PAN number"
+                      containerClass="mb-3"
+                      register={register}
+                      errors={errors}
+                      validation={{ required: "PAN number is required" }}
+                    />
                   </Col>
                 </Row>
               </Card.Body>
@@ -215,8 +290,12 @@ const EmployeeManagement = () => {
         {/* Submit Button */}
         <Row>
           <Col className="text-center">
-            <Button variant="light" className="me-2" onClick={() => navigate("/apps/employee/list")}>Cancel</Button>
-            <Button type="submit" variant="success">Save</Button>
+            <Button variant="light" className="me-2" onClick={() => navigate("/apps/employee/list")}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="success">
+              Save
+            </Button>
           </Col>
         </Row>
       </form>

@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { User, MapPin, Phone, Mail, Building, Calendar } from 'lucide-react';
-import { getEmployeeById } from "../../../server/admin/employeemanagment";
-
+import React, { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Card, Button, Row, Col, Spinner, Badge } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { getEmployeeById, deleteEmployee, toggleEmployeeStatus } from "../../../server/admin/employeemanagment";
+import { Pencil, Trash, ToggleLeft, ToggleRight, User, Mail, Phone, MapPin, Building } from "lucide-react";
 
 interface Employee {
   _id: string;
   username: string;
   email: string;
   phone_number: string;
-  designation: string;
+  designation: { designation_name: string };
+  employee_status: string;
+  profile_picture: string;
   aadhar_number?: string;
   pan_number?: string;
-  employee_status: string;
-  profile_picture?: string;
   address: {
     street_address: string;
     city: string;
@@ -24,170 +25,225 @@ interface Employee {
   };
 }
 
-
-const EmployeeDetails: React.FC = () => {
+const EmployeeDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
         if (id) {
-          const data = await getEmployeeById(id);
-          setEmployee(data);
+          const response = await getEmployeeById(id);
+          if (response.status) {
+            setEmployee(response.data);
+          } else {
+            toast.error("Failed to load employee details.");
+          }
         }
       } catch (error) {
-        console.error('Error fetching employee:', error);
+        console.error("Error fetching employee details:", error);
+        toast.error("An error occurred while fetching employee details.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchEmployee();
   }, [id]);
 
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this employee?")) {
+      try {
+        if (id) {
+          const response = await deleteEmployee(id);
+          if (response.status) {
+            toast.success("Employee deleted successfully!");
+            navigate("/apps/employee/list"); // Redirect to the employee list after deletion
+          } else {
+            toast.error("Failed to delete employee.");
+          }
+        }
+      } catch (error) {
+        console.error("Error deleting employee:", error);
+        toast.error("An error occurred while deleting the employee.");
+      }
+    }
+  };
+
+  const handleToggleStatus = async () => {
+    try {
+      if (id) {
+        const response = await toggleEmployeeStatus(id);
+        if (response.status) {
+          toast.success("Employee status updated successfully!");
+          setEmployee((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  employee_status: prev.employee_status === "Active" ? "Inactive" : "Active",
+                }
+              : null
+          );
+        } else {
+          toast.error("Failed to update status.");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating employee status:", error);
+      toast.error("An error occurred while updating status.");
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      <div className="text-center my-5">
+        <Spinner animation="border" />
       </div>
     );
   }
 
   if (!employee) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl text-gray-600">Employee not found</div>
+      <div className="text-center my-5">
+        <h4>Employee not found.</h4>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <nav className="mb-8">
-        <ol className="flex items-center space-x-2 text-gray-600">
-          <li>
-            <Link to="/employees" className="hover:text-blue-600">
-              Employees
-            </Link>
+    <React.Fragment>
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb m-2">
+          <li className="breadcrumb-item">
+            <Link to="/employees/list">Employees</Link>
           </li>
-          <li className="flex items-center space-x-2">
-            <span>/</span>
-            <span className="text-gray-900">{employee.username}</span>
+          <li className="breadcrumb-item active" aria-current="page">
+            Employee Details
           </li>
         </ol>
       </nav>
 
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg overflow-hidden mb-8">
-        <div className="p-8">
-          <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8">
-            <div className="flex-shrink-0">
-              {employee.profile_picture ? (
-                <img
-                  src={employee.profile_picture}
-                  alt={employee.username}
-                  className="h-32 w-32 rounded-full border-4 border-white shadow-lg object-cover"
-                />
-              ) : (
-                <div className="h-32 w-32 rounded-full bg-white/10 flex items-center justify-center border-4 border-white shadow-lg">
-                  <User className="h-16 w-16 text-white" />
-                </div>
-              )}
-            </div>
-            
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl font-bold text-white mb-2">
-                {employee.username}
-              </h1>
-              <div className="flex flex-col space-y-2 text-white/90">
-                <div className="flex items-center justify-center md:justify-start space-x-2">
-                  <Building className="h-5 w-5" />
-                  <span>{employee.designation}</span>
-                </div>
-                <div className="flex items-center justify-center md:justify-start space-x-2">
-                  <Mail className="h-5 w-5" />
+      {/* Page Header */}
+      <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
+        <div className="d-flex align-items-center justify-content-between">
+          <h3 className="page-title m-0" style={{ color: "#fff" }}>Employee Details</h3>
+          <div className="d-flex gap-2">
+            <Button
+              variant="light"
+              onClick={() => navigate(`/apps/employee/edit/${employee._id}`)}
+            >
+              <Pencil size={16} className="me-1" /> Edit
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              <Trash size={16} className="me-1" /> Delete
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Employee Details */}
+      <Row>
+        <Col md={4}>
+          <Card className="mb-3 shadow-sm">
+            <Card.Body className="text-center">
+              {/* Profile Picture */}
+              <img
+                src={employee.profile_picture || "https://via.placeholder.com/150"}
+                alt={employee.username}
+                className="rounded-circle mb-3"
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  objectFit: "cover",
+                }}
+              />
+
+              {/* Employee Name */}
+              <h4 className="mb-2">{employee.username}</h4>
+              <Badge
+                bg={employee.employee_status === "Active" ? "success" : "danger"}
+                className="mb-3"
+              >
+                {employee.employee_status}
+              </Badge>
+
+              {/* Toggle Status Button */}
+              <Button
+                variant={employee.employee_status === "Active" ? "warning" : "secondary"}
+                className="w-100 mb-3"
+                onClick={handleToggleStatus}
+              >
+                {employee.employee_status === "Active" ? (
+                  <ToggleLeft size={16} className="me-1" />
+                ) : (
+                  <ToggleRight size={16} className="me-1" />
+                )}
+                Toggle Status
+              </Button>
+
+              {/* Contact Information */}
+              <div className="text-start">
+                <div className="d-flex align-items-center mb-2">
+                  <Mail size={16} className="me-2" />
                   <span>{employee.email}</span>
                 </div>
-                <div className="flex items-center justify-center md:justify-start space-x-2">
-                  <Phone className="h-5 w-5" />
+                <div className="d-flex align-items-center mb-2">
+                  <Phone size={16} className="me-2" />
                   <span>{employee.phone_number}</span>
                 </div>
+                <div className="d-flex align-items-center mb-2">
+                  <Building size={16} className="me-2" />
+                  <span>{employee.designation?.designation_name || "Unknown"}</span>
+                </div>
               </div>
-            </div>
+            </Card.Body>
+          </Card>
+        </Col>
 
-            <div className="flex space-x-4">
-              <Link
-                to={`/employees/edit/${employee._id}`}
-                className="bg-white text-blue-600 px-6 py-2 rounded-lg hover:bg-blue-50 transition-colors"
-              >
-                Edit Profile
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+        <Col md={8}>
+          <Card className="mb-3 shadow-sm">
+            <Card.Body>
+              <h5 className="card-title mb-3">Identity Documents</h5>
+              <Row>
+                <Col md={6}>
+                  <p>
+                    <strong>Aadhaar Number:</strong> {employee.aadhar_number || "N/A"}
+                  </p>
+                </Col>
+                <Col md={6}>
+                  <p>
+                    <strong>PAN Number:</strong> {employee.pan_number || "N/A"}
+                  </p>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm text-gray-500">Aadhaar Number</label>
-              <p className="text-gray-900">{employee.aadhar_number}</p>
-            </div>
-            <div>
-              <label className="text-sm text-gray-500">PAN Number</label>
-              <p className="text-gray-900">{employee.pan_number}</p>
-            </div>
-            <div>
-              <label className="text-sm text-gray-500">Employee Status</label>
-              <span className={`px-2 py-1 text-sm rounded-full ${
-                employee.employee_status === 'Active'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {employee.employee_status}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Address Information</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm text-gray-500">Street Address</label>
-              <p className="text-gray-900">{employee.address.street_address}</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm text-gray-500">City</label>
-                <p className="text-gray-900">{employee.address.city}</p>
+          <Card className="shadow-sm">
+            <Card.Body>
+              <h5 className="card-title mb-3">Address Details</h5>
+              <div className="d-flex flex-column gap-2">
+                <div className="d-flex align-items-center">
+                  <MapPin size={16} className="me-2" />
+                  <span>{employee.address.street_address}</span>
+                </div>
+                <div className="d-flex align-items-center">
+                  <span>{employee.address.city}, {employee.address.district}</span>
+                </div>
+                <div className="d-flex align-items-center">
+                  <span>{employee.address.state}, {employee.address.pincode}</span>
+                </div>
+                <div className="d-flex align-items-center">
+                  <span>{employee.address.country}</span>
+                </div>
               </div>
-              <div>
-                <label className="text-sm text-gray-500">District</label>
-                <p className="text-gray-900">{employee.address.district}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm text-gray-500">State</label>
-                <p className="text-gray-900">{employee.address.state}</p>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Pincode</label>
-                <p className="text-gray-900">{employee.address.pincode}</p>
-              </div>
-            </div>
-            <div>
-              <label className="text-sm text-gray-500">Country</label>
-              <p className="text-gray-900">{employee.address.country}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </React.Fragment>
   );
 };
 

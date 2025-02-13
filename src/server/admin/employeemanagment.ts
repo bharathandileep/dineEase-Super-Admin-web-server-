@@ -13,7 +13,7 @@ export const getAllEmployees = async () => {
 };
 
 // ✅ Get a single employee by ID
-export const getEmployeeById = async (id: string) => {
+export const getEmployeeById = async (id: string | undefined) => {
   try {
     const response = await axiosInstance.get(apiConfig.employee.getEmployeeById(id));
     const employee = response.data;
@@ -30,6 +30,7 @@ export const getEmployeeById = async (id: string) => {
     throw error.response?.data || error;
   }
 };
+
 
 // ✅ Create a new employee
 export const createEmployee = async (data: any) => {
