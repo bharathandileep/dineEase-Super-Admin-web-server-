@@ -1,5 +1,5 @@
 import { log } from "console";
-import axiosInstance from "../../helpers/api/apiCore";
+import { axiosInstance } from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
  
 export const createItem = async (menuData: any) => {
