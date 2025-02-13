@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Edit2, Trash2 } from "lucide-react";
-import { Card, Row, Col, Button, Spinner, Form, Modal } from "react-bootstrap";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import {
   getAllDesignations,
@@ -10,6 +10,8 @@ import {
   toggleDesignationStatus,
 } from "../../../server/admin/designations";
 import DesignationModal from "./modal/DesignationModal";
+import PageTitle from "../../../components/PageTitle";
+import Table from "../../../components/Table";
 
 function Designations() {
   const [action, setAction] = useState("");
@@ -20,9 +22,6 @@ function Designations() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
-  
-  const [designationName, setDesignationName] = useState("");
-  const [createdBy, setCreatedBy] = useState("");
 
   useEffect(() => {
     const fetchAllDesignations = async () => {
@@ -44,27 +43,19 @@ function Designations() {
     fetchAllDesignations();
   }, [isDeleted, show]);
 
-  useEffect(() => {
-    if (action === "edit" && selectedItem) {
-      setDesignationName(selectedItem.designation_name);
-      setCreatedBy(selectedItem.created_by);
-    } else {
-      setDesignationName("");
-      setCreatedBy("");
-    }
-  }, [show, action, selectedItem]);
+  const onSearchData = (searchValue: string) => {
+    setSearchTerm(searchValue.toLowerCase());
+  };
 
   const handleToggleStatus = async (id: string) => {
     try {
       const response = await toggleDesignationStatus(id);
-      
-      if (response.status && response.data) {
+      if (response.status) {
         setDesignations((prevItems) =>
           prevItems.map((item) =>
-            item._id === id ? { ...item, status: response.data.status } : item
+            item._id === id ? { ...item, status: !item.status } : item
           )
         );
-        toast.success("Status updated successfully!");
       } else {
         toast.error("Failed to toggle status.");
       }
@@ -73,8 +64,6 @@ function Designations() {
       toast.error("Error toggling status.");
     }
   };
-  
-   
 
   const handleEdit = (id: string) => {
     const item = designations.find((designation) => designation._id === id);
@@ -100,85 +89,178 @@ function Designations() {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!designationName || !createdBy) {
-      toast.error("All fields are required.");
-      return;
-    }
-
-    const payload = { designation_name: designationName, created_by: createdBy };
-
-    try {
-      if (action === "edit") {
-        await updateDesignation(selectedItem._id, payload);
-        toast.success("Designation updated successfully!");
-      } else {
-        await createDesignation(payload);
-        toast.success("Designation created successfully!");
-      }
-      setShow(false);
-    } catch (error) {
-      toast.error("Operation failed.");
-    }
-  };
-
   const filteredDesignations = useMemo(() => {
     return designations.filter((value) => {
       const designationMatch = value.designation_name
         .toLowerCase()
         .includes(searchTerm);
-      const createdByMatch = value.created_by
-        .toLowerCase()
-        .includes(searchTerm);
+      const createdAtString =
+        value.createdAt && !isNaN(new Date(value.createdAt).getTime())
+          ? new Date(value.createdAt).toLocaleDateString()
+          : "";
+      const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
       const statusMatch =
         statusFilter === "all" ||
         (statusFilter === "active" && value.status) ||
         (statusFilter === "inactive" && !value.status);
-
-      return (designationMatch || createdByMatch) && statusMatch;
+      return (designationMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, designations]);
+
+  /* Column render functions */
+  const DesignationColumn = ({ row }: { row: any }) => {
+    return <span className="fw-bold">{row?.original?.designation_name}</span>;
+  };
+
+  const CreatedAtColumn = ({ row }: { row: any }) => {
+    return <span>{new Date(row?.original?.createdAt).toLocaleString()}</span>;
+  };
+
+  const StatusColumn = ({ row }: { row: any }) => {
+    return (
+      <button
+        className={`badge border-0 text-white ${
+          row?.original?.status ? "bg-success" : "bg-secondary"
+        }`}
+        onClick={() => handleToggleStatus(row?.original?._id)}
+      >
+        {row.original.status ? "Active" : "Inactive"}
+      </button>
+    );
+  };
+
+  const ActionColumn = ({ row }: { row: any }) => {
+    return (
+      <>
+        <button
+          className="action-icon border-0 bg-transparent"
+          onClick={() => handleEdit(row?.original?._id)}
+        >
+          <i className="mdi mdi-square-edit-outline"></i>
+        </button>
+        <button
+          className="action-icon border-0 bg-transparent"
+          onClick={() => handleDelete(row?.original?._id)}
+        >
+          <i className="mdi mdi-delete text-danger"></i>
+        </button>
+      </>
+    );
+  };
+
+  // Define columns
+  const columns = [
+    {
+      Header: "Designation",
+      accessor: "designation_name",
+      Cell: DesignationColumn,
+    },
+    {
+      Header: "Created At",
+      accessor: "createdAt",
+      Cell: CreatedAtColumn,
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      Cell: StatusColumn,
+    },
+    {
+      Header: "Action",
+      accessor: "action",
+      Cell: ActionColumn,
+    },
+  ];
+
+  const sizePerPageList = [
+    { text: "10", value: 10 },
+    { text: "20", value: 20 },
+    { text: "50", value: 50 },
+  ];
 
   return (
     <>
       <div className="container py-2">
-        <Card className="mb-2">
-          <Card.Body>
-            <Row className="justify-content-between">
-              <Col md={6} className="d-flex gap-2">
-                <input
-                  type="search"
-                  className="form-control"
-                  placeholder="Search..."
-                  onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-                />
-                <Form.Select
-                  className="w-auto"
-                  value={statusFilter}
-                  onChange={(e: any) => setStatusFilter(e.target.value)}
-                >
-                  <option value="all">All</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </Form.Select>
-              </Col>
-
-              <Col md={4} className="text-md-end">
-                <Button variant="danger" onClick={() => {
-                  setAction("add");
-                  setShow(true);
-                }}>
-                  <i className="mdi mdi-plus-circle me-1"></i> Add New
-                </Button>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
+        <PageTitle
+          breadCrumbItems={[
+            { label: "Designations", path: "/apps/designations/list" },
+            {
+              label: "List",
+              path: "/apps/designations/list",
+              active: true,
+            },
+          ]}
+          title={"Designations"}
+        />
+        <div
+          className="mb-3"
+          style={{ backgroundColor: "#5bd2bc", padding: "10px" }}
+        >
+          <div className="d-flex align-items-center justify-content-between">
+            <h3 className="page-title m-0" style={{ color: "#fff" }}>
+              Designations
+            </h3>
+            <Link
+              to="#"
+              className="btn btn-danger waves-effect waves-light"
+              onClick={() => {
+                setAction("add");
+                setShow(true);
+              }}
+            >
+              <i className="mdi mdi-plus-circle me-1"></i> Add New
+            </Link>
+          </div>
+        </div>
+        <Row>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Row className="justify-content-between">
+                  <Col className="col-auto">
+                    <form className="d-flex align-items-center">
+                      <label
+                        htmlFor="inputPassword2"
+                        className="visually-hidden"
+                      >
+                        Search
+                      </label>
+                      <div>
+                        <input
+                          type="search"
+                          className="form-control my-1 my-lg-0"
+                          id="inputPassword2"
+                          placeholder="Search..."
+                          onChange={(e) => onSearchData(e.target.value)}
+                        />
+                      </div>
+                    </form>
+                  </Col>
+                  <Col className="col-auto">
+                    <div className="d-flex align-items-center">
+                      <label htmlFor="status-select" className="me-2 mb-0">
+                        Sort By
+                      </label>
+                      <div>
+                        <Form.Select
+                          className="w-auto"
+                          value={statusFilter}
+                          onChange={(e: any) => setStatusFilter(e.target.value)}
+                        >
+                          <option value="all">All</option>
+                          <option value="active">Active</option>
+                          <option value="inactive">Inactive</option>
+                        </Form.Select>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
         <div className="card shadow">
-          <div className="card-header bg-primary text-white">
-            <h2 className="h5 mb-0 text-white">Designations</h2>
-          </div>
           <div className="table-responsive">
             {loading ? (
               <div className="text-center my-4">
@@ -189,53 +271,31 @@ function Designations() {
               <div className="text-center my-4">
                 <p>No Designations Found</p>
               </div>
+            ) : filteredDesignations.length === 0 ? (
+              <div className="text-center my-4">
+                <p>No results found for "{searchTerm}"</p>
+              </div>
             ) : (
-              <table className="table table-striped table-hover mb-0">
-                <thead className="table-light">
-                  <tr>
-                    <th scope="col">Index</th>
-                    <th scope="col">Designation Name</th>
-                    <th scope="col">Created By</th>
-                    <th scope="col">Created At</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredDesignations.map((item, index) => (
-                    <tr key={item._id}>
-                      <td>{index + 1}</td>
-                      <td>{item.designation_name}</td>
-                      <td>{item.created_by}</td>
-                      <td>{new Date(item.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        <button
-                          onClick={() => handleToggleStatus(item._id)}
-                          className={`btn btn-sm ${
-                            item.status ? "btn-success" : "btn-secondary"
-                          }`}
-                        >
-                          {item.status ? "Active" : "Inactive"}
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => handleEdit(item._id)}
-                          className="btn btn-sm btn-outline-primary me-2"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item._id)}
-                          className="btn btn-sm btn-outline-danger"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Row>
+                <Col>
+                  <Card>
+                    <Card.Body className="p-0">
+                      <Table
+                        columns={columns}
+                        data={filteredDesignations}
+                        isSearchable={false}
+                        pageSize={10}
+                        sizePerPageList={sizePerPageList}
+                        isSortable={true}
+                        pagination={false}
+                        isSelectable={false}
+                        theadClass="table-light"
+                        searchBoxClass="mb-2"
+                      />
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
             )}
           </div>
         </div>

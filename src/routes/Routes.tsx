@@ -19,16 +19,17 @@ import {
   authProtectedFlattenRoutes,
   publicProtectedFlattenRoutes,
 } from "./index";
-import { isUserAuthenticated } from "../helpers/api/apiCore";
-
+import { APICore } from "../helpers/api/apiCore";
+// import { isUserAuthenticated } from "../helpers/api/apiCore";
 
 interface IRoutesProps {}
 
 const AllRoutes = (props: IRoutesProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(isUserAuthenticated());
+  // const [isAuthenticated, setIsAuthenticated] = useState(isUserAuthenticated());
   const { layout } = useSelector((state: RootState) => ({
     layout: state.Layout,
   }));
+  const api = new APICore();
 
   const getLayout = () => {
     let layoutCls = TwoColumnLayout;
@@ -51,13 +52,13 @@ const AllRoutes = (props: IRoutesProps) => {
   };
   useEffect(() => {
     const checkAuth = () => {
-      setIsAuthenticated(isUserAuthenticated());
+      // setIsAuthenticated(isUserAuthenticated());
     };
 
     window.addEventListener("storage", checkAuth);
 
     return () => {
-      window.removeEventListener("storage", checkAuth); 
+      window.removeEventListener("storage", checkAuth);
     };
   }, []);
 
@@ -78,13 +79,13 @@ const AllRoutes = (props: IRoutesProps) => {
             />
           ))}
         </Route>
-
+      
         <Route>
           {authProtectedFlattenRoutes.map((route, idx) => (
             <Route
               path={route.path}
               element={
-                false ? (
+                api.isUserAuthenticated() === false ? (
                   <Navigate
                     to={{
                       pathname: "/auth/login",

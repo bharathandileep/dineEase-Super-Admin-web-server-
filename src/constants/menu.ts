@@ -47,6 +47,18 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/apps/organizations/list",
         parentKey: "apps-Organizations",
       },
+      {
+        key: "Organization-employadd",
+        label: "Organizations employ list",
+        url: "/apps/organizations/employ/add",
+        parentKey: "apps-Organizations",
+      },
+      {
+        key: "Organization-employadd",
+        label: "Organizations employ",
+        url: "/apps/organizations/employ/list",
+        parentKey: "apps-Organizations",
+      },
     ],
   },
  

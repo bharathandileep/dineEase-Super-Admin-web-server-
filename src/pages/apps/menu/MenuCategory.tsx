@@ -104,11 +104,11 @@ function MenuCategory() {
   };
   /* order column render */
   const CategoryColumn = ({ row }: { row: any }) => {
-    return <span className="fw-bold">{row.original.category}</span>;
+    return <span className="fw-bold">{row?.original?.category}</span>;
   };
 
   const CreatedAtColumn = ({ row }: { row: any }) => {
-    return <span>{new Date(row.original.createdAt).toLocaleString()}</span>;
+    return <span>{new Date(row?.original?.createdAt).toLocaleString()}</span>;
   };
 
   const StatusColumn = ({ row }: { row: any }) => {
@@ -117,7 +117,7 @@ function MenuCategory() {
         className={`badge border-0 text-white ${
           row.original.status ? "bg-success" : "bg-secondary"
         }`}
-        onClick={() => handleToggleStatus(row.original._id)}
+        onClick={() => handleToggleStatus(row?.original?._id)}
       >
         {row.original.status ? "Active" : "Inactive"}
       </button>
@@ -129,13 +129,13 @@ function MenuCategory() {
       <>
         <button
           className="action-icon border-0 bg-transparent"
-          onClick={() => handleEdit(row.original._id)}
+          onClick={() => handleEdit(row?.original._id)}
         >
           <i className="mdi mdi-square-edit-outline"></i>
         </button>
         <button
           className="action-icon border-0 bg-transparent"
-          onClick={() => handleDelete(row.original._id)}
+          onClick={() => handleDelete(row?.original._id)}
         >
           <i className="mdi mdi-delete text-danger"></i>
         </button>

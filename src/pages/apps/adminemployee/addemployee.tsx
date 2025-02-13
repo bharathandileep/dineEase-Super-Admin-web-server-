@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import FileUploader from "../../../components/FileUploader";
-import { FormInput } from "../../../components/";
+import { FormInput } from "../../../components";
 import { createEmployee } from "../../../server/admin/employeemanagment";
 import { getAllDesignations } from "../../../server/admin/designations";
 

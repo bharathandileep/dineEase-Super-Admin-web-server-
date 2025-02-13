@@ -1,158 +1,168 @@
-import axios from "axios";
-import config from "../../config";
 import jwtDecode from "jwt-decode";
-import { apiConfig } from "./apis";
+import axios, { AxiosInstance } from "axios";
+import config from "../../config";
+
+const AUTH_SESSION_KEY = "Session_token";
+const REFRESH_INTERVAL = 14 * 60 * 1000; // 14 minutes
 
 // Create axios instance
-const baseURL = "http://localhost:5000/api/v1";
-const axiosInstance = axios.create({
-  baseURL: baseURL,
+const axiosInstance: AxiosInstance = axios.create({
+  baseURL: config.API_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-let isRefreshing = false;
-let failedQueue: any = [];
-
-const processQueue = (error: any, token = null) => {
-  failedQueue.forEach(
-    (prom: { reject: (arg0: any) => void; resolve: (arg0: null) => void }) => {
-      if (error) {
-        prom.reject(error);
-      } else {
-        prom.resolve(token);
-      }
-    }
-  );
-
-  failedQueue = [];
+// Token management
+const setAuthorization = (token: string | null) => {
+  if (token) {
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axiosInstance.defaults.headers.common["Authorization"];
+  }
 };
 
-export const refreshTokenLogic = async () => {
+const getUserFromCookie = () => {
+  const user = localStorage.getItem(AUTH_SESSION_KEY);
+  return user ? (typeof user == "object" ? user : JSON.parse(user)) : null;
+};
+
+const refreshTokenLogic = async (): Promise<string> => {
   try {
-    const response = await axios.post(
-      `${apiConfig.token.getAccessToken}`,
+    const response = await axiosInstance.post(
+      "/auth/refresh-token",
       {},
-      {
-        withCredentials: true,
-      }
+      { withCredentials: true }
     );
     const { accessToken } = response.data;
-    localStorage.setItem("token", accessToken);
+    localStorage.setItem(
+      AUTH_SESSION_KEY,
+      JSON.stringify({ token: accessToken })
+    );
+    setAuthorization(accessToken);
     return accessToken;
   } catch (error) {
-    localStorage.removeItem("token");
+    localStorage.removeItem(AUTH_SESSION_KEY);
     window.location.href = "/auth/login";
     throw error;
   }
 };
 
+// Request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+    const session = getUserFromCookie();
+    if (session?.token) {
+      config.headers["Authorization"] = `Bearer ${session.token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
-            return axiosInstance(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
-      }
-
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        const newToken = await refreshTokenLogic();
-
-        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-
-        processQueue(null, newToken);
-
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
-    }
-
-    // Handle other errors
-    let message;
-    switch (error.response?.status) {
-      case 403:
-        window.location.href = "/access-denied";
-        message = "Access Forbidden";
-        break;
-      case 404:
-        message = "Resource not found";
-        break;
-      case 401:
-        message = "Invalid credentials";
-        break;
-      default:
-        message =
-          error.response?.data?.message ||
-          error.message ||
-          "An unexpected error occurred";
-    }
-
-    return Promise.reject(message);
-  }
-);
-
-const getUserFromCookie = () => {
-  const user = localStorage.getItem("token");
-  return user ? user : null;
-};
-
-export const isUserAuthenticated = () => {
-  const user = getUserFromCookie();
-  if (!user) {
-    return false;
-  }
-  const decoded: any = jwtDecode(user);
-  const currentTime = Date.now() / 1000;
-  if (decoded.exp < currentTime) {
-    console.warn("access token expired");
-    return false;
-  } else {
-    return true;
-  }
-};
-
-// Periodic token refresh
+// Setup periodic token refresh
 const setupTokenRefreshInterval = () => {
-  const REFRESH_INTERVAL = 14 * 60 * 1000;
-
   setInterval(async () => {
-    try {
-      await refreshTokenLogic();
-    } catch (error) {
-      console.error("Periodic token refresh failed", error);
+    if (new APICore().isUserAuthenticated()) {
+      try {
+        await refreshTokenLogic();
+      } catch (error) {
+        console.error("Periodic token refresh failed:", error);
+      }
     }
   }, REFRESH_INTERVAL);
 };
 
-setupTokenRefreshInterval();
+class APICore {
+  get = (url: string, params: any) => {
+    return axiosInstance.get(url, { params });
+  };
 
-export default axiosInstance;
+  getFile = (url: string, params: any) => {
+    return axiosInstance.get(url, { params, responseType: "blob" });
+  };
+
+  create = (url: string, data: any) => {
+    return axiosInstance.post(url, data);
+  };
+
+  updatePatch = (url: string, data: any) => {
+    return axiosInstance.patch(url, data);
+  };
+
+  update = (url: string, data: any) => {
+    return axiosInstance.put(url, data);
+  };
+
+  delete = (url: string) => {
+    return axiosInstance.delete(url);
+  };
+
+  createWithFile = (url: string, data: any) => {
+    const formData = new FormData();
+    for (const k in data) {
+      formData.append(k, data[k]);
+    }
+    return axiosInstance.post(url, formData, {
+      headers: { "content-type": "multipart/form-data" },
+    });
+  };
+
+  updateWithFile = (url: string, data: any) => {
+    const formData = new FormData();
+    for (const k in data) {
+      formData.append(k, data[k]);
+    }
+    return axiosInstance.patch(url, formData, {
+      headers: { "content-type": "multipart/form-data" },
+    });
+  };
+
+  isUserAuthenticated = () => {
+    const user = this.getLoggedInUser();
+    if (!user) {
+      return false;
+    }
+    const decoded: any = jwtDecode(user);
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      console.warn("access token expired");
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  setLoggedInUser = (session: any) => {
+    if (session) {
+      localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session.token));
+    } else {
+      localStorage.removeItem(AUTH_SESSION_KEY);
+    }
+  };
+
+  getLoggedInUser = () => {
+    return getUserFromCookie();
+  };
+
+  setUserInSession = (modifiedUser: any) => {
+    let userInfo = localStorage.getItem(AUTH_SESSION_KEY);
+    if (userInfo) {
+      const { token, user } = JSON.parse(userInfo);
+      this.setLoggedInUser({ token, ...user, ...modifiedUser });
+    }
+  };
+}
+
+// Initialize
+const initializeAxios = () => {
+  const session = getUserFromCookie();
+  if (session?.token) {
+    setAuthorization(session.token);
+  }
+  setupTokenRefreshInterval();
+};
+
+initializeAxios();
+
+export { APICore, setAuthorization, axiosInstance };

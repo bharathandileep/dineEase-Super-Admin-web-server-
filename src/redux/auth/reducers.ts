@@ -1,8 +1,15 @@
 // apicore
+import { APICore } from "../../helpers/api/apiCore";
 
 // constants
 import { AuthActionTypes } from "./constants";
 
+const api = new APICore();
+
+const INIT_STATE = {
+  user: api.getLoggedInUser(),
+  loading: false,
+};
 
 interface UserData {
   id: number;
@@ -34,17 +41,17 @@ interface State {
   value?: boolean;
 }
 
-const Auth = (state: State = {}, action: AuthActionType): any => {
+const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
   switch (action.type) {
     case AuthActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case AuthActionTypes.LOGIN_USER: {
+        case AuthActionTypes.LOGIN_USER:{
           return {
             ...state,
             user: action.payload.data,
-            userLoggedIn: true,
-            loading: false,
-          };
+            userLoggedIn: true,       
+            loading: false,    
+          };               
         }
         case AuthActionTypes.SIGNUP_USER: {
           return {

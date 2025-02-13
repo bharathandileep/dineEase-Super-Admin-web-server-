@@ -1,4 +1,4 @@
-import axiosInstance from "../../helpers/api/apiCore";
+import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
 // ✅ Get all employees
