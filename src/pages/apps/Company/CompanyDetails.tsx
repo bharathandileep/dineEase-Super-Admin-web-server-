@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { Company } from "./data";
-import AddCompanyModal from "./AddCompannyModal";
 
 interface CompanyDetailsProps {
   companyInfo: any[];
@@ -45,7 +43,7 @@ const CompanyDetails = (props: CompanyDetailsProps) => {
   }, [props.companyInfo]);
 
   return (
-    <>
+    <>  
       <Row>
         <Col>
           <Card>
@@ -97,7 +95,6 @@ const CompanyDetails = (props: CompanyDetailsProps) => {
           </Card>
         </Col>
       </Row>
-
       <Row>
         {companyInfo?.map((item, index) => (
           <Col key={index} lg={4}>

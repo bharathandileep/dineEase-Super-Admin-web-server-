@@ -1,25 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Edit2, Trash2 } from "lucide-react";
 import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-import {
-  getAllCategories,
-  deleteCategory,
-  toggleCategoryStatus,
-} from "../../../server/admin/menu";
-import AddCategory from "../menu/modal/AddCategory";
-import {
-  kitchensDeleteCategory,
-  kitchensGetAllCategories,
-  kitchensToggleCategoryStatus,
-} from "../../../server/admin/kitchens";
 import AddkitchenCategory from "./modal/AddkitchenCategory";
 import {
   orgDeleteCategory,
   orgGetAllCategories,
   orgToggleCategoryStatus,
 } from "../../../server/admin/organization";
+import { Link } from "react-router-dom";
+import PageTitle from "../../../components/PageTitle";
+import Table from "../../../components/Table";
 
 function OrgCategories() {
   const isSubCategory = false;
@@ -31,6 +22,7 @@ function OrgCategories() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [orderList, setOrderList] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchAllCategories = async () => {
@@ -39,6 +31,7 @@ function OrgCategories() {
         const response = await orgGetAllCategories();
         if (response.status) {
           setMenuItems(response.data);
+          setOrderList(response.data);
         } else {
           toast.error("Failed to load menu categories.");
         }
@@ -91,10 +84,10 @@ function OrgCategories() {
         statusFilter === "all" ||
         (statusFilter === "active" && value.status) ||
         (statusFilter === "inactive" && !value.status);
-
       return (categoryMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, menuItems]);
+
   const handleDelete = async (id: any) => {
     if (!window.confirm("Are you sure you want to delete this category?"))
       return;
@@ -112,43 +105,157 @@ function OrgCategories() {
     }
   };
 
+  /* order column render */
+  const CategoryColumn = ({ row }: { row: any }) => {
+    return <span className="fw-bold">{row?.original?.category}</span>;
+  };
+
+  const CreatedAtColumn = ({ row }: { row: any }) => {
+    return <span>{new Date(row?.original?.createdAt).toLocaleString()}</span>;
+  };
+
+  const StatusColumn = ({ row }: { row: any }) => {
+    return (
+      <button
+        className={`badge border-0 text-white ${
+          row?.original?.status ? "bg-success" : "bg-secondary"
+        }`}
+        onClick={() => handleToggleStatus(row?.original?._id)}
+      >
+        {row.original.status ? "Active" : "Inactive"}
+      </button>
+    );
+  };
+
+  const ActionColumn = ({ row }: { row: any }) => {
+    return (
+      <>
+        <button
+          className="action-icon border-0 bg-transparent"
+          onClick={() => handleEdit(row?.original?._id)}
+        >
+          <i className="mdi mdi-square-edit-outline"></i>
+        </button>
+        <button
+          className="action-icon border-0 bg-transparent"
+          onClick={() => handleDelete(row?.original?._id)}
+        >
+          <i className="mdi mdi-delete text-danger"></i>
+        </button>
+      </>
+    );
+  };
+
+  // Define columns
+  const columns = [
+    {
+      Header: "Category",
+      accessor: "category",
+      Cell: CategoryColumn,
+    },
+    {
+      Header: "Created At",
+      accessor: "createdAt",
+      Cell: CreatedAtColumn,
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      Cell: StatusColumn,
+    },
+    {
+      Header: "Action",
+      accessor: "action",
+      Cell: ActionColumn,
+    },
+  ];
+
+  const sizePerPageList = [
+    { text: "10", value: 10 },
+    { text: "20", value: 20 },
+    { text: "50", value: 50 },
+  ];
+
   return (
     <>
       <div className="container py-2">
-        <Card className="mb-2">
-          <Card.Body>
-            <Row className="justify-content-between">
-              <Col md={6} className="d-flex gap-2">
-                <input
-                  type="search"
-                  className="form-control"
-                  placeholder="Search..."
-                  onChange={(e) => onSearchData(e.target.value)}
-                />
-                <Form.Select
-                  className="w-auto"
-                  value={statusFilter}
-                  onChange={(e: any) => setStatusFilter(e.target.value)}
-                >
-                  <option value="all">All</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </Form.Select>
-              </Col>
-
-              <Col md={4} className="text-md-end">
-                <Button variant="danger" onClick={() => setShow(true)}>
-                  <i className="mdi mdi-plus-circle me-1"></i> Add New
-                </Button>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
+        <PageTitle
+          breadCrumbItems={[
+            { label: "Organizations", path: "/apps/org/category" },
+            {
+              label: "Category",
+              path: "/apps/crm/customers",
+              active: true,
+            },
+          ]}
+          title={"Customers"}
+        />
+        <div
+          className="mb-3"
+          style={{ backgroundColor: "#5bd2bc", padding: "10px" }}
+        >
+          <div className="d-flex align-items-center justify-content-between">
+            <h3 className="page-title m-0" style={{ color: "#fff" }}>
+              Organizations Category
+            </h3>
+            <Link
+              to="#"
+              className="btn btn-danger waves-effect waves-light"
+              onClick={() => setShow(true)}
+            >
+              <i className="mdi mdi-plus-circle me-1"></i> Add New
+            </Link>
+          </div>
+        </div>
+        <Row>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Row className="justify-content-between">
+                  <Col className="col-auto">
+                    <form className="d-flex align-items-center">
+                      <label
+                        htmlFor="inputPassword2"
+                        className="visually-hidden"
+                      >
+                        Search
+                      </label>
+                      <div>
+                        <input
+                          type="search"
+                          className="form-control my-1 my-lg-0"
+                          id="inputPassword2"
+                          placeholder="Search..."
+                          onChange={(e) => onSearchData(e.target.value)}
+                        />
+                      </div>
+                    </form>
+                  </Col>
+                  <Col className="col-auto">
+                    <div className="d-flex align-items-center">
+                      <label htmlFor="status-select" className="me-2 mb-0">
+                        Sort By
+                      </label>
+                      <div>
+                        <Form.Select
+                          className="w-auto"
+                          value={statusFilter}
+                          onChange={(e: any) => setStatusFilter(e.target.value)}
+                        >
+                          <option value="all">All</option>
+                          <option value="active">Active</option>
+                          <option value="inactive">Inactive</option>
+                        </Form.Select>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
         <div className="card shadow">
-          <div className="card-header bg-primary text-white">
-            <h2 className="h5 mb-0">Menu Items</h2>
-          </div>
           <div className="table-responsive">
             {loading ? (
               <div className="text-center my-4">
@@ -164,50 +271,26 @@ function OrgCategories() {
                 <p>No results found for "{searchTerm}"</p>
               </div>
             ) : (
-              <table className="table table-striped table-hover mb-0">
-                <thead className="table-light">
-                  <tr>
-                    <th scope="col">Index</th>
-                    <th scope="col">Menu Name</th>
-                    <th scope="col">Created At</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredMenuItems.map((item, index) => (
-                    <tr key={item._id}>
-                      <td>{index + 1}</td>
-                      <td>{item.category}</td>
-                      <td>{new Date(item.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        <button
-                          onClick={() => handleToggleStatus(item._id)}
-                          className={`btn btn-sm ${
-                            item.status ? "btn-success" : "btn-secondary"
-                          }`}
-                        >
-                          {item.status ? "Active" : "Inactive"}
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => handleEdit(item._id)}
-                          className="btn btn-sm btn-outline-primary me-2"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item._id)}
-                          className="btn btn-sm btn-outline-danger"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Row>
+                <Col>
+                  <Card>
+                    <Card.Body className="p-0">
+                      <Table
+                        columns={columns}
+                        data={menuItems}
+                        isSearchable={false}
+                        pageSize={10}
+                        sizePerPageList={sizePerPageList}
+                        isSortable={true}
+                        pagination={false}
+                        isSelectable={false}
+                        theadClass="table-light"
+                        searchBoxClass="mb-2"
+                      />
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
             )}
           </div>
         </div>
