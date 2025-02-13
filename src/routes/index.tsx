@@ -16,6 +16,10 @@ import MenuSetup from "../pages/apps/kitchen/MenuSetup";
 import MenuItems from "../pages/apps/MenuItems/MenuItems";
 import ItemsListing from "../pages/apps/MenuItems/ItemsListing";
 import ItemsEditing from "../pages/apps/MenuItems/ItemsEditing";
+import EmployeeManagment from "../pages/apps/employee/EmpManagment";
+import EmployeeList from "../pages/apps/employee/listemployee";
+import EmployeeEdit from "../pages/apps/employee/editemployee";
+
 // import Root from './Root';
 
 // lazy load all the views
@@ -263,6 +267,14 @@ const OrganizationDetails = React.lazy(
   () => import("../pages/apps/Organizations/OrganizationDetails")
 );
 
+const Designations = React.lazy(
+  () => import("../pages/apps/Designations/listdesignations")
+);
+const EmployeeDetails = React.lazy(
+  () => import("../pages/apps/employee/employeedetails")
+);
+
+
 export interface RoutesProps {
   path: RouteProps["path"];
   name?: string;
@@ -433,6 +445,46 @@ const menuAppRoutes = {
     },
   ],
 };
+const designationRoutes = {
+  path: "/apps/designations",
+  name: "List designations",
+  element: <Designations />,
+  route: PrivateRoute,
+};
+
+const employeeRoutes = {
+  path: "/apps/employee",
+  name: "Employee",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  children: [
+    {
+      path: "/apps/employee/add",
+      name: "Add Employee",
+      element: <EmployeeManagment />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/employee/list",
+      name: "Employee List",
+      element: <EmployeeList />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/employee/edit/:id",
+      name: "Employee edit",
+      element: <EmployeeEdit />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/employee/details/:id",
+      name: "Employee details",
+      element: <EmployeeDetails />,
+      route: PrivateRoute,
+    },
+  ],
+};
+
 
 const dashboardRoutes = {
   path: "/",
@@ -855,6 +907,8 @@ const appRoutes = [
   organizationsAppRoutes,
   kitchenAppRoutes,
   itemAppRoutes,
+  designationRoutes,
+  employeeRoutes,
   menuAppRoutes,
   crmAppRoutes,
   emailAppRoutes,

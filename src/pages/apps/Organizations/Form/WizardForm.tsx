@@ -146,8 +146,8 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const handleEdit = async () => {
     setLoading(true); // Start loading
     try {
-      const kitchesFormData = appendToFormData(formData);
-      const response = await updateOrgDetails(id, kitchesFormData);
+      const OrgFormData = appendToFormData(formData);
+      const response = await updateOrgDetails(id, OrgFormData);
 
       if (response.status) {
         toast.success(response.message);

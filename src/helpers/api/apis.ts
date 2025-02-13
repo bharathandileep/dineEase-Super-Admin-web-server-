@@ -105,11 +105,33 @@ export const apiConfig = {
     toggleSubcategoryStatus: (id: string | undefined) =>
       `/sub-menu-category/subcategories/${id}/toggle-status`,
 
-    createItem:"/menu-items/allmenuitems",
-    listItems:"/menu-items/allmenuitems",
-    getItemById:(id:string | undefined)=>`/menu-items/allmenuitems/${id}`,
-    updateItem:(id:string | undefined)=>`/menu-items/allmenuitems/${id}`,
-    deleteItem:(id:string | undefined)=>`/menu-items/allmenuitems/${id}`,
-    changeItemStatus:(id:string | undefined)=>`/menu-items/allmenuitems/${id}/status`,
-    },
-  };
+    createItem: "/menu-items/allmenuitems",
+    listItems: "/menu-items/allmenuitems",
+    getItemById: (id: string | undefined) => `/menu-items/allmenuitems/${id}`,
+    updateItem: (id: string | undefined) => `/menu-items/allmenuitems/${id}`,
+    deleteItem: (id: string | undefined) => `/menu-items/allmenuitems/${id}`,
+    changeItemStatus: (id: string | undefined) =>
+      `/menu-items/allmenuitems/${id}/status`,
+  },
+  designation: {
+    createDesignation: "/designation/designations",
+    getAllDesignations: "/designation/designations/all",
+    getDesignationById: (id: string | undefined) =>
+      `/designation/designations/${id}`,
+    updateDesignation: (id: string | undefined) =>
+      `/designation/designations/${id}`,
+    deleteDesignation: (id: string | undefined) =>
+      `/designation/designations/${id}`,
+    toggleDesignationStatus: (id: string | undefined) =>
+      `/designation/designations/${id}/toggle-status`,
+  },
+  employee: {
+    createEmployee: "/employee/employees",
+    getAllEmployees: "/employee/employees/all",
+    getEmployeeById: (id: string | undefined) => `/employee/employees/${id}`,
+    updateEmployee: (id: string | undefined) => `/employee/employees/${id}`,
+    deleteEmployee: (id: string | undefined) => `/employee/employees/${id}`,
+    toggleEmployeeStatus: (id: string | undefined) =>
+      `/employee/employees/${id}/toggle-status`,
+  },
+};

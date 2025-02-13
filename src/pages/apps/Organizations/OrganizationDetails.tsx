@@ -266,7 +266,7 @@ function OrganizationDetails() {
 
               {/* Badges */}
               <div className="d-flex gap-2">
-                {["Active", "Organic", "Veg"].map((badge, index) => (
+                {["Active"].map((badge, index) => (
                   <Badge
                     key={index}
                     className="rounded-pill px-2 py-1"
