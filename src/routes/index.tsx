@@ -13,7 +13,9 @@ import KitchensCategories from "../pages/apps/kitchen/KitchensCategories";
 import OrgCategories from "../pages/apps/Organizations/OrgCategories";
 import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
 import MenuSetup from "../pages/apps/kitchen/MenuSetup";
-
+import MenuItems from "../pages/apps/MenuItems/MenuItems";
+import ItemsListing from "../pages/apps/MenuItems/ItemsListing";
+import ItemsEditing from "../pages/apps/MenuItems/ItemsEditing";
 // import Root from './Root';
 
 // lazy load all the views
@@ -364,6 +366,36 @@ const kitchenAppRoutes = {
       path: "/apps/kitchen/menu-setup",
       name: "details Kitchens",
       element: <MenuSetup />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/kitchen/menu",
+      name: "Items",
+      element: <MenuItems />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/kitchen/listing",
+      name: "Listing",
+      element: <ItemsListing />,
+    },
+    {
+      path: "/apps/kitchen/editing/:id",
+      name: "Editing",
+      element: <ItemsEditing />,
+    },
+  ],
+};
+const itemAppRoutes = {
+  path: "/apps/items",
+  name: "items",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  Children: [
+    {
+      path: "/apps/items/menu",
+      name: "Items",
+      element: <MenuItems />,
       route: PrivateRoute,
     },
   ],
@@ -822,6 +854,7 @@ const appRoutes = [
   ecommerceAppRoutes,
   organizationsAppRoutes,
   kitchenAppRoutes,
+  itemAppRoutes,
   menuAppRoutes,
   crmAppRoutes,
   emailAppRoutes,

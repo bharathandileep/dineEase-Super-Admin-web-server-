@@ -246,5 +246,4 @@ function ListKitchens() {
     </>
   );
 }
-
 export default ListKitchens;

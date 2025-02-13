@@ -120,6 +120,31 @@ const MENU_ITEMS: MenuItemTypes[] = [
           },
         ],
       },
+      {
+        key:"apps-menu-items",
+        label:"Menuitems",
+        parentKey:"apps-menu",
+        children:[
+          {
+            key:"Menu-items",
+            label:"Menuitems adding",
+            url:"/apps/kitchen/menu",
+            parentKey:"app-menu-items",
+          },
+          {
+            key:"apps-item",
+            label:"Menuitems Listing",
+            url:"/apps/kitchen/listing",
+            parentKey:"app-menu-items"
+
+          },
+          {
+            key:"apps-itemmenu",
+            label:"Item Editing",
+            url:"/apps/kitchen/editing/:id"
+          }
+        ]
+      }
     ],
   },
 ];
