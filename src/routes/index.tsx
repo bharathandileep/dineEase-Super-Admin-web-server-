@@ -12,6 +12,7 @@ import KitchensSubCategories from "../pages/apps/kitchen/KitchensSubCategories";
 import KitchensCategories from "../pages/apps/kitchen/KitchensCategories";
 import OrgCategories from "../pages/apps/Organizations/OrgCategories";
 import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
+import MenuSetup from "../pages/apps/kitchen/MenuSetup";
 
 // import Root from './Root';
 
@@ -357,6 +358,12 @@ const kitchenAppRoutes = {
       path: "/apps/kitchen/subcategory",
       name: "details Kitchens",
       element: <KitchensSubCategories />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/kitchen/menu-setup",
+      name: "details Kitchens",
+      element: <MenuSetup />,
       route: PrivateRoute,
     },
   ],
@@ -1386,8 +1393,6 @@ const otherPublicRoutes = [
     route: Route,
   },
 ];
-
-
 
 // flatten the list of all nested routes
 const flattenRoutes = (routes: RoutesProps[]) => {

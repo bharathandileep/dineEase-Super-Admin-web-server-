@@ -12,6 +12,9 @@ import {
   Button,
   Image,
   Badge,
+  Accordion,
+  Tab,
+  Tabs,
 } from "react-bootstrap";
 import {
   CheckCircle2,
@@ -35,6 +38,20 @@ import defaultProfile from "../../../assets/images/products/product-10.jpg";
 // Add these imports for card images
 import dashboardUI from "../../../assets/images/macbook.png";
 import cakeImage from "../../../assets/images/products/product-5.png";
+
+// Add this import for menu item images (you should replace with actual images)
+import defaultFoodImage from "../../../assets/images/products/product-5.png";
+
+interface MenuItem {
+  name: string;
+  price: number;
+  description: string;
+  image: string;
+}
+
+interface CartItem extends MenuItem {
+  quantity: number;
+}
 
 export interface IKitchenDetails {
   _id: string;
@@ -104,6 +121,84 @@ function KitchensDetails() {
   const [kitchenData, setKitchenData] = useState<IKitchenDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [product] = useState<Product>({
+    name: "Smart Wireless Headphones",
+    brand: "SoundTech",
+    description:
+      "Experience high-quality sound with active noise cancellation and long battery life.",
+    price: 250,
+    discount: 15,
+    rating: 4.7,
+    status: "In Stock",
+    features: [
+      "Bluetooth 5.0 Connectivity",
+      "Active Noise Cancellation",
+      "20 Hours Battery Life",
+      "Comfortable Over-Ear Fit",
+      "Fast Charging Support",
+    ],
+  });
+
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  // Calculate total price
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  // Handle add to cart
+  const handleAddToCart = (item: MenuItem) => {
+    const existingItem = cartItems.find(
+      (cartItem) => cartItem.name === item.name
+    );
+
+    if (existingItem) {
+      setCartItems(
+        cartItems.map((cartItem) =>
+          cartItem.name === item.name
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        )
+      );
+    } else {
+      setCartItems([...cartItems, { ...item, quantity: 1 }]);
+    }
+  };
+
+  // Checkout bar component
+  const CheckoutBar = () => {
+    if (cartItems.length === 0) return null;
+
+    return (
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "white",
+          padding: "1rem",
+          boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+          zIndex: 1000,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <span className="fw-bold">
+            {cartItems.reduce((sum, item) => sum + item.quantity, 0)} items
+          </span>
+          <span className="ms-3">Total: ₹{totalPrice}</span>
+        </div>
+        <Button variant="primary">Proceed to Checkout</Button>
+      </div>
+    );
+  };
+
+  const discountedPrice =
+    product.price - (product.price * product.discount) / 100;
 
   const onEdit = () => {
     navigate(`/apps/kitchen/edit/${id}`);
@@ -125,27 +220,6 @@ function KitchensDetails() {
       setLoading(false);
     }
   };
-
-  const [product] = useState<Product>({
-    name: "Smart Wireless Headphones",
-    brand: "SoundTech",
-    description:
-      "Experience high-quality sound with active noise cancellation and long battery life.",
-    price: 250,
-    discount: 15,
-    rating: 4.7,
-    status: "In Stock",
-    features: [
-      "Bluetooth 5.0 Connectivity",
-      "Active Noise Cancellation",
-      "20 Hours Battery Life",
-      "Comfortable Over-Ear Fit",
-      "Fast Charging Support",
-    ],
-  });
-
-  const discountedPrice =
-    product.price - (product.price * product.discount) / 100;
 
   useEffect(() => {
     const fetchKitchenDetails = async () => {
@@ -454,60 +528,311 @@ function KitchensDetails() {
         </Col>
       </Row>
 
-      {/* Product Details Card
-      <Card className="shadow-sm">
-        <Card.Body className="p-4">
-          <Row className="g-4">
-            <Col
-              md={6}
-              className="d-flex align-items-center justify-content-center">
-              <img
-                src={productImg1}
-                alt={product.name}
-                className="img-fluid rounded"
-                style={{ maxHeight: "400px", objectFit: "contain" }}
-              />
-            </Col>
+      <Card className="shadow-sm mb-4">
+        <Card.Body>
+          <h4 className="mb-4">Our Menu</h4>
+          <Tabs defaultActiveKey="breakfast" className="mb-4">
+            <Tab eventKey="breakfast" title="Breakfast">
+              <Accordion>
+                {[
+                  {
+                    category: "South Indian",
+                    items: [
+                      {
+                        name: "Masala Dosa",
+                        price: 80,
+                        description: "Crispy crepe filled with spiced potatoes",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Idli Sambar",
+                        price: 60,
+                        description: "Steamed rice cakes with lentil soup",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Vada",
+                        price: 40,
+                        description: "Crispy lentil donuts",
+                        image: defaultFoodImage,
+                      },
+                    ],
+                  },
+                  {
+                    category: "Continental",
+                    items: [
+                      {
+                        name: "English Breakfast",
+                        price: 250,
+                        description: "Eggs, bacon, beans, and toast",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Pancakes",
+                        price: 150,
+                        description: "Fluffy pancakes with maple syrup",
+                        image: defaultFoodImage,
+                      },
+                    ],
+                  },
+                ].map((category, idx) => (
+                  <Accordion.Item key={idx} eventKey={idx.toString()}>
+                    <Accordion.Header>{category.category}</Accordion.Header>
+                    <Accordion.Body>
+                      {category.items.map((item, itemIdx) => (
+                        <div
+                          key={itemIdx}
+                          className="d-flex align-items-center mb-3 p-2 border-bottom"
+                          style={{ gap: "15px" }}
+                        >
+                          {/* Image */}
+                          <div
+                            className="flex-shrink-0"
+                            style={{ width: "80px", height: "80px" }}
+                          >
+                            <img
+                              src={item.image || defaultFoodImage}
+                              alt={item.name}
+                              className="rounded"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          </div>
 
-            <Col md={6}>
-              <div className="ps-md-4">
-                <h2 className="mb-3">{product.name}</h2>
-                <h5 className="text-muted mb-3">by {product.brand}</h5>
-                <Badge bg="success" className="mb-4 px-3 py-2">
-                  {product.status}
-                </Badge>
-                <h3 className="mb-4">
-                  <del className="text-muted me-3">
-                    ${product.price.toFixed(2)}
-                  </del>
-                  <span className="text-danger">
-                    ${discountedPrice.toFixed(2)}
-                  </span>
-                </h3>
+                          {/* Name and Description */}
+                          <div className="flex-grow-1">
+                            <h6 className="mb-1">{item.name}</h6>
+                            <small className="text-muted">
+                              {item.description}
+                            </small>
+                          </div>
 
-                <p className="mb-4">{product.description}</p>
+                          {/* Price and Add Button */}
+                          <div
+                            className="text-end d-flex flex-column align-items-end"
+                            style={{ minWidth: "100px" }}
+                          >
+                            <h6 className="mb-2">₹{item.price}</h6>
+                            <Button
+                              variant="outline-primary"
+                              size="sm"
+                              className="px-3"
+                              onClick={() => handleAddToCart(item)}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+            </Tab>
 
-                <ul className="list-unstyled mb-4">
-                  {product.features.map((feature, index) => (
-                    <li key={index} className="mb-2 d-flex align-items-center">
-                      <span className="me-2">✅</span> {feature}
-                    </li>
-                  ))}
-                </ul>
+            {/* Lunch Tab */}
+            <Tab eventKey="lunch" title="Lunch">
+              <Accordion>
+                {[
+                  {
+                    category: "Main Course",
+                    items: [
+                      {
+                        name: "Butter Chicken",
+                        price: 280,
+                        description: "Creamy tomato based chicken curry",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Dal Makhani",
+                        price: 180,
+                        description: "Creamy black lentils",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Veg Biryani",
+                        price: 220,
+                        description: "Fragrant rice with vegetables",
+                        image: defaultFoodImage,
+                      },
+                    ],
+                  },
+                  {
+                    category: "Breads",
+                    items: [
+                      {
+                        name: "Naan",
+                        price: 40,
+                        description: "Butter naan",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Roti",
+                        price: 20,
+                        description: "Whole wheat bread",
+                        image: defaultFoodImage,
+                      },
+                    ],
+                  },
+                ].map((category, idx) => (
+                  <Accordion.Item key={idx} eventKey={idx.toString()}>
+                    <Accordion.Header>{category.category}</Accordion.Header>
+                    <Accordion.Body>
+                      {category.items.map((item, itemIdx) => (
+                        <div
+                          key={itemIdx}
+                          className="d-flex align-items-center mb-3 p-2 border-bottom"
+                          style={{ gap: "15px" }}
+                        >
+                          {/* Image */}
+                          <div
+                            className="flex-shrink-0"
+                            style={{ width: "80px", height: "80px" }}
+                          >
+                            <img
+                              src={item.image || defaultFoodImage}
+                              alt={item.name}
+                              className="rounded"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          </div>
 
-                <div className="d-flex gap-3">
-                  <Button variant="primary" size="lg" className="px-4">
-                    Add to Cart
-                  </Button>
-                  <Button variant="outline-danger" size="lg" className="px-4">
-                    ❤️ Wishlist
-                  </Button>
-                </div>
-              </div>
-            </Col>
-          </Row>
+                          {/* Name and Description */}
+                          <div className="flex-grow-1">
+                            <h6 className="mb-1">{item.name}</h6>
+                            <small className="text-muted">
+                              {item.description}
+                            </small>
+                          </div>
+
+                          {/* Price and Add Button */}
+                          <div
+                            className="text-end d-flex flex-column align-items-end"
+                            style={{ minWidth: "100px" }}
+                          >
+                            <h6 className="mb-2">₹{item.price}</h6>
+                            <Button
+                              variant="outline-primary"
+                              size="sm"
+                              className="px-3"
+                              onClick={() => handleAddToCart(item)}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+            </Tab>
+
+            {/* Dinner Tab */}
+            <Tab eventKey="dinner" title="Dinner">
+              <Accordion>
+                {[
+                  {
+                    category: "Starters",
+                    items: [
+                      {
+                        name: "Paneer Tikka",
+                        price: 200,
+                        description: "Grilled cottage cheese with spices",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Chicken 65",
+                        price: 220,
+                        description: "Spicy fried chicken",
+                        image: defaultFoodImage,
+                      },
+                    ],
+                  },
+                  {
+                    category: "Main Course",
+                    items: [
+                      {
+                        name: "Fish Curry",
+                        price: 300,
+                        description: "Kerala style fish curry",
+                        image: defaultFoodImage,
+                      },
+                      {
+                        name: "Palak Paneer",
+                        price: 220,
+                        description: "Cottage cheese in spinach gravy",
+                        image: defaultFoodImage,
+                      },
+                    ],
+                  },
+                ].map((category, idx) => (
+                  <Accordion.Item key={idx} eventKey={idx.toString()}>
+                    <Accordion.Header>{category.category}</Accordion.Header>
+                    <Accordion.Body>
+                      {category.items.map((item, itemIdx) => (
+                        <div
+                          key={itemIdx}
+                          className="d-flex align-items-center mb-3 p-2 border-bottom"
+                          style={{ gap: "15px" }}
+                        >
+                          {/* Image */}
+                          <div
+                            className="flex-shrink-0"
+                            style={{ width: "80px", height: "80px" }}
+                          >
+                            <img
+                              src={item.image || defaultFoodImage}
+                              alt={item.name}
+                              className="rounded"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          </div>
+
+                          {/* Name and Description */}
+                          <div className="flex-grow-1">
+                            <h6 className="mb-1">{item.name}</h6>
+                            <small className="text-muted">
+                              {item.description}
+                            </small>
+                          </div>
+
+                          {/* Price and Add Button */}
+                          <div
+                            className="text-end d-flex flex-column align-items-end"
+                            style={{ minWidth: "100px" }}
+                          >
+                            <h6 className="mb-2">₹{item.price}</h6>
+                            <Button
+                              variant="outline-primary"
+                              size="sm"
+                              className="px-3"
+                              onClick={() => handleAddToCart(item)}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+            </Tab>
+          </Tabs>
         </Card.Body>
-      </Card> */}
+      </Card>
     </div>
   );
 }
