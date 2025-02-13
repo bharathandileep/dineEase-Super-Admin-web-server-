@@ -1,7 +1,7 @@
 import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
-// ✅ Get all designations
+
 export const getAllDesignations = async () => {
   try {
     const response = await axiosInstance.get(apiConfig.designation.getAllDesignations);

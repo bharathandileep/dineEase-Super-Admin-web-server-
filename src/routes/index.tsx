@@ -12,7 +12,7 @@ import KitchensSubCategories from "../pages/apps/kitchen/KitchensSubCategories";
 import KitchensCategories from "../pages/apps/kitchen/KitchensCategories";
 import OrgCategories from "../pages/apps/Organizations/OrgCategories";
 import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
-import MenuSetup from "../pages/apps/kitchen/MenuSetup";
+import OurMenu from "../pages/apps/kitchen/OurMenu";
 import MenuItems from "../pages/apps/MenuItems/MenuItems";
 import ItemsListing from "../pages/apps/MenuItems/ItemsListing";
 import ItemsEditing from "../pages/apps/MenuItems/ItemsEditing";
@@ -274,7 +274,6 @@ const EmployeeDetails = React.lazy(
   () => import("../pages/apps/employee/employeedetails")
 );
 
-
 export interface RoutesProps {
   path: RouteProps["path"];
   name?: string;
@@ -375,9 +374,9 @@ const kitchenAppRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/apps/kitchen/menu-setup",
+      path: "/apps/kitchen/our-menu",
       name: "details Kitchens",
-      element: <MenuSetup />,
+      element: <OurMenu />,
       route: PrivateRoute,
     },
     {
@@ -484,7 +483,6 @@ const employeeRoutes = {
     },
   ],
 };
-
 
 const dashboardRoutes = {
   path: "/",

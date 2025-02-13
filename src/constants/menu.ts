@@ -35,8 +35,8 @@ const MENU_ITEMS: MenuItemTypes[] = [
       },
       {
         key: "kitchen-menu",
-        label: "Recipe & Menu Setup",
-        url: "/apps/kitchen/menu-setup",
+        label: "Our Menu",
+        url: "/apps/kitchen/our-menu",
         parentKey: "apps-kitchen",
       },
     ],
