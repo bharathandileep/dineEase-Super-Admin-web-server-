@@ -134,4 +134,16 @@ export const apiConfig = {
     toggleEmployeeStatus: (id: string | undefined) =>
       `/employee/employees/${id}/toggle-status`,
   },
+  orgemployee: {
+    createOrgEmployee: "/orgemployee/orgemployee",
+    getAllOrgEmployees: "/orgemployee/orgemployee/all",
+    getOrgEmployeeById: (id: string | undefined) =>
+      `/orgemployee/orgemployee/${id}`,
+    updateOrgEmployee: (id: string | undefined) =>
+      `/orgemployee/orgemployee/${id}`,
+    deleteOrgEmployee: (id: string | undefined) =>
+      `/orgemployee/orgemployee/${id}`,
+    toggleOrgEmployeeStatus: (id: string | undefined) =>
+      `/orgemployee/orgemployee/${id}/toggle-status`,
+  },
 };

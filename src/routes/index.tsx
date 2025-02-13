@@ -16,9 +16,13 @@ import OurMenu from "../pages/apps/kitchen/OurMenu";
 import MenuItems from "../pages/apps/MenuItems/MenuItems";
 import ItemsListing from "../pages/apps/MenuItems/ItemsListing";
 import ItemsEditing from "../pages/apps/MenuItems/ItemsEditing";
-import EmployeeManagment from "../pages/apps/employee/EmpManagment";
-import EmployeeList from "../pages/apps/employee/listemployee";
-import EmployeeEdit from "../pages/apps/employee/editemployee";
+import EmployeeManagment from "../pages/apps/adminemployee/addemployee";
+import EmployeeList from "../pages/apps/adminemployee/listemployee";
+import EmployeeEdit from "../pages/apps/adminemployee/editemployee";
+import OrgEmployeeManagement from "../pages/apps/organisationemployee/addorgemployee";
+import OrgEmployeeList from "../pages/apps/organisationemployee/listorgemployee";
+import OrgEmployeeEdit from "../pages/apps/organisationemployee/editorgemployee";
+import OrgEmployeeDetails from "../pages/apps/organisationemployee/orgemployeedetails";
 
 // import Root from './Root';
 
@@ -271,7 +275,7 @@ const Designations = React.lazy(
   () => import("../pages/apps/Designations/listdesignations")
 );
 const EmployeeDetails = React.lazy(
-  () => import("../pages/apps/employee/employeedetails")
+  () => import("../pages/apps/adminemployee/employeedetails")
 );
 
 export interface RoutesProps {
@@ -326,6 +330,30 @@ const organizationsAppRoutes = {
       path: "/apps/org/subcategory",
       name: "Edit Organizations",
       element: <OrgSubCategories />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/organizations/employ/add",
+      name: "Organizations employ add",
+      element: <OrgEmployeeManagement/>,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/organizations/employ/list",
+      name: "Organisation Employee List",
+      element: <OrgEmployeeList />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/organizations/employ/edit/:id",
+      name: "Organisation Employee edit",
+      element: <OrgEmployeeEdit />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/apps/organizations/employ/details/:id",
+      name: "Organisation Employee details",
+      element: <OrgEmployeeDetails />,
       route: PrivateRoute,
     },
   ],
@@ -1478,6 +1506,8 @@ const otherPublicRoutes = [
     route: Route,
   },
 ];
+
+
 
 // flatten the list of all nested routes
 const flattenRoutes = (routes: RoutesProps[]) => {
