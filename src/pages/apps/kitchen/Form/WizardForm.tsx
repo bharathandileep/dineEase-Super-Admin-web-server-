@@ -165,20 +165,20 @@ export function WizardForm({ initialData }: WizardFormProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // const handleNext = () => {
-  //   if (currentStep === 1 && validateStep1()) {
-  //     setCurrentStep(2);
-  //   } else if (currentStep === 2 && validateStep2()) {
-  //     initialData ? handleEdit() : handleSubmit();
-  //   }
-  // };
   const handleNext = () => {
-    if (currentStep === 1) {
+    if (currentStep === 1 && validateStep1()) {
       setCurrentStep(2);
-    } else if (currentStep === 2) {
+    } else if (currentStep === 2 && validateStep2()) {
       initialData ? handleEdit() : handleSubmit();
     }
   };
+  // const handleNext = () => {
+  //   if (currentStep === 1) {
+  //     setCurrentStep(2);
+  //   } else if (currentStep === 2) {
+  //     initialData ? handleEdit() : handleSubmit();
+  //   }
+  // };
 
   const handleBack = () => {
     setCurrentStep(currentStep - 1);

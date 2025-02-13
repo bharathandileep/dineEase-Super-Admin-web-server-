@@ -104,5 +104,12 @@ export const apiConfig = {
       `/sub-menu-category/subcategories/${id}`,
     toggleSubcategoryStatus: (id: string | undefined) =>
       `/sub-menu-category/subcategories/${id}/toggle-status`,
-  },
-};
+
+    createItem:"/menu-items/allmenuitems",
+    listItems:"/menu-items/allmenuitems",
+    getItemById:(id:string | undefined)=>`/menu-items/allmenuitems/${id}`,
+    updateItem:(id:string | undefined)=>`/menu-items/allmenuitems/${id}`,
+    deleteItem:(id:string | undefined)=>`/menu-items/allmenuitems/${id}`,
+    changeItemStatus:(id:string | undefined)=>`/menu-items/allmenuitems/${id}/status`,
+    },
+  };
