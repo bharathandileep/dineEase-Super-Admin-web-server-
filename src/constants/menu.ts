@@ -47,15 +47,15 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/apps/organizations/list",
         parentKey: "apps-Organizations",
       },
+      // {
+      //   key: "Organization-employadd",
+      //   label: "Organizations employ list",
+      //   url: "/apps/organizations/employ/add",
+      //   parentKey: "apps-Organizations",
+      // },
       {
         key: "Organization-employadd",
-        label: "Organizations employ list",
-        url: "/apps/organizations/employ/add",
-        parentKey: "apps-Organizations",
-      },
-      {
-        key: "Organization-employadd",
-        label: "Organizations employ",
+        label: "Organizations employ-list",
         url: "/apps/organizations/employ/list",
         parentKey: "apps-Organizations",
       },
@@ -161,13 +161,13 @@ const MENU_ITEMS: MenuItemTypes[] = [
     icon: "user",
     url: "/apps/designations",
   },
-  {
-    key: "apps-employee",
-    label: "Employee",
-    isTitle: false,
-    icon: "user",
-    url: "/apps/employee/add",
-  },
+  // {
+  //   key: "apps-employee",
+  //   label: "Employee",
+  //   isTitle: false,
+  //   icon: "user",
+  //   url: "/apps/employee/add",
+  // },
   {
     key: "apps-employee",
     label: "Employee-list",

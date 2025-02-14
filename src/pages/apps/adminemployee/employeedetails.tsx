@@ -14,7 +14,9 @@ interface Employee {
   employee_status: string;
   profile_picture: string;
   aadhar_number?: string;
-  pan_number?: string;
+  pan_number: string;
+  aadhar_image: string; 
+  pan_image: string; 
   address: {
     street_address: string;
     city: string;
@@ -156,7 +158,7 @@ const EmployeeDetails = () => {
                 style={{
                   width: "150px",
                   height: "150px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                 }}
               />
 
@@ -211,11 +213,31 @@ const EmployeeDetails = () => {
                   <p>
                     <strong>Aadhaar Number:</strong> {employee.aadhar_number || "N/A"}
                   </p>
+                  {employee.aadhar_image && (
+                    <div className="mt-2">
+                      <strong>Aadhaar Image:</strong>
+                      <img
+                        src={employee.aadhar_image}
+                        alt="Aadhaar Card"
+                        style={{ maxWidth: "100%", height: "auto", marginTop: "10px" }}
+                      />
+                    </div>
+                  )}
                 </Col>
                 <Col md={6}>
                   <p>
                     <strong>PAN Number:</strong> {employee.pan_number || "N/A"}
                   </p>
+                  {employee.pan_image && (
+                    <div className="mt-2">
+                      <strong>PAN Image:</strong>
+                      <img
+                        src={employee.pan_image}
+                        alt="PAN Card"
+                        style={{ maxWidth: "100%", height: "auto", marginTop: "10px" }}
+                      />
+                    </div>
+                  )}
                 </Col>
               </Row>
             </Card.Body>

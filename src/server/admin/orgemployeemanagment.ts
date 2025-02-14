@@ -16,13 +16,13 @@ export const getAllOrgEmployees = async () => {
 export const getOrgEmployeeById = async (id: string | undefined) => {
   try {
     const response = await axiosInstance.get(apiConfig.orgemployee.getOrgEmployeeById(id));
-    const orgEmployee = response.data;
+    const Employee = response.data;
 
     // Extract address information from the organization employee data
-    const address = orgEmployee.address || {};
+    const address = Employee.address || {};
 
     return {
-      ...orgEmployee,
+      ...Employee,
       address,
     };
   } catch (error: any) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Row, Col, Card, Button } from "react-bootstrap";
+import { Row, Col, Card, Button, Image } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -12,6 +12,8 @@ import { getAllDesignations } from "../../../server/admin/designations";
 const EmployeeManagement = () => {
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [aadharImage, setAadharImage] = useState<File | null>(null);
+  const [panImage, setPanImage] = useState<File | null>(null);
   const [designations, setDesignations] = useState<{ _id: string; designation_name: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -72,6 +74,16 @@ const EmployeeManagement = () => {
         formData.append("profile_picture", profileImage);
       }
 
+      // Aadhaar Card Upload
+      if (aadharImage) {
+        formData.append("aadhar_image", aadharImage);
+      }
+
+      // PAN Card Upload
+      if (panImage) {
+        formData.append("pan_image", panImage);
+      }
+
       const response = await createEmployee(formData);
 
       if (response.status) {
@@ -87,9 +99,9 @@ const EmployeeManagement = () => {
   };
 
   // Handle File Upload
-  const handleFileUpload = (files: File[]) => {
+  const handleFileUpload = (files: File[], setImage: React.Dispatch<React.SetStateAction<File | null>>) => {
     if (files.length > 0) {
-      setProfileImage(files[0]);
+      setImage(files[0]);
     }
   };
 
@@ -167,7 +179,15 @@ const EmployeeManagement = () => {
             <Card>
               <Card.Body className="text-center">
                 <h5 className="text-uppercase mt-0 mb-3">Profile Picture</h5>
-                <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files))} />
+                <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setProfileImage)} />
+                {profileImage && (
+                  <Image
+                    src={URL.createObjectURL(profileImage)}
+                    alt="Profile Preview"
+                    className="mt-3"
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  />
+                )}
               </Card.Body>
             </Card>
           </Col>
@@ -269,6 +289,18 @@ const EmployeeManagement = () => {
                       errors={errors}
                       validation={{ required: "Aadhaar number is required" }}
                     />
+                    <div className="mb-3">
+                      <label className="form-label">Aadhaar Card Image</label>
+                      <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setAadharImage)} />
+                      {aadharImage && (
+                        <Image
+                          src={URL.createObjectURL(aadharImage)}
+                          alt="Aadhaar Preview"
+                          className="mt-3"
+                          style={{ maxWidth: "100%", maxHeight: "200px" }}
+                        />
+                      )}
+                    </div>
                   </Col>
                   <Col md={6}>
                     <FormInput
@@ -280,6 +312,18 @@ const EmployeeManagement = () => {
                       errors={errors}
                       validation={{ required: "PAN number is required" }}
                     />
+                    <div className="mb-3">
+                      <label className="form-label">PAN Card Image</label>
+                      <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setPanImage)} />
+                      {panImage && (
+                        <Image
+                          src={URL.createObjectURL(panImage)}
+                          alt="PAN Preview"
+                          className="mt-3"
+                          style={{ maxWidth: "100%", maxHeight: "200px" }}
+                        />
+                      )}
+                    </div>
                   </Col>
                 </Row>
               </Card.Body>

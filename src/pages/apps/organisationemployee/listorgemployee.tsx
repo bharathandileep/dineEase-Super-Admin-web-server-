@@ -40,7 +40,7 @@ const OrgEmployeeList = () => {
   }, []);
 
   const handleEdit = (id: string) => {
-    navigate(`/apps/employee/edit/${id}`);
+    navigate(`/apps/organizations/employ/edit/${id}`);  
   };
 
   const handleDelete = async (id: string) => {
@@ -60,31 +60,31 @@ const OrgEmployeeList = () => {
     }
   };
 
-  const handleToggleStatus = async (id: string) => {
-    try {
-      const response = await toggleOrgEmployeeStatus(id);
-      if (response.status) {
-        toast.success("Employee status updated successfully!");
-        setEmployees(orgemployees.map(emp => emp._id === id ? { ...emp, orgemployee_status: emp.employee_status === "Active" ? "Inactive" : "Active" } : emp));
-      } else {
-        toast.error("Failed to update status.");
-      }
-    } catch (error) {
-      console.error("Error updating employee status:", error);
-      toast.error("An error occurred while updating status.");
-    }
-  };
-
+ const handleToggleStatus = async (id: string) => {
+     try {
+       const response = await toggleOrgEmployeeStatus(id);
+       if (response.status) {
+         toast.success("Employee status updated successfully!");
+         setEmployees(orgemployees.map(emp => emp._id === id ? { ...emp, employee_status: emp.employee_status === "Active" ? "Inactive" : "Active" } : emp));
+       } else {
+         toast.error("Failed to update status.");
+       }
+     } catch (error) {
+       console.error("Error updating employee status:", error);
+       toast.error("An error occurred while updating status.");
+     }
+   };
+ 
   return (
     <React.Fragment>
       {/* Breadcrumb Navigation */}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb m-2">
           <li className="breadcrumb-item">
-            <Link to="/employees/list">Employees</Link>
+            <Link to="/employees/list">Organisation Employees</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
-            Employee List
+          Organisation Employee List
           </li>
         </ol>
       </nav>
@@ -92,8 +92,8 @@ const OrgEmployeeList = () => {
       {/* Page Header */}
       <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
         <div className="d-flex align-items-center justify-content-between">
-          <h3 className="page-title m-0" style={{ color: "#fff" }}>Employees</h3>
-          <Link to="/apps/employee/add" className="btn btn-danger waves-effect waves-light">
+          <h3 className="page-title m-0" style={{ color: "#fff" }}>Organisation Employees</h3>
+          <Link to="/apps/organizations/employ/add"className="btn btn-danger waves-effect waves-light">
             <i className="mdi mdi-plus-circle me-1"></i> Add New Employee
           </Link>
         </div>
@@ -112,7 +112,7 @@ const OrgEmployeeList = () => {
                 <Card
                   className="product-box h-100 shadow-sm position-relative"
                   style={{ transition: "all 0.3s ease-in-out", cursor: "pointer" }}
-                  onClick={() => navigate(`/apps/employee/details/${orgemployees._id}`)}
+                  onClick={() => navigate(`/apps/organizations/employ/details/${orgemployees._id}`)}  
                 >
                   <Card.Body className="d-flex flex-column align-items-center text-center">
                     {/* Profile Picture */}
@@ -124,7 +124,7 @@ const OrgEmployeeList = () => {
                         style={{
                           width: "80px",
                           height: "80px",
-                          objectFit: "cover",
+                          objectFit: "contain",
                           transition: "transform 0.3s ease-in-out",
                         }}
                       />
