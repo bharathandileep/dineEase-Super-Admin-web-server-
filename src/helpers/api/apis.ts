@@ -146,4 +146,14 @@ export const apiConfig = {
     toggleOrgEmployeeStatus: (id: string | undefined) =>
       `/orgemployee/orgemployee/${id}/toggle-status`,
   },
+  kitchenMenu: {
+    getKitchenMenu: (id: string | undefined) =>
+      `/kitchens-menu/kitchen-menu/${id}`,
+    createkitchenMenu: (id: string | undefined) =>
+      `/kitchens-menu/kitchen-menu/${id}`,
+    removekitchenMenu: (
+      item: string | undefined,
+      kitchenId: string | undefined
+    ) => `/kitchens-menu/kitchen-menu/${kitchenId}/remove/${item}`,
+  },
 };

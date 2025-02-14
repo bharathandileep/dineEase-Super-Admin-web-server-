@@ -402,7 +402,7 @@ const kitchenAppRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/apps/kitchen/our-menu",
+      path: "/apps/kitchen/our-menu/:id",
       name: "details Kitchens",
       element: <OurMenu />,
       route: PrivateRoute,

@@ -3,11 +3,12 @@ import axios, { AxiosInstance } from "axios";
 import config from "../../config";
 
 const AUTH_SESSION_KEY = "Session_token";
-const REFRESH_INTERVAL = 14 * 60 * 1000; // 14 minutes
+const REFRESH_INTERVAL = 2 * 60 * 60 * 1000; 
 
 // Create axios instance
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: config.API_URL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,10 +31,13 @@ const getUserFromCookie = () => {
 const refreshTokenLogic = async (): Promise<string> => {
   try {
     const response = await axiosInstance.post(
-      "/auth/refresh-token",
-      {},
-      { withCredentials: true }
+      "/auth/new/access-token",
+      {}, // Empty body (if needed)
+      {
+        withCredentials: true,
+      }
     );
+
     const { accessToken } = response.data;
     localStorage.setItem(
       AUTH_SESSION_KEY,

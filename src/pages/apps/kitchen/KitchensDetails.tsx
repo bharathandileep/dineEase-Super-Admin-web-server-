@@ -42,6 +42,7 @@ import cakeImage from "../../../assets/images/products/product-5.png";
 // Add this import for menu item images (you should replace with actual images)
 import defaultFoodImage from "../../../assets/images/products/product-5.png";
 import { listItems } from "../../../server/admin/items";
+import { createNewkitchenMenu } from "../../../server/admin/kitchensMenuCreation";
 
 interface MenuItem {
   name: string;
@@ -57,6 +58,7 @@ type FoodItem = {
   description: string;
   image: string;
   status: boolean;
+  itemId?: string | undefined;
 };
 
 type TransformedData = Record<string, Record<string, FoodItem[]>>;
@@ -121,33 +123,15 @@ function KitchensDetails() {
   const [groupedItems, setGroupedItems] = useState<TransformedData>({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
-  // Handle ad to cart
-  const handleAddToCart = (item: MenuItem) => {
-    const existingItem = cartItems.find(
-      (cartItem) => cartItem.name === item.name
-    );
-
-    if (existingItem) {
-      setCartItems(
-        cartItems.map((cartItem) =>
-          cartItem.name === item.name
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        )
-      );
-    } else {
-      setCartItems([...cartItems, { ...item, quantity: 1 }]);
-    }
-  };
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [activeKey, setActiveKey] = useState<string>("");
 
   const onEdit = () => {
     navigate(`/apps/kitchen/edit/${id}`);
   };
   const onDelete = async () => {
     setLoading(true);
-
+    window.confirm("Are your sure delete this organisation");
     try {
       const response = await deletekitchenDetails(id);
       if (response.status) {
@@ -181,6 +165,7 @@ function KitchensDetails() {
         description: item.item_description,
         image: item.item_image,
         status: item.status,
+        itemId: item._id,
       });
 
       return acc;
@@ -205,21 +190,89 @@ function KitchensDetails() {
     const fetchItemDetails = async () => {
       try {
         const response = await listItems();
-        setGroupedItems(transformFoodData(response.data));
+        const transformedData = transformFoodData(response.data);
+        setGroupedItems(transformedData);
+        const firstCategory = Object.keys(transformedData)[0];
+        if (firstCategory) {
+          setActiveKey(firstCategory);
+        }
       } catch (error) {
         console.error("Error fetching kitchen details:", error);
       }
     };
     fetchItemDetails();
   }, []);
+  const handleAddToCart = (item: FoodItem) => {
+    setCartItems((prevCart) => {
+      const existingItem = prevCart.find(
+        (cartItem) => cartItem.name === item.name
+      );
+
+      if (existingItem) {
+        return prevCart.map((cartItem) =>
+          cartItem.name === item.name
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        );
+      } else {
+        return [...prevCart, { ...item, quantity: 1 }];
+      }
+    });
+  };
+  const handleRemoveFromCart = (item: { name: string }) => {
+    setCartItems((prevCart) =>
+      prevCart.filter((cartItem) => cartItem.name !== item.name)
+    );
+  };
 
   if (loading) {
     return <div>Loading...</div>;
   }
-
   if (!kitchenData) {
     return <div>No data found</div>;
   }
+
+  const CheckoutBar = ({ cartItems, onProceed }: any) => {
+    if (cartItems?.length === 0) return null;
+
+    return (
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "white",
+          padding: "1rem",
+          boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+          zIndex: 1000,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <span className="fw-bold">
+            {cartItems.reduce((sum: any, item: any) => sum + item.quantity, 0)}{" "}
+            items
+          </span>
+        </div>
+        <Button variant="primary" onClick={onProceed}>
+          Proceed to Checkout
+        </Button>
+      </div>
+    );
+  };
+  const handleProceedToCheckout = async () => {
+    try {
+      const response = await createNewkitchenMenu(id, cartItems);
+      setKitchenData(response.data);
+    } catch (error) {
+      console.error("Error fetching kitchen details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container-fluid px-4 py-3">
@@ -379,8 +432,6 @@ function KitchensDetails() {
           </Col>
         </Row>
       </div>
-
-      {/* Information Cards */}
       <Row className="mb-4 g-3">
         <Col md={6}>
           <Card className="h-100 shadow-sm">
@@ -392,27 +443,31 @@ function KitchensDetails() {
               <div className="mb-3">
                 <p className="mb-2">
                   <strong>Certificate Number:</strong>{" "}
-                  {kitchenData?.fssaiDetails[0]?.ffsai_certificate_number}
+                  {kitchenData?.fssaiDetails?.[0]?.ffsai_certificate_number ||
+                    "N/A"}
                 </p>
                 <p className="mb-2">
                   <strong>Licence owner:</strong>{" "}
-                  {kitchenData?.fssaiDetails[0]?.ffsai_card_owner_name}
+                  {kitchenData?.fssaiDetails?.[0]?.ffsai_card_owner_name ||
+                    "N/A"}
                 </p>
                 <p className="mb-2">
                   <strong>Expiry Date:</strong>{" "}
-                  {kitchenData?.fssaiDetails[0]?.expiry_date}
+                  {kitchenData?.fssaiDetails?.[0]?.expiry_date || "N/A"}
                 </p>
               </div>
-              <img
-                src={kitchenData?.fssaiDetails[0]?.ffsai_certificate_image}
-                alt="FSSAI Dashboard"
-                className="img-fluid rounded"
-                style={{
-                  maxHeight: "150px",
-                  objectFit: "cover",
-                  width: "100%",
-                }}
-              />
+              {kitchenData?.fssaiDetails?.[0]?.ffsai_certificate_image && (
+                <img
+                  src={kitchenData.fssaiDetails[0].ffsai_certificate_image}
+                  alt="FSSAI Dashboard"
+                  className="img-fluid rounded"
+                  style={{
+                    maxHeight: "150px",
+                    objectFit: "cover",
+                    width: "100%",
+                  }}
+                />
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -427,19 +482,21 @@ function KitchensDetails() {
               <div className="mb-3">
                 <p className="mb-2">
                   <strong>PAN Number:</strong>{" "}
-                  {kitchenData?.panDetails[0]?.pan_card_number}
+                  {kitchenData?.panDetails?.[0]?.pan_card_number || "N/A"}
                 </p>
                 <p className="mb-2">
                   <strong>Card Holder:</strong>{" "}
-                  {kitchenData?.panDetails[0]?.pan_card_user_name}
+                  {kitchenData?.panDetails?.[0]?.pan_card_user_name || "N/A"}
                 </p>
               </div>
-              <img
-                src={kitchenData?.panDetails[0].pan_card_image}
-                alt="Cake"
-                className="img-fluid rounded"
-                style={{ maxHeight: "150px", objectFit: "cover" }}
-              />
+              {kitchenData?.panDetails?.[0]?.pan_card_image && (
+                <img
+                  src={kitchenData.panDetails[0].pan_card_image}
+                  alt="PAN Card"
+                  className="img-fluid rounded"
+                  style={{ maxHeight: "150px", objectFit: "cover" }}
+                />
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -454,37 +511,44 @@ function KitchensDetails() {
               <div className="mb-3">
                 <p className="mb-2">
                   <strong>GST Number:</strong>{" "}
-                  {kitchenData?.gstDetails[0].gst_number}
+                  {kitchenData?.gstDetails?.[0]?.gst_number || "N/A"}
                 </p>
                 <p className="mb-2">
                   <strong>Expiry Date:</strong>{" "}
-                  {kitchenData?.gstDetails[0].expiry_date}
+                  {kitchenData?.gstDetails?.[0]?.expiry_date || "N/A"}
                 </p>
               </div>
-              <img
-                src={kitchenData?.gstDetails[0].gst_certificate_image}
-                alt="GST Dashboard"
-                className="img-fluid rounded"
-                style={{
-                  maxHeight: "150px",
-                  objectFit: "cover",
-                  width: "100%",
-                }}
-              />
+              {kitchenData?.gstDetails?.[0]?.gst_certificate_image && (
+                <img
+                  src={kitchenData.gstDetails[0].gst_certificate_image}
+                  alt="GST Certificate"
+                  className="img-fluid rounded"
+                  style={{
+                    maxHeight: "150px",
+                    objectFit: "cover",
+                    width: "100%",
+                  }}
+                />
+              )}
             </Card.Body>
           </Card>
         </Col>
+
         <Col md={6}>
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <h5 className="card-title mb-3">Location Details</h5>
               <p className="card-text mb-4">
-                {kitchenData?.addresses[0]?.street_address},{" "}
-                {kitchenData?.addresses[0]?.city},{" "}
-                {kitchenData?.addresses[0]?.district},{" "}
-                {kitchenData?.addresses[0]?.state},{" "}
-                {kitchenData?.addresses[0]?.pincode},
-                {kitchenData?.addresses[0]?.country}
+                {[
+                  kitchenData?.addresses?.[0]?.street_address,
+                  kitchenData?.addresses?.[0]?.city,
+                  kitchenData?.addresses?.[0]?.district,
+                  kitchenData?.addresses?.[0]?.state,
+                  kitchenData?.addresses?.[0]?.pincode,
+                  kitchenData?.addresses?.[0]?.country,
+                ]
+                  .filter(Boolean)
+                  .join(", ") || "No address available"}
               </p>
               <div
                 className="map-container"
@@ -498,7 +562,7 @@ function KitchensDetails() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+                />
               </div>
             </Card.Body>
           </Card>
@@ -507,22 +571,36 @@ function KitchensDetails() {
 
       <Card className="shadow-sm mb-4">
         <Card.Body>
-          <h4 className="mb-4">Our Menu</h4>
-          <Tabs defaultActiveKey="breakfast" className="mb-4">
-            {Object.entries(groupedItems)?.map(([category, subcategories]) => (
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h4 className="mb-0">Choose Menu</h4>
+            <Button
+              variant="light"
+              className="d-flex align-items-center gap-1 px-3 py-1"
+              style={{
+                backgroundColor: "bg-success",
+                border: "none",
+                fontSize: "0.9rem",
+                height: "35px",
+              }}
+              onClick={() => navigate(`/apps/kitchen/our-menu/${id}`)}
+            >
+              Our menu
+            </Button>
+          </div>
+          <Tabs activeKey={activeKey} onSelect={(k: any) => setActiveKey(k)}>
+            {Object.entries(groupedItems).map(([category, subcategories]) => (
               <Tab eventKey={category} title={category} key={category}>
                 <Accordion>
-                  {Object.entries(subcategories)?.map(([subcategory, items]) => (
+                  {Object.entries(subcategories).map(([subcategory, items]) => (
                     <Accordion.Item key={subcategory} eventKey={subcategory}>
                       <Accordion.Header>{subcategory}</Accordion.Header>
                       <Accordion.Body>
-                        {items?.map((item, idx) => (
+                        {items.map((item, idx) => (
                           <div
                             key={idx}
                             className="d-flex align-items-center mb-3 p-2 border-bottom"
                             style={{ gap: "15px" }}
                           >
-                            {/* Image */}
                             <div
                               className="flex-shrink-0"
                               style={{ width: "80px", height: "80px" }}
@@ -538,23 +616,32 @@ function KitchensDetails() {
                                 }}
                               />
                             </div>
-
-                            {/* Name and Description */}
                             <div className="flex-grow-1">
                               <h6 className="mb-1">{item.name}</h6>
                               <small className="text-muted">
                                 {item.description}
                               </small>
                             </div>
-
-                            {/* Add Button */}
-                            <div
-                              className="text-end d-flex flex-column align-items-end"
-                              style={{ minWidth: "100px" }}
-                            >
-                              <Button variant="outline-primary" size="sm">
-                                Add
-                              </Button>
+                            <div className="text-end">
+                              {cartItems.some(
+                                (cartItem) => cartItem.name === item.name
+                              ) ? (
+                                <Button
+                                  variant="outline-danger"
+                                  size="sm"
+                                  onClick={() => handleRemoveFromCart(item)}
+                                >
+                                  Remove
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="outline-primary"
+                                  size="sm"
+                                  onClick={() => handleAddToCart(item)}
+                                >
+                                  Add
+                                </Button>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -567,6 +654,7 @@ function KitchensDetails() {
           </Tabs>
         </Card.Body>
       </Card>
+      <CheckoutBar cartItems={cartItems} onProceed={handleProceedToCheckout} />
     </div>
   );
 }

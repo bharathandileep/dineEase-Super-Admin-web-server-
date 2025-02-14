@@ -118,7 +118,7 @@ function MenuSubCategory() {
     return <span className="fw-bold">{row.original.subcategoryName}</span>;
   };
   const CategoryColumn = ({ row }: { row: any }) => {
-    console.log(row,"dd")
+    console.log(row, "dd");
     return <span className="fw-bold">{row?.original?.category?.category}</span>;
   };
 
@@ -286,26 +286,18 @@ function MenuSubCategory() {
                 <p>No results found for "{searchTerm}"</p>
               </div>
             ) : (
-              <Row>
-                <Col>
-                  <Card>
-                    <Card.Body className="p-0">
-                      <Table
-                        columns={columns}
-                        data={menuItems}
-                        isSearchable={false}
-                        pageSize={10}
-                        sizePerPageList={sizePerPageList}
-                        isSortable={true}
-                        pagination={false}
-                        isSelectable={false}
-                        theadClass="table-light"
-                        searchBoxClass="mb-2"
-                      />
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
+              <Table
+                columns={columns}
+                data={menuItems}
+                isSearchable={false}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={false}
+                isSelectable={false}
+                theadClass="table-light"
+                searchBoxClass="mb-2"
+              />
             )}
           </div>
         </div>

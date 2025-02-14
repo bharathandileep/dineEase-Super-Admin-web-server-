@@ -139,19 +139,18 @@ function OrganizationDetails() {
 
   const onEdit = () => navigate(`/apps/organizations/edit/${id}`);
   const onDelete = async () => {
+    window.confirm("Are your sure delete this organisation")
     setLoading(true);
     try {
       const response = await deleteOrgDetails(id);
-
-      if (response.status === 200) {
-        toast.success("Kitchen details deleted successfully!");
-        // Optionally, handle post-deletion logic (e.g., navigate away, refresh list, etc.)
+      if (response.status) {
+        toast.success(response.message);
       } else {
-        toast.error("Failed to delete kitchen details. Please try again.");
+        toast.error(response.message);
       }
     } catch (error) {
-      console.error("Error deleting kitchen details:", error);
-      toast.error("An error occurred while deleting kitchen details.");
+      console.error("Error deleting  details:", error);
+      toast.error("An error occurred while deleting organisation details.");
     } finally {
       setLoading(false);
     }
@@ -187,7 +186,7 @@ function OrganizationDetails() {
         <Row className="align-items-start">
           {/* Column 1: Profile Image */}
           <Col xs={12} md={3} className="text-center text-md-start">
-            <div className="position-relative d-inline-block">
+            <div className="position-relative bg-white rounded-circle d-inline-block">
               <img
                 src={organization?.organizationLogo}
                 alt="Business Profile"
@@ -195,7 +194,7 @@ function OrganizationDetails() {
                 style={{
                   width: "200px",
                   height: "200px",
-                  objectFit: "cover",
+                  objectFit: "contain",
                   border: "4px solid rgba(255, 255, 255, 0.2)",
                   boxShadow: "0 4px 14px rgba(0, 0, 0, 0.1)",
                 }}

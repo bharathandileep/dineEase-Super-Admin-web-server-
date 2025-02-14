@@ -63,6 +63,7 @@ export const deleteOrgDetails = async (id: string | undefined) => {
     return response.data;
   } catch (error: any) {
     console.error("Error:", error.response?.data || error.message);
+    return error.response?.data
   }
 };
 

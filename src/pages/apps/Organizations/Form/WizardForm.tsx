@@ -139,7 +139,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
     }
   };
 
-
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
   };
@@ -152,17 +151,16 @@ export function WizardForm({ initialData }: WizardFormProps) {
       if (response.status) {
         toast.success(response.message);
         navigate("/apps/organizations/list");
-        console.log(response,"s")
       } else {
         toast.error(response.message || "Update failed. Please try again.");
-        console.log(response,"e")
+        console.log(response, "e");
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
-      console.log(error,"f")
+      console.log(error, "f");
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -689,9 +687,25 @@ export function WizardForm({ initialData }: WizardFormProps) {
                     type="button"
                     onClick={handleNext}
                     className="btn btn-primary d-flex align-items-center ms-auto"
+                    disabled={loading}
                   >
-                    {currentStep === 2 ? "Submit" : "Next"}
-                    {currentStep === 1 && <ChevronRight className="ms-2" />}
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        />
+                        <span
+                          className="spinner-grow spinner-grow-sm"
+                          role="status"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {currentStep === 2 ? "Submit" : "Next"}
+                        {currentStep === 1 && <ChevronRight className="ms-2" />}
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

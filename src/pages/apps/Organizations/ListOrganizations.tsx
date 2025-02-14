@@ -196,54 +196,46 @@ function ListOrganizations() {
                           style={{
                             width: "100%",
                             height: "200px",
-                            objectFit: "cover",
+                            objectFit: "contain",
                           }}
                         />
                       </div>
                       <div className="product-info mt-auto">
-                        <div className="text-center mb-3">
-                          <h5 className="font-16 mt-0">
-                            <Link
-                              to={`/apps/organizations/${item._id}`}
-                              className="text-dark"
-                            >
-                              {item?.organizationName}
-                            </Link>
-                          </h5>
-                          <p className="text-muted font-14 mb-2">
-                            {item?.addresses[0]?.street_address},
-                            {item?.addresses[0]?.city},{" "}
-                            {item?.addresses[0]?.country}
-                          </p>
-                          <div className="d-flex align-items-center justify-content-center mb-1">
-                            <i className="mdi mdi-phone-classic me-1"></i>
-                            <span>{item?.contact_number}</span>
-                          </div>
-                          <div className="d-flex align-items-center justify-content-center">
-                            <i className="mdi mdi-email me-1"></i>
-                            <span>{item?.email}</span>
-                          </div>
-                        </div>
-
-                        <div className="row text-center mt-3 border-top pt-3">
-                          <div className="col-6">
-                            <div className="d-flex flex-column">
-                              <span className="text-muted font-14">
-                                Register Number
-                              </span>
-                              <span className="font-16 fw-bold">
-                                {item?.register_number}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="col-6">
-                            <div className="d-flex flex-column">
-                              <span className="text-muted font-14">
-                                Employees
-                              </span>
-                              <span className="font-16 fw-bold">
-                                {item?.no_of_employees}
-                              </span>
+                        <div className="row align-items-center">
+                          <div className="col">
+                            <h5 className="font-16 mt-0 sp-line-1">
+                              <Link
+                                to={`/apps/organizations/${item._id}`}
+                                className="text-dark"
+                              >
+                                {item?.organizationName}
+                              </Link>
+                            </h5>
+                            <div className="text-muted font-14">
+                              <div className="d-flex align-items-center mb-1">
+                                <i className="mdi mdi-map-marker me-1"></i>
+                                <span>
+                                  {item?.addresses[0]?.street_address},{" "}
+                                  {item?.addresses[0]?.city},{" "}
+                                  {item?.addresses[0]?.country}
+                                </span>
+                              </div>
+                              <div className="d-flex align-items-center mb-1">
+                                <i className="mdi mdi-phone-classic me-1"></i>
+                                <span>{item?.contact_number}</span>
+                              </div>
+                              <div className="d-flex align-items-center mb-1">
+                                <i className="mdi mdi-email me-1"></i>
+                                <span>{item?.email}</span>
+                              </div>
+                              <div className="d-flex align-items-center mb-1">
+                                <i className="mdi mdi-card-account-details me-1"></i>
+                                <span>Reg No: {item?.register_number}</span>
+                              </div>
+                              <div className="d-flex align-items-center">
+                                <i className="mdi mdi-account-group me-1"></i>
+                                <span>Employees: {item?.no_of_employees}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
