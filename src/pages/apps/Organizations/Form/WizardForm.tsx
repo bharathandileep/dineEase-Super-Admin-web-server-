@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, CheckCircle } from "lucide-react";
 import { FileUpload } from "../../../../components/FileUpload";
 import {
   createNewOrg,
@@ -9,6 +9,9 @@ import {
 import { toast } from "react-toastify";
 import { appendToFormData } from "../../../../helpers/formdataAppend";
 import { useNavigate, useParams } from "react-router-dom";
+import { Col, ProgressBar, Row } from "react-bootstrap";
+import "./FormWizard.scss";
+import { Stepper } from "../../../../components/Stepper";
 
 interface WizardFormProps {
   initialData?: any;
@@ -68,6 +71,10 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
+  const steps = [
+    { number: 1, title: "Personal Info" },
+    { number: 2, title: "Documents" },
+  ];
   const validateStep1 = () => {
     const newErrors: Partial<FormData> = {};
 
@@ -138,29 +145,31 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const handleEdit = async () => {
     setLoading(true); // Start loading
     try {
-      const kitchesFormData = appendToFormData(formData);
-      const response = await updateOrgDetails(id, kitchesFormData);
-      
+      const OrgFormData = appendToFormData(formData);
+      const response = await updateOrgDetails(id, OrgFormData);
+
       if (response.status) {
         toast.success(response.message);
         navigate("/apps/organizations/list");
       } else {
         toast.error(response.message || "Update failed. Please try again.");
+        console.log(response, "e");
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
+      console.log(error, "f");
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
-  
+
   const handleSubmit = async () => {
     setLoading(true); // Start loading
     try {
       const orgFormData = appendToFormData(formData);
       const response = await createNewOrg(orgFormData);
-      
+
       if (response.status) {
         toast.success(response.message);
         navigate("/apps/organizations/list");
@@ -171,7 +180,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
       console.error("Error:", error.response?.data || error.message);
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -228,44 +237,18 @@ export function WizardForm({ initialData }: WizardFormProps) {
   }, [id]);
 
   return (
-    <div className="container py-5">
+    <div className="container py-2">
       <div className="row justify-content-center">
-        <div className="col-lg-8">
-          {/* Progress Bar */}
-          <div className="mb-4">
-            <div className="progress mb-3" style={{ height: "8px" }}>
-              <div
-                className="progress-bar"
-                style={{ width: `${(currentStep / 2) * 100}%` }}
-              />
+        <div className="col-lg-12">
+          <div className="card d-flex flex-column align-items-center">
+            <div className="col-lg-8 justify-content-center">
+              <Stepper steps={steps} currentStep={currentStep} />
             </div>
-            <div className="d-flex justify-content-between">
-              <span
-                className={`small fw-semibold ${
-                  currentStep >= 1 ? "text-primary" : "text-muted"
-                }`}
-              >
-                Basic Details
-              </span>
-              <span
-                className={`small fw-semibold ${
-                  currentStep >= 2 ? "text-primary" : "text-muted"
-                }`}
-              >
-                PAN & GST Details
-              </span>
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="card">
             <div className="card-body p-4">
               <form onSubmit={(e) => e.preventDefault()}>
                 {currentStep === 1 && (
                   <div>
                     <h2 className="card-title mb-4">Basic Details</h2>
-
-                    {/* Organization Details */}
                     <div className="row g-3">
                       <div className="col-md-6">
                         <div className="form-group">
@@ -689,8 +672,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
                     </div>
                   </div>
                 )}
-
-                {/* Navigation Buttons */}
                 <div className="d-flex justify-content-between mt-4">
                   {currentStep > 1 && (
                     <button
@@ -706,9 +687,25 @@ export function WizardForm({ initialData }: WizardFormProps) {
                     type="button"
                     onClick={handleNext}
                     className="btn btn-primary d-flex align-items-center ms-auto"
+                    disabled={loading}
                   >
-                    {currentStep === 2 ? "Submit" : "Next"}
-                    {currentStep === 1 && <ChevronRight className="ms-2" />}
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        />
+                        <span
+                          className="spinner-grow spinner-grow-sm"
+                          role="status"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {currentStep === 2 ? "Submit" : "Next"}
+                        {currentStep === 1 && <ChevronRight className="ms-2" />}
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { appendToFormData } from "../../../../helpers/formdataAppend";
 import { useNavigate, useParams } from "react-router-dom";
 import { IKitchenDetails } from "../KitchensDetails";
+import { Stepper } from "../../../../components/Stepper";
 
 interface WizardFormProps {
   initialData?: any;
@@ -58,7 +59,7 @@ const initialFormData: FormData = {
   owner_email: "",
   owner_phone_number: "",
   restaurant_type: "",
-  kitchen_type: "Veg",
+  kitchen_type: " ",
   kitchen_phone_number: "",
   address_type: "Home",
   street_address: "",
@@ -89,6 +90,10 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
+  const steps = [
+    { number: 1, title: "Personal Info" },
+    { number: 2, title: "Documents" },
+  ];
 
   const validateStep1 = () => {
     const newErrors: Partial<FormData> = {};
@@ -167,6 +172,13 @@ export function WizardForm({ initialData }: WizardFormProps) {
       initialData ? handleEdit() : handleSubmit();
     }
   };
+  // const handleNext = () => {
+  //   if (currentStep === 1) {
+  //     setCurrentStep(2);
+  //   } else if (currentStep === 2) {
+  //     initialData ? handleEdit() : handleSubmit();
+  //   }
+  // };
 
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
@@ -192,7 +204,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const kitchesFormData = appendToFormData(formData);
       const response = await createNewkitchen(kitchesFormData);
@@ -292,37 +304,14 @@ export function WizardForm({ initialData }: WizardFormProps) {
   }, [id]);
 
   return (
-    <div className="container py-5">
+    <div className="container py-2">
       <div className="row justify-content-center">
-        <div className="col-lg-8">
-          <div className="mb-4">
-            <div className="progress mb-3" style={{ height: "8px" }}>
-              <div
-                className="progress-bar"
-                style={{ width: `${(currentStep / 2) * 100}%` }}
-              />
+        <div className="d-flex flex-column align-items-center">
+          <div className="card d-flex flex-column align-items-center">
+            <div className="col-lg-8 justify-content-center">
+              <Stepper steps={steps} currentStep={currentStep} />
             </div>
-            <div className="d-flex justify-content-between">
-              <span
-                className={`small fw-semibold ${
-                  currentStep >= 1 ? "text-primary" : "text-muted"
-                }`}
-              >
-                Kitchen Details
-              </span>
-              <span
-                className={`small fw-semibold ${
-                  currentStep >= 2 ? "text-primary" : "text-muted"
-                }`}
-              >
-                Documents
-              </span>
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="card">
-            <div className="card-body p-4">
+            <div className="card-body px-4 pt-1 pb-4">
               <form onSubmit={(e) => e.preventDefault()}>
                 {currentStep === 1 && (
                   <div>
@@ -440,9 +429,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
                             onChange={handleChange}
                             className="form-select"
                           >
-                            <option value="Home">Veg</option>
-                            <option value="Office">Non-Veg</option>
-                            <option value="Other">Both</option>
+                            <option value="Veg">Veg</option>
+                            <option value="Non-Veg">Non-Veg</option>
+                            <option value="Both">Both</option>
                           </select>
                         </div>
                       </div>
@@ -471,7 +460,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
 
                       <div className="col-md-6">
                         <div className="form-group">
-                          <label className="form-label">Kitchen Image</label>
+                          <label className="form-label">Kitchen Logo</label>
                           <FileUpload
                             onFileSelect={(file) =>
                               setFormData((prev) => ({
@@ -660,7 +649,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                         </div>
                       </div>
 
-                      <div className="col-md-6">
+                      <div className="col-md-12">
                         <div className="form-group">
                           <label className="form-label">PAN Card Image</label>
                           <FileUpload
@@ -700,8 +689,26 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           )}
                         </div>
                       </div>
-
                       <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="form-label">Expiry Date</label>
+                          <input
+                            type="date"
+                            name="gst_expiry_date"
+                            value={formData.gst_expiry_date}
+                            onChange={handleChange}
+                            className={`form-control ${
+                              errors.gst_expiry_date ? "is-invalid" : ""
+                            }`}
+                          />
+                          {errors.gst_expiry_date && (
+                            <div className="invalid-feedback">
+                              {errors.gst_expiry_date}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-12">
                         <div className="form-group">
                           <label className="form-label">
                             GST Certificate Image
@@ -719,26 +726,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           {errors.gst_certificate_image && (
                             <div className="invalid-feedback">
                               {errors.gst_certificate_image}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <label className="form-label">Expiry Date</label>
-                          <input
-                            type="date"
-                            name="gst_expiry_date"
-                            value={formData.gst_expiry_date}
-                            onChange={handleChange}
-                            className={`form-control ${
-                              errors.gst_expiry_date ? "is-invalid" : ""
-                            }`}
-                          />
-                          {errors.gst_expiry_date && (
-                            <div className="invalid-feedback">
-                              {errors.gst_expiry_date}
                             </div>
                           )}
                         </div>
@@ -808,7 +795,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           )}
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-12">
                         <div className="form-group">
                           <label className="form-label">
                             FSSAI Certificate Image
@@ -833,24 +820,40 @@ export function WizardForm({ initialData }: WizardFormProps) {
                     </div>
                   </div>
                 )}
-
-                {/* Navigation Buttons */}
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between mt-4">
                   {currentStep > 1 && (
                     <button
                       type="button"
-                      className="btn btn-outline-primary"
                       onClick={handleBack}
+                      className="btn btn-outline-secondary d-flex align-items-center"
                     >
-                      <ChevronLeft /> Back
+                      <ChevronLeft className="me-2" />
+                      Back
                     </button>
                   )}
                   <button
                     type="button"
-                    className="btn btn-primary mt-4"
                     onClick={handleNext}
+                    className="btn btn-primary d-flex align-items-center ms-auto"
+                    disabled={loading}
                   >
-                    {currentStep === 2 ? "Submit" : "Next"} <ChevronRight />
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        />
+                        <span
+                          className="spinner-grow spinner-grow-sm"
+                          role="status"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {currentStep === 2 ? "Submit" : "Next"}
+                        {currentStep === 1 && <ChevronRight className="ms-2" />}
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
