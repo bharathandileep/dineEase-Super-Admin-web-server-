@@ -18,12 +18,16 @@ const OrgEmployeeEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+   const [imagePreview, setImagePreview] = useState<string | null>(null);
+   const [aadharImage, setAadharImage] = useState<File | null>(null);
+   const [aadharImagePreview, setAadharImagePreview] = useState<string | null>(null);
+   const [panImage, setPanImage] = useState<File | null>(null);
+   const [panImagePreview, setPanImagePreview] = useState<string | null>(null);
   const [designations, setDesignations] = useState<
     { _id: string; designation_name: string }[]
   >([]);
   const [loading, setLoading] = useState(false);
-  const [employee, setEmployee] = useState<any>(null);
+  const [orgemployee, setEmployee] = useState<any>(null);
 
   // Fetch employee data
   useEffect(() => {
@@ -37,6 +41,12 @@ const OrgEmployeeEdit = () => {
             // Set image preview if exists
             if (response.data.profile_picture) {
               setImagePreview(response.data.profile_picture);
+            }
+            if (response.data.aadhar_image) {
+              setAadharImagePreview(response.data.aadhar_image);
+            }
+            if (response.data.pan_image) {
+              setPanImagePreview(response.data.pan_image);
             }
           } else {
             toast.error("Failed to load employee data.");
@@ -101,28 +111,28 @@ const OrgEmployeeEdit = () => {
 
   // Set form values when employee data is loaded
   useEffect(() => {
-    if (employee) {
+    if (orgemployee) {
       // Set general information
-      setValue("username", employee.username);
-      setValue("email", employee.email);
-      setValue("phone_number", employee.phone_number);
-      setValue("designation", employee.designation?._id || employee.designation); // Ensure designation ID is set
+      setValue("username", orgemployee.username);
+      setValue("email", orgemployee.email);
+      setValue("phone_number", orgemployee.phone_number);
+      setValue("designation", orgemployee.designation?._id || orgemployee.designation); // Ensure designation ID is set
   
       // Ensure address exists before accessing properties
-      if (employee.address) {
-        setValue("street_address", employee.address.street_address || "");
-        setValue("city", employee.address.city || "");
-        setValue("district", employee.address.district || "");  // Fix capitalization
-        setValue("pincode", employee.address.pincode || "");
-        setValue("state", employee.address.state || "");
-        setValue("country", employee.address.country || "");
+      if (orgemployee.address) {
+        setValue("street_address", orgemployee.address.street_address || "");
+        setValue("city", orgemployee.address.city || "");
+        setValue("district", orgemployee.address.district || "");  // Fix capitalization
+        setValue("pincode", orgemployee.address.pincode || "");
+        setValue("state", orgemployee.address.state || "");
+        setValue("country", orgemployee.address.country || "");
       }
   
       // Set identification details
-      setValue("aadhar_number", employee.aadhar_number || "");
-      setValue("pan_number", employee.pan_number || "");
+      setValue("aadhar_number", orgemployee.aadhar_number || "");
+      setValue("pan_number", orgemployee.pan_number || "");
     }
-  }, [employee, setValue]);
+  }, [orgemployee, setValue]);
   
   // Handle form submission
   const onSubmit = async (data: any) => {
@@ -153,12 +163,20 @@ const OrgEmployeeEdit = () => {
       if (profileImage) {
         formData.append("profile_picture", profileImage);
       }
+      if (aadharImage) {
+        formData.append("aadhar_image", aadharImage);
+      }
+
+      // Append PAN image if updated
+      if (panImage) {
+        formData.append("pan_image", panImage);
+      }
 
       if (id) {
         const response = await updateOrgEmployee(id, formData);
         if (response.status) {
           toast.success("Employee updated successfully!");
-          navigate("/apps/orgemployee/list");
+          navigate("/apps/organizations/employ/list",);
         } else {
           toast.error(response.message || "Failed to update employee.");
         }
@@ -182,12 +200,30 @@ const OrgEmployeeEdit = () => {
       setImagePreview(previewUrl);
     }
   };
+    const handleAadharFileUpload = (files: File[]) => {
+      if (files.length > 0) {
+        const file = files[0];
+        setAadharImage(file);
+        const previewUrl = URL.createObjectURL(file);
+        setAadharImagePreview(previewUrl);
+      }
+    };
+  
+    const handlePanFileUpload = (files: File[]) => {
+      if (files.length > 0) {
+        const file = files[0];
+        setPanImage(file);
+        const previewUrl = URL.createObjectURL(file);
+        setPanImagePreview(previewUrl);
+      }
+    };
+  
 
   return (
     <div className='container py-2'>
       <Card className='mb-2'>
         <Card.Body>
-          <h3 className='text-uppercase'>Edit Employee</h3>
+          <h3 className='text-uppercase'>Edit Organisation Employee</h3>
         </Card.Body>
       </Card>
 
@@ -242,7 +278,7 @@ const OrgEmployeeEdit = () => {
                     <option
                       key={designation._id}
                       value={designation._id}
-                      selected={designation._id === employee?.designation}
+                      selected={designation._id === orgemployee?.designation}
                     >
                       {designation.designation_name}
                     </option>
@@ -360,42 +396,93 @@ const OrgEmployeeEdit = () => {
           </Col>
         </Row>
 
-        {/* Aadhaar & PAN Details */}
-        <Row>
-          <Col lg={12}>
-            <Card className='mt-3'>
-              <Card.Body>
-                <h5 className='text-uppercase mt-0 mb-3'>
-                  Identification Details
-                </h5>
-                <Row>
-                  <Col md={6}>
-                    <FormInput
-                      name='aadhar_number'
-                      label='Aadhaar Number'
-                      placeholder='Enter Aadhaar number'
-                      containerClass='mb-3'
-                      register={register}
-                      errors={errors}
-                      control={control}
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <FormInput
-                      name='pan_number'
-                      label='PAN Number'
-                      placeholder='Enter PAN number'
-                      containerClass='mb-3'
-                      register={register}
-                      errors={errors}
-                      control={control}
-                    />
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+          {/* Aadhaar & PAN Details */}
+               <Row>
+                 <Col lg={12}>
+                   <Card className='mt-3'>
+                     <Card.Body>
+                       <h5 className='text-uppercase mt-0 mb-3'>
+                         Identification Details
+                       </h5>
+                       <Row>
+                         <Col md={6}>
+                           <FormInput
+                             name='aadhar_number'
+                             label='Aadhaar Number'
+                             placeholder='Enter Aadhaar number'
+                             containerClass='mb-3'
+                             register={register}
+                             errors={errors}
+                             control={control}
+                           />
+                         </Col>
+                         <Col md={6}>
+                           <FormInput
+                             name='pan_number'
+                             label='PAN Number'
+                             placeholder='Enter PAN number'
+                             containerClass='mb-3'
+                             register={register}
+                             errors={errors}
+                             control={control}
+                           />
+                         </Col>
+                       </Row>
+                       <Row>
+                         <Col lg={6}>
+                           <Card>
+                             <Card.Body className='text-center'>
+                               <h5 className='text-uppercase mt-0 mb-3'>Aadhaar Card</h5>
+                               {aadharImagePreview && (
+                                 <div className='mb-3'>
+                                   <img
+                                     src={aadharImagePreview}
+                                     alt='Aadhaar Preview'
+                                     style={{
+                                       maxWidth: "200px",
+                                       maxHeight: "200px",
+                                       objectFit: "cover",
+                                       borderRadius: "8px",
+                                     }}
+                                   />
+                                 </div>
+                               )}
+                               <FileUploader
+                                 onFileUpload={(files) => handleAadharFileUpload(Array.from(files))}
+                               />
+                             </Card.Body>
+                           </Card>
+                         </Col>
+                         <Col lg={6}>
+                           <Card>
+                             <Card.Body className='text-center'>
+                               <h5 className='text-uppercase mt-0 mb-3'>PAN Card</h5>
+                               {panImagePreview && (
+                                 <div className='mb-3'>
+                                   <img
+                                     src={panImagePreview}
+                                     alt='PAN Preview'
+                                     style={{
+                                       maxWidth: "200px",
+                                       maxHeight: "200px",
+                                       objectFit: "cover",
+                                       borderRadius: "8px",
+                                     }}
+                                   />
+                                 </div>
+                               )}
+                               <FileUploader
+                                 onFileUpload={(files) => handlePanFileUpload(Array.from(files))}
+                               />
+                             </Card.Body>
+                           </Card>
+                         </Col>
+                       </Row>
+                     </Card.Body>
+                   </Card>
+                 </Col>
+               </Row>
+        
 
         {/* Submit Button */}
         <Row>
@@ -403,7 +490,7 @@ const OrgEmployeeEdit = () => {
             <Button
               variant='light'
               className='me-2'
-              onClick={() => navigate("/apps/orgemployee/list")}
+              onClick={() => navigate("/apps/organizations/employ/list")}
             >
               Cancel
             </Button>
