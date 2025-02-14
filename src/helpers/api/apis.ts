@@ -24,7 +24,7 @@ export const apiConfig = {
       `/kitchens/update/${kitchenId}`,
     deletekitchens: (kitchenId: string | undefined) =>
       `/kitchens/delete/${kitchenId}`,
-    getAllkitchens: "/kitchens/all",
+    getAllkitchens:(query:any)=> `/kitchens/all?page=${query.page}&limit=${query.limit}`,
     getkitchensById: (kitchenId: string | undefined) =>
       `/kitchens/${kitchenId}`,
 

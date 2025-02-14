@@ -1,14 +1,18 @@
 import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
-export const getAllKitches = async () => {
+
+
+export const getAllKitches = async (query:any) => {
   try {
+    console.log("haii")
     const response = await axiosInstance.get(
-      `${apiConfig.kitchens.getAllkitchens}`
+      `${apiConfig.kitchens.getAllkitchens(query)}`
     );
     return response.data;
   } catch (error: any) {
-    console.error("Login Error:", error.response?.data || error.message);
+    console.error("Error fetching kitchens:", error.response?.data || error.message);
+    throw error;
   }
 };
 
