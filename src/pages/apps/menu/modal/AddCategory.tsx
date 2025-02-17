@@ -24,7 +24,7 @@ interface AddCategory {
 
 const AddCategory = ({
   show,
-  onHide,
+onHide,
   action,
   isSubCategory,
   selectedItem,
@@ -145,9 +145,9 @@ const AddCategory = ({
             <Button variant="success" type="submit" className="me-1">
               {action === "edit" ? "Update" : "Add"}
             </Button>
-            <Button variant="danger" onClick={onHide}>
+            {/* <Button variant="danger" onClick={onHide}>
               Cancel
-            </Button>
+            </Button> */}
           </div>
         </VerticalForm>
       </Modal.Body>

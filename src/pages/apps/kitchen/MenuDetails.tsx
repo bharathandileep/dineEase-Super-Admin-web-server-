@@ -194,7 +194,7 @@ export default function MenuDetails() {
       <div className="min-vh-100 bg-light">
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-12 col-lg-12">
+            <div className="col-12 col-lg-12 p-0">
               <div className="card shadow">
                 <div className="position-relative" style={{ height: "300px" }}>
                   <img
