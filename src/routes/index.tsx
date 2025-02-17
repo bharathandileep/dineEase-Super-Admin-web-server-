@@ -363,7 +363,7 @@ const kitchenAppRoutes = {
   path: "/apps/kitchen",
   name: "Kitchens",
   route: PrivateRoute,
-  roles: ["Admin"],
+  roles: ["Admin"  ],
   children: [
     {
       path: "/apps/kitchen/new",

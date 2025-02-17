@@ -182,70 +182,65 @@ function ListOrganizations() {
         </div>
       ) : (
         <Row>
-          <Row>
-            {filteredMenuItems?.map((item, index) => (
-              <Col key={index} md={6} xl={3} className="mb-3">
-                <Link to={`/apps/organizations/${item._id}`}>
-                  <Card className="product-box h-100">
-                    <Card.Body className="d-flex flex-column">
-                      <div className="bg-light mb-3">
-                        <img
-                          src={item?.organizationLogo}
-                          alt={item?.organizationName}
-                          className="img-fluid"
-                          style={{
-                            width: "100%",
-                            height: "200px",
-                            objectFit: "contain",
-                          }}
-                        />
-                      </div>
-                      <div className="product-info mt-auto">
-                        <div className="row align-items-center">
-                          <div className="col">
-                            <h5 className="font-16 mt-0 sp-line-1">
-                              <Link
-                                to={`/apps/organizations/${item._id}`}
-                                className="text-dark"
-                              >
-                                {item?.organizationName}
-                              </Link>
-                            </h5>
-                            <div className="text-muted font-14">
-                              <div className="d-flex align-items-center mb-1">
-                                <i className="mdi mdi-map-marker me-1"></i>
-                                <span>
-                                  {item?.addresses[0]?.street_address},{" "}
-                                  {item?.addresses[0]?.city},{" "}
-                                  {item?.addresses[0]?.country}
-                                </span>
-                              </div>
-                              <div className="d-flex align-items-center mb-1">
-                                <i className="mdi mdi-phone-classic me-1"></i>
-                                <span>{item?.contact_number}</span>
-                              </div>
-                              <div className="d-flex align-items-center mb-1">
-                                <i className="mdi mdi-email me-1"></i>
-                                <span>{item?.email}</span>
-                              </div>
-                              <div className="d-flex align-items-center mb-1">
-                                <i className="mdi mdi-card-account-details me-1"></i>
-                                <span>Reg No: {item?.register_number}</span>
-                              </div>
-                              <div className="d-flex align-items-center">
-                                <i className="mdi mdi-account-group me-1"></i>
-                                <span>Employees: {item?.no_of_employees}</span>
-                              </div>
+          {filteredMenuItems?.map((item, index) => (
+            <Col key={index} md={6} xl={3} className="mb-1">
+              <Link to={`/apps/organizations/${item._id}`}>
+                <Card className="product-box h-100">
+                  <Card.Body className="d-flex flex-column">
+                    <div className="bg-light mb-1">
+                      <img
+                        src={item?.organizationLogo}
+                        alt={item?.organizationName}
+                        className="img-fluid"
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </div>
+                    <div className="product-info mt-auto">
+                      <div className="row align-items-center">
+                        <div className="col">
+                          <h5
+                            className="font-24 mt-0 font-bold sp-line-1"
+                          >
+                            {item?.organizationName}
+                          </h5>
+                          <div className="text-muted font-14">
+                            <div className="d-flex align-items-center mb-1 text-black">
+                              <i className="mdi mdi-map-marker me-1"></i>
+                              <span>
+                                {item?.addresses[0]?.street_address},{" "}
+                                {item?.addresses[0]?.city},{" "}
+                                {item?.addresses[0]?.country}
+                              </span>
+                            </div>
+                            <div className="d-flex align-items-center mb-1 text-black">
+                              <i className="mdi mdi-phone-classic me-1"></i>
+                              <span>{item?.contact_number}</span>
+                            </div>
+                            <div className="d-flex align-items-center mb-1 text-black">
+                              <i className="mdi mdi-email me-1 text-black"></i>
+                              <span>{item?.email}</span>
+                            </div>
+                            <div className="d-flex align-items-center mb-1 text-black">
+                              <i className="mdi mdi-card-account-details me-1 text-black"></i>
+                              <span>Reg No: {item?.register_number}</span>
+                            </div>
+                            <div className="d-flex align-items-center text-black">
+                              <i className="mdi mdi-account-group me-1 text-black"></i>
+                              <span>Employees: {item?.no_of_employees}</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </Card.Body>
-                  </Card>
-                </Link>
-              </Col>
-            ))}
-          </Row>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Link>
+            </Col>
+          ))}
         </Row>
       )}
     </>
