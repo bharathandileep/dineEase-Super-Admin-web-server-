@@ -338,16 +338,16 @@ function OrganizationDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title">PAN Details</h5>
+                <h5 className="card-title text-bold text-black">PAN Details</h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
                 <p className="mb-2">
-                  <strong>PAN Number:</strong>{" "}
+                  <strong text-xl>PAN Number:</strong>{" "}
                   {organization?.panDetails[0].pan_card_number}
                 </p>
                 <p className="mb-2">
-                  <strong>Card Holder:</strong>{" "}
+                  <strong text-xl>Card Holder:</strong>{" "}
                   {organization?.panDetails[0].pan_card_user_name}
                 </p>
               </div>
@@ -365,16 +365,16 @@ function OrganizationDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title">GST Registration</h5>
+                <h5 className="card-title text-bold text-black">GST Registration</h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
                 <p className="mb-2">
-                  <strong>GST Number:</strong>{" "}
+                  <strong text-xl>GST Number:</strong>{" "}
                   {organization?.gstDetails[0].gst_number}
                 </p>
                 <p className="mb-2">
-                  <strong>Expiry Date:</strong>{" "}
+                  <strong text-xl>Expiry Date:</strong>{" "}
                   {organization?.gstDetails[0].expiry_date}
                 </p>
               </div>
@@ -394,7 +394,7 @@ function OrganizationDetails() {
         <Col md={6}>
           <Card className="h-100 shadow-sm">
             <Card.Body>
-              <h5 className="card-title mb-3">Location Details</h5>
+              <h5 className="card-title mb-3 text-bold text-black">Location Details</h5>
               <p className="card-text mb-4">
                 {organization?.addresses[0]?.street_address},{" "}
                 {organization?.addresses[0]?.city},{" "}

@@ -200,12 +200,15 @@ function ListOrganizations() {
                           }}
                         />
                       </div>
+                      {/* <h4 className="text-xxl font-bold text-dark text-center">
+      {item?.organizationName}
+    </h4> */}
                       <div className="product-info mt-auto">
                         <div className="text-center mb-3">
                           <h5 className="font-16 mt-0">
                             <Link
                               to={`/apps/organizations/${item._id}`}
-                              className="text-dark"
+                              className="text-dark text-xxl"
                             >
                               {item?.organizationName}
                             </Link>

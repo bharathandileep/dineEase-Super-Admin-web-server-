@@ -161,7 +161,7 @@ const OrgEmployeeDetails = () => {
               />
 
               {/* Employee Name */}
-              <h4 className="mb-2">{employee.username}</h4>
+              <h4 className="mb-2 text-2xl font-bold">{employee.username}</h4>
               <Badge
                 bg={employee.employee_status === "Active" ? "success" : "danger"}
                 className="mb-3"

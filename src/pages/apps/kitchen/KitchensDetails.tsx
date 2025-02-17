@@ -386,20 +386,20 @@ function KitchensDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title">FSSAI License</h5>
+                <h5 className="card-title text-bold text-black">FSSAI License</h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
                 <p className="mb-2">
-                  <strong>Certificate Number:</strong>{" "}
+                  <strong text-xl>Certificate Number:</strong>{" "}
                   {kitchenData?.fssaiDetails[0]?.ffsai_certificate_number}
                 </p>
                 <p className="mb-2">
-                  <strong>Licence owner:</strong>{" "}
+                  <strong text-xl>Licence owner:</strong>{" "}
                   {kitchenData?.fssaiDetails[0]?.ffsai_card_owner_name}
                 </p>
                 <p className="mb-2">
-                  <strong>Expiry Date:</strong>{" "}
+                  <strong text-xl>Expiry Date:</strong>{" "}
                   {kitchenData?.fssaiDetails[0]?.expiry_date}
                 </p>
               </div>
@@ -421,16 +421,16 @@ function KitchensDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title">PAN Details</h5>
+                <h5 className="card-title text-bold text-black">PAN Details</h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
                 <p className="mb-2">
-                  <strong>PAN Number:</strong>{" "}
+                  <strong text-xl>PAN Number:</strong>{" "}
                   {kitchenData?.panDetails[0]?.pan_card_number}
                 </p>
                 <p className="mb-2">
-                  <strong>Card Holder:</strong>{" "}
+                  <strong text-xl>Card Holder:</strong>{" "}
                   {kitchenData?.panDetails[0]?.pan_card_user_name}
                 </p>
               </div>
@@ -448,16 +448,16 @@ function KitchensDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title">GST Registration</h5>
+                <h5 className="card-title text-bold text-black">GST Registration</h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
                 <p className="mb-2">
-                  <strong>GST Number:</strong>{" "}
+                  <strong text-xl>GST Number:</strong>{" "}
                   {kitchenData?.gstDetails[0].gst_number}
                 </p>
                 <p className="mb-2">
-                  <strong>Expiry Date:</strong>{" "}
+                  <strong text-xl>Expiry Date:</strong>{" "}
                   {kitchenData?.gstDetails[0].expiry_date}
                 </p>
               </div>
@@ -477,7 +477,7 @@ function KitchensDetails() {
         <Col md={6}>
           <Card className="h-100 shadow-sm">
             <Card.Body>
-              <h5 className="card-title mb-3">Location Details</h5>
+              <h5 className="card-title text-bold text-black mb-3">Location Details</h5>
               <p className="card-text mb-4">
                 {kitchenData?.addresses[0]?.street_address},{" "}
                 {kitchenData?.addresses[0]?.city},{" "}
