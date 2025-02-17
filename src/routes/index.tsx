@@ -23,6 +23,7 @@ import OrgEmployeeManagement from "../pages/apps/organisationemployee/addorgempl
 import OrgEmployeeList from "../pages/apps/organisationemployee/listorgemployee";
 import OrgEmployeeEdit from "../pages/apps/organisationemployee/editorgemployee";
 import OrgEmployeeDetails from "../pages/apps/organisationemployee/orgemployeedetails";
+import MenuDetails from "../pages/apps/kitchen/MenuDetails";
 
 // import Root from './Root';
 
@@ -335,7 +336,7 @@ const organizationsAppRoutes = {
     {
       path: "/apps/organizations/employ/add",
       name: "Organizations employ add",
-      element: <OrgEmployeeManagement/>,
+      element: <OrgEmployeeManagement />,
       route: PrivateRoute,
     },
     {
@@ -358,12 +359,11 @@ const organizationsAppRoutes = {
     },
   ],
 };
-
 const kitchenAppRoutes = {
   path: "/apps/kitchen",
   name: "Kitchens",
   route: PrivateRoute,
-  roles: ["Admin"],
+  roles: ["Admin"  ],
   children: [
     {
       path: "/apps/kitchen/new",
@@ -402,7 +402,7 @@ const kitchenAppRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/apps/kitchen/our-menu/:id",
+      path: "/apps/kitchen/:id/our-menu",
       name: "details Kitchens",
       element: <OurMenu />,
       route: PrivateRoute,
@@ -422,6 +422,11 @@ const kitchenAppRoutes = {
       path: "/apps/kitchen/editing/:id",
       name: "Editing",
       element: <ItemsEditing />,
+    },
+    {
+      path: "/apps/kitchen/:kitchenId/item-details/:id",
+      name: "Editing",
+      element: <MenuDetails />,
     },
   ],
 };
@@ -1507,8 +1512,6 @@ const otherPublicRoutes = [
   },
 ];
 
-
-
 // flatten the list of all nested routes
 const flattenRoutes = (routes: RoutesProps[]) => {
   let flatRoutes: RoutesProps[] = [];
@@ -1535,6 +1538,7 @@ const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
 const publicProtectedFlattenRoutes = flattenRoutes([...publicRoutes]);
+
 export {
   publicRoutes,
   authProtectedRoutes,

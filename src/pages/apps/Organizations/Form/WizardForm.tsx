@@ -108,20 +108,20 @@ export function WizardForm({ initialData }: WizardFormProps) {
     const newErrors: Partial<FormData> = {};
 
     if (!formData.panNumber) {
-      newErrors.panNumber = "Required";
+      newErrors.panNumber = "Invalid PAN number(must be 10 elements)";
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)) {
-      newErrors.panNumber = "Invalid PAN number";
+      newErrors.panNumber = "Invalid PAN number(must be 10 elements)";
     }
     if (!formData.panCardUserName) newErrors.panCardUserName = "Required";
     if (!formData.panCardImage) newErrors.panCardImage = "Required";
     if (!formData.gstNumber) {
-      newErrors.gstNumber = "Required";
+      newErrors.gstNumber = "Invalid GST number(must be 15 elements)";
     } else if (
       !/\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/.test(
         formData.gstNumber
       )
     ) {
-      newErrors.gstNumber = "Invalid GST number";
+      newErrors.gstNumber = "Invalid GST number(must be 15 elements)";
     }
     if (!formData.gstCertificateImage)
       newErrors.gstCertificateImage = "Required";
@@ -153,11 +153,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
         navigate("/apps/organizations/list");
       } else {
         toast.error(response.message || "Update failed. Please try again.");
-        console.log(response, "e");
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
-      console.log(error, "f");
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
       setLoading(false);

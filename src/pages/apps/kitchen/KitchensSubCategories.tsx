@@ -106,7 +106,6 @@ function KitchensSubCategories() {
         const response = await kitchensGetSubcategories();
         if (response.status) {
           setMenuItems(response.data);
-          console.log(response.data);
         } else {
           toast.error("Failed to load subcategories.");
         }
@@ -124,7 +123,6 @@ function KitchensSubCategories() {
     return <span className="fw-bold">{row?.original?.subcategoryName}</span>;
   };
   const CategoryColumn = ({ row }: { row: any }) => {
-    console.log(row, "dd");
     return <span className="fw-bold">{row?.original?.category?.category}</span>;
   };
 

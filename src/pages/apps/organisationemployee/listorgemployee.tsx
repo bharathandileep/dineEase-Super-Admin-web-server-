@@ -132,7 +132,7 @@ const OrgEmployeeList = () => {
 
                     {/* User Details */}
                     <div className="product-info mt-auto w-100">
-                      <h5 className="font-16 mt-0 sp-line-1">
+                      <h5 className="text-2xl mt-0 sp-line-1">
                         <Link to="#" className="text-dark text-decoration-none">{orgemployees.username}</Link>
                       </h5>
                       <h6 className="m-0 text-muted">Email: {orgemployees.email}</h6>

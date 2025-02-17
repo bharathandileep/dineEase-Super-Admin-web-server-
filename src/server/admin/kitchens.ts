@@ -5,7 +5,7 @@ import { apiConfig } from "../../helpers/api/apis";
 
 export const getAllKitches = async (query:any) => {
   try {
-    console.log("haii")
+
     const response = await axiosInstance.get(
       `${apiConfig.kitchens.getAllkitchens(query)}`
     );
@@ -92,7 +92,7 @@ export const kitchensUpdateCategory = async (
   id: string | undefined,
   data: any
 ) => {
-  console.log(id, data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.kitchens.updateCategory(id),
@@ -127,7 +127,7 @@ export const kitchensToggleCategoryStatus = async (id: string | undefined) => {
 };
 
 export const kitchensCreateSubcategory = async (data: any | undefined) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.post(
       apiConfig.kitchens.createSubcategory,

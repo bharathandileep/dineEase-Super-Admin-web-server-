@@ -114,7 +114,6 @@ const Table = (props: TableProps) => {
   const isSelectable = props["isSelectable"] || false;
   const isExpandable = props["isExpandable"] || false;
   const sizePerPageList = props["sizePerPageList"] || [];
-  console.log(props.data);
   let otherProps: any = {};
 
   if (isSearchable) {

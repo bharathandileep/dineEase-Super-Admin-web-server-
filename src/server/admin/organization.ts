@@ -93,7 +93,7 @@ export const orgGetAllCategories = async () => {
 };
 
 export const orgUpdateCategory = async (id: string | undefined, data: any) => {
-  console.log(id, data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.organization.updateCategory(id),
@@ -128,7 +128,7 @@ export const orgToggleCategoryStatus = async (id: string | undefined) => {
 };
 
 export const orgCreateSubcategory = async (data: any | undefined) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.post(
       apiConfig.organization.createSubcategory,
