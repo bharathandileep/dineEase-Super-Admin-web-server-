@@ -202,12 +202,12 @@ function KitchensDetails() {
     };
     fetchItemDetails();
   }, []);
+
   const handleAddToCart = (item: FoodItem) => {
     setCartItems((prevCart) => {
       const existingItem = prevCart.find(
         (cartItem) => cartItem.name === item.name
       );
-
       if (existingItem) {
         return prevCart.map((cartItem) =>
           cartItem.name === item.name
@@ -219,6 +219,7 @@ function KitchensDetails() {
       }
     });
   };
+
   const handleRemoveFromCart = (item: { name: string }) => {
     setCartItems((prevCart) =>
       prevCart.filter((cartItem) => cartItem.name !== item.name)
@@ -264,11 +265,16 @@ function KitchensDetails() {
     );
   };
   const handleProceedToCheckout = async () => {
+    setLoading(true);
     try {
       const response = await createNewkitchenMenu(id, cartItems);
-      setKitchenData(response.data);
-    } catch (error) {
-      console.error("Error fetching kitchen details:", error);
+      if (response && response.status) {
+        toast.success(response.message);
+      } else {
+        toast.error(response?.message || "An unexpected error occurred");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -297,7 +303,7 @@ function KitchensDetails() {
       >
         <Row className="align-items-start">
           <Col xs={12} md={3} className="text-center text-md-start">
-            <div className="position-relative d-inline-block">
+            <div className="position-relative bg-white rounded-circle d-inline-block">
               <img
                 src={kitchenData?.kitchen_image}
                 alt="Business Profile"

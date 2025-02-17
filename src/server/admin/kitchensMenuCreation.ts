@@ -37,7 +37,13 @@ export const createNewkitchenMenu = async (
     );
     return response.data;
   } catch (error: any) {
-    console.error("Login Error:", error.response?.data || error.message);
+    if (error.response) {
+      throw new Error(error.response.data.message || "An error occurred");
+    } else if (error.request) {
+      throw new Error("No response received from the server");
+    } else {
+      throw new Error(error.message || "An unexpected error occurred");
+    }
   }
 };
 
