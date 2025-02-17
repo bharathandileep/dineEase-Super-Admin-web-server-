@@ -238,7 +238,7 @@ function ListKitchens() {
               <Link to={`/apps/kitchen/${item._id}`}>
                 <Card className="product-box h-100">
                   <Card.Body className="d-flex flex-column">
-                    <div className="bg-light mb-3 ">
+                    <div className="bg-light mb-1 ">
                       <img
                         src={item?.kitchen_image}
                         alt={item?.kitchen_name}
@@ -253,18 +253,8 @@ function ListKitchens() {
                     <div className="product-info mt-auto">
                       <div className="row align-items-center">
                         <div className="col">
-                        <h5 className="font-16 mt-0 sp-line-1">
-                      <Link
-                       to={`/apps/kitchen/${item._id}`}
-                         style={{
-                          fontSize: "28px", 
-                         fontWeight: "bold", 
-                       color: "black", 
-                        textDecoration: "none",
-                         }}
-                         >
-                       {item?.kitchen_name}
-                           </Link>
+                          <h5 className="font-24 mt-0 sp-line-1 bold">
+                            {item?.kitchen_name}
                           </h5>
                           <div className="text-muted font-14">
                             <div className="d-flex align-items-center mb-1 text-black">
