@@ -582,7 +582,7 @@ function KitchensDetails() {
                 fontSize: "0.9rem",
                 height: "35px",
               }}
-              onClick={() => navigate(`/apps/kitchen/our-menu/${id}`)}
+              onClick={() => navigate(`/apps/kitchen/${id}/our-menu`)}
             >
               Our menu
             </Button>

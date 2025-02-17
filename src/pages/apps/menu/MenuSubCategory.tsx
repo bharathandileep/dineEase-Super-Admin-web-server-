@@ -118,7 +118,6 @@ function MenuSubCategory() {
     return <span className="fw-bold">{row.original.subcategoryName}</span>;
   };
   const CategoryColumn = ({ row }: { row: any }) => {
-    console.log(row, "dd");
     return <span className="fw-bold">{row?.original?.category?.category}</span>;
   };
 

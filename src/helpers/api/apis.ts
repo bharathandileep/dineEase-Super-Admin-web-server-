@@ -24,7 +24,8 @@ export const apiConfig = {
       `/kitchens/update/${kitchenId}`,
     deletekitchens: (kitchenId: string | undefined) =>
       `/kitchens/delete/${kitchenId}`,
-    getAllkitchens:(query:any)=> `/kitchens/all?page=${query.page}&limit=${query.limit}`,
+    getAllkitchens: (query: any) =>
+      `/kitchens/all?page=${query.page}&limit=${query.limit}`,
     getkitchensById: (kitchenId: string | undefined) =>
       `/kitchens/${kitchenId}`,
 
@@ -155,5 +156,9 @@ export const apiConfig = {
       item: string | undefined,
       kitchenId: string | undefined
     ) => `/kitchens-menu/kitchen-menu/${kitchenId}/remove/${item}`,
+    kitchenMenuItemChange: (
+      kitchenId: string | undefined,
+      itemId: string | undefined
+    ) => `/kitchens-menu/${kitchenId}/menu-item/${itemId}`,
   },
 };

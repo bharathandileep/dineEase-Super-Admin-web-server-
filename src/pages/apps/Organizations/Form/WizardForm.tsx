@@ -153,11 +153,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
         navigate("/apps/organizations/list");
       } else {
         toast.error(response.message || "Update failed. Please try again.");
-        console.log(response, "e");
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
-      console.log(error, "f");
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
       setLoading(false);

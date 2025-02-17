@@ -239,7 +239,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
       try {
         const response = await getkitchenDetails(id);
         setKitchenData(response.data);
-        console.log(response.data);
         setFormData((prevFormData) => ({
           ...prevFormData,
           kitchen_name: response.data.kitchen_name || "",
@@ -293,7 +292,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
           kitchen_image: response.data.kitchen_image || "",
         }));
 
-        console.log(response);
       } catch (error) {
         console.error("Error fetching kitchen details:", error);
       } finally {

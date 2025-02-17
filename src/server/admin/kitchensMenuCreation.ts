@@ -40,3 +40,33 @@ export const createNewkitchenMenu = async (
     console.error("Login Error:", error.response?.data || error.message);
   }
 };
+
+export const getKitchenMenuItemDetails = async (
+  kitchenId: string | undefined,
+  itemId: string | undefined
+) => {
+  try {
+    const response = await axiosInstance.get(
+      `${apiConfig.kitchenMenu.kitchenMenuItemChange(kitchenId, itemId)}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Login Error:", error.response?.data || error.message);
+  }
+};
+export const updateKitchenMenuItemDetails = async (
+  kitchenId: string | undefined,
+  itemId: string | undefined,
+  itemUpdateDetails: any
+) => {
+  try {
+    const response = await axiosInstance.put(
+      `${apiConfig.kitchenMenu.kitchenMenuItemChange(kitchenId, itemId)}`,
+      itemUpdateDetails
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Login Error:", error.response?.data || error.message);
+    return error.response;
+  }
+};
