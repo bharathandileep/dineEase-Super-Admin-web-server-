@@ -5,42 +5,16 @@ import {
   getkitchenDetails,
 } from "../../../server/admin/kitchens";
 import {
-  Container,
   Row,
   Col,
   Card,
   Button,
-  Image,
-  Badge,
   Accordion,
   Tab,
   Tabs,
+  Badge,
 } from "react-bootstrap";
-import {
-  CheckCircle2,
-  XCircle,
-  Utensils,
-  Edit2,
-  Trash2,
-  MapPin,
-  FileCheck,
-  CreditCard,
-  Building2,
-  Globe,
-  Building,
-  Navigation,
-} from "lucide-react";
 import { toast } from "react-toastify";
-
-// Add this import for profile image
-import defaultProfile from "../../../assets/images/products/product-10.jpg";
-
-// Add these imports for card images
-import dashboardUI from "../../../assets/images/macbook.png";
-import cakeImage from "../../../assets/images/products/product-5.png";
-
-// Add this import for menu item images (you should replace with actual images)
-import defaultFoodImage from "../../../assets/images/products/product-5.png";
 import { listItems } from "../../../server/admin/items";
 import { createNewkitchenMenu } from "../../../server/admin/kitchensMenuCreation";
 
@@ -662,5 +636,4 @@ function KitchensDetails() {
     </div>
   );
 }
-
 export default KitchensDetails;

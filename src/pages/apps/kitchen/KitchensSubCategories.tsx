@@ -1,13 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Edit2, Trash2 } from "lucide-react";
 import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
 import {
-  deleteSubcategory,
-  getSubcategories,
   toggleSubcategoryStatus,
 } from "../../../server/admin/menu";
 import { toast } from "react-toastify";
-import AddCategory from "../menu/modal/AddCategory";
 import AddkitchenCategory from "./modal/AddkitchenCategory";
 import {
   kitchensDeleteSubcategory,
