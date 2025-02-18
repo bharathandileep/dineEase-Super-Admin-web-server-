@@ -2,7 +2,7 @@ name: DineEase front CI/CD on Ubuntu
 
 on:
   push:
-    branches: [ main ]  
+    branches: [ development ]  
 
 jobs:
   deploy:
