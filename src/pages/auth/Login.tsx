@@ -39,26 +39,10 @@ const Login = () => {
   };
   useEffect(() => {
     if (userLoggedIn && user) {
-      navigate("/"); // ✅ Redirect to Dashboard
+      navigate("/");
     }
-  }, [userLoggedIn, user, navigate]); // Run when these values change
+  }, [userLoggedIn, user, navigate]); 
 
-  // const onSubmit = async (formData: UserData) => {
-  //   try {
-  //     const response = await AuthAdminCredentials(formData);
-  //     if (response.status && response.data?.token) {
-  //       localStorage.setItem("token", response.data.token);
-  //       isUserAuthenticated();
-  //       toast.success("Login successful! Redirecting...");
-  //       navigate("/");
-  //     } else {
-  //       toast.error(response.message || "Login failed. Please try again.");
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Login Error:", error.response?.data || error.message);
-  //     toast.error(error.response?.data?.message || "Something went wrong.");
-  //   }
-  // };
 
   return (
     <>
