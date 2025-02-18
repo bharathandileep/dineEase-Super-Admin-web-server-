@@ -20,6 +20,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           echo "SSH connection test successful"
+          rm -rf /var/www/html/node_modules || true
           sudo rm -rf /var/www/html
           
     # - name: Stop Pm2 Process
