@@ -48,21 +48,23 @@ function MenuSubCategory() {
 
   const filteredMenuItems = useMemo(() => {
     return menuItems.filter((value) => {
-      const categoryMatch = value.subcategoryName
-        .toLowerCase()
-        .includes(searchTerm);
-      const createdAtString =
-        value.createdAt && !isNaN(new Date(value.createdAt).getTime())
-          ? new Date(value.createdAt).toLocaleDateString()
-          : "";
-      const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
-
-      // Status filter
-      const statusMatch =
-        statusFilter === "all" ||
-        (statusFilter === "active" && value.status) ||
-        (statusFilter === "inactive" && !value.status);
-
+      const searchLower = searchTerm.toLowerCase();
+  
+      // Ensure subcategory name search works properly
+      const subcategoryName = value.subcategoryName?.toLowerCase() || "";
+      const categoryMatch = subcategoryName.includes(searchLower);
+  
+      // Handle date conversion safely
+      const createdAtString = value.createdAt
+        ? new Date(value.createdAt).toLocaleDateString()
+        : "";
+      const createdAtMatch = createdAtString.toLowerCase().includes(searchLower);
+  
+      // **Fix status filtering logic**
+      let statusMatch = true;
+      if (statusFilter === "active") statusMatch = value.status === true;
+      if (statusFilter === "inactive") statusMatch = value.status === false;
+  
       return (categoryMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, menuItems]);
@@ -292,7 +294,7 @@ function MenuSubCategory() {
                     <Card.Body className="p-0">
                       <Table
                         columns={columns}
-                        data={menuItems}
+                        data={filteredMenuItems}
                         isSearchable={false}
                         pageSize={10}
                         sizePerPageList={sizePerPageList}

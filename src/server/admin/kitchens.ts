@@ -139,8 +139,9 @@ export const kitchensGetSubcategoriesByCategory = async (
   categoryId: string | undefined
 ) => {
   try {
+
     const response = await axiosInstance.get(
-      apiConfig.menu.getSubcategoriesByCategory(categoryId)
+      apiConfig.kitchens.getSubcategoriesByCategory(categoryId)
     );
     return response.data;
   } catch (error: any) {
