@@ -11,7 +11,6 @@ import { VerticalForm, FormInput } from "../../components/";
 import AuthLayout from "./AuthLayout";
 import { AuthAdminCredentials } from "../../server/admin/auth";
 import { toast } from "react-toastify";
-// import { isUserAuthenticated } from "../../helpers/api/apiCore";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { loginUser } from "../../redux/actions";
@@ -43,23 +42,6 @@ const Login = () => {
     }
   }, [userLoggedIn, user, navigate]); // Run when these values change
 
-  // const onSubmit = async (formData: UserData) => {
-  //   try {
-  //     const response = await AuthAdminCredentials(formData);
-  //     if (response.status && response.data?.token) {
-  //       localStorage.setItem("token", response.data.token);
-  //       isUserAuthenticated();
-  //       toast.success("Login successful! Redirecting...");
-  //       navigate("/");
-  //     } else {
-  //       toast.error(response.message || "Login failed. Please try again.");
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Login Error:", error.response?.data || error.message);
-  //     toast.error(error.response?.data?.message || "Something went wrong.");
-  //   }
-  // };
-
   return (
     <>
       <AuthLayout
@@ -85,6 +67,12 @@ const Login = () => {
             <Button variant="primary" type="submit">
               {t("Log In")}
             </Button>
+          </div>
+          
+          <div className="text-center mt-3">
+            <Link to="/auth/forget-password" className="text-muted">
+              {t("Forgot Password?")}
+            </Link>
           </div>
         </VerticalForm>
       </AuthLayout>

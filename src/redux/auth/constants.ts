@@ -7,6 +7,8 @@ export enum AuthActionTypes {
   SIGNUP_USER = "@@auth/SIGNUP_USER",
   FORGOT_PASSWORD = "@@auth/FORGOT_PASSWORD",
   FORGOT_PASSWORD_CHANGE = "@@auth/FORGOT_PASSWORD_CHANGE",
+  RESET_PASSWORD = "@@auth/RESET_PASSWORD",
 
   RESET = "@@auth/RESET",
+  VERIFY_OTP = "VERIFY_OTP",
 }

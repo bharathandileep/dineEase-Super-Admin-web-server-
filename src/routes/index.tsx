@@ -402,7 +402,7 @@ const kitchenAppRoutes = {
       route: PrivateRoute,
     },
     {
-      path: "/apps/kitchen/our-menu",
+      path: "/apps/kitchen/our-menu/:id",
       name: "details Kitchens",
       element: <OurMenu />,
       route: PrivateRoute,
@@ -1442,7 +1442,7 @@ const authRoutes: RoutesProps[] = [
     route: Route,
   },
   {
-    path: "/auth/forget-password2",
+    path: "/auth/forget-password2", 
     name: "Forget Password2",
     element: <ForgetPassword2 />,
     route: Route,

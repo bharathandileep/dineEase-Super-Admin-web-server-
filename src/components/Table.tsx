@@ -114,7 +114,7 @@ const Table = (props: TableProps) => {
   const isSelectable = props["isSelectable"] || false;
   const isExpandable = props["isExpandable"] || false;
   const sizePerPageList = props["sizePerPageList"] || [];
-  console.log(props.data)
+  console.log(props.data);
   let otherProps: any = {};
 
   if (isSearchable) {
@@ -221,13 +221,24 @@ const Table = (props: TableProps) => {
         />
       )}
 
-      <div className="table-responsive">
+      <div
+        className="table-responsive"
+        style={{
+          overflow: "auto",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
         <table
           {...dataTable.getTableProps()}
           className={classNames(
             "table table-centered react-table",
             props["tableClass"]
           )}
+          style={{
+            padding: "0px",
+            marginBottom: "0px",
+          }}
         >
           <thead className={props["theadClass"]}>
             {(dataTable.headerGroups || []).map((headerGroup: any) => (

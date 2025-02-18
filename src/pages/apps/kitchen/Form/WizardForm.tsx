@@ -835,9 +835,25 @@ export function WizardForm({ initialData }: WizardFormProps) {
                     type="button"
                     onClick={handleNext}
                     className="btn btn-primary d-flex align-items-center ms-auto"
+                    disabled={loading}
                   >
-                    {currentStep === 2 ? "Submit" : "Next"}
-                    {currentStep === 1 && <ChevronRight className="ms-2" />}
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        />
+                        <span
+                          className="spinner-grow spinner-grow-sm"
+                          role="status"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {currentStep === 2 ? "Submit" : "Next"}
+                        {currentStep === 1 && <ChevronRight className="ms-2" />}
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

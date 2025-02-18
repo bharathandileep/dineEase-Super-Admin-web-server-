@@ -266,26 +266,19 @@ function MenuCategory() {
                 <p>No results found for "{searchTerm}"</p>
               </div>
             ) : (
-              <Row>
-                <Col>
-                  <Card>
-                    <Card.Body className="p-0">
-                      <Table
-                        columns={columns}
-                        data={menuItems}
-                        isSearchable={false}
-                        pageSize={10}
-                        sizePerPageList={sizePerPageList}
-                        isSortable={true}
-                        pagination={false}
-                        isSelectable={false}
-                        theadClass="table-light"
-                        searchBoxClass="mb-2"
-                      />
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
+    
+              <Table
+                columns={columns}
+                data={menuItems}
+                isSearchable={false}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={false}
+                isSelectable={false}
+                theadClass="table-light"
+                searchBoxClass="mb-2"
+              />
             )}
           </div>
         </div>
