@@ -27,7 +27,8 @@ interface AuthActionType {
     | AuthActionTypes.API_RESPONSE_ERROR
     | AuthActionTypes.LOGIN_USER
     | AuthActionTypes.LOGOUT_USER
-    | AuthActionTypes.RESET;
+    | AuthActionTypes.RESET
+    | AuthActionTypes.GOOGLE_LOGIN_USER;
   payload: {
     actionType?: string;
     data?: UserData | {};
@@ -45,13 +46,13 @@ const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
   switch (action.type) {
     case AuthActionTypes.API_RESPONSE_SUCCESS:
       switch (action.payload.actionType) {
-        case AuthActionTypes.LOGIN_USER:{
+        case AuthActionTypes.LOGIN_USER: {
           return {
             ...state,
             user: action.payload.data,
-            userLoggedIn: true,       
-            loading: false,    
-          };               
+            userLoggedIn: true,
+            loading: false,
+          };
         }
         case AuthActionTypes.SIGNUP_USER: {
           return {
@@ -79,7 +80,6 @@ const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
         default:
           return { ...state };
       }
-
     case AuthActionTypes.API_RESPONSE_ERROR:
       switch (action.payload.actionType) {
         case AuthActionTypes.LOGIN_USER: {
@@ -90,6 +90,7 @@ const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
             loading: false,
           };
         }
+
         case AuthActionTypes.SIGNUP_USER: {
           return {
             ...state,
@@ -109,7 +110,9 @@ const Auth = (state: State = INIT_STATE, action: AuthActionType): any => {
         default:
           return { ...state };
       }
-
+    case AuthActionTypes.GOOGLE_LOGIN_USER:
+      return { ...state, loading: true, userLoggedIn: false };
+      
     case AuthActionTypes.LOGIN_USER:
       return { ...state, loading: true, userLoggedIn: false };
     case AuthActionTypes.LOGOUT_USER:

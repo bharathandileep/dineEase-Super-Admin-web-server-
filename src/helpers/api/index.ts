@@ -3,10 +3,11 @@ import { APICore } from "./apiCore";
 
 const api = new APICore();
 
-// account
 function login(params: { username: string; password: string }) {
   return AuthAdminCredentials(params);
 }
+
+
 
 function logout() {
   localStorage.removeItem("Session_token");

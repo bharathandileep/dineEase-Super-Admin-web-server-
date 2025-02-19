@@ -1,69 +1,51 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { ArrowRight } from "lucide-react";
 
-import homeImage from "../../assets/images/landing/home-img.png";
-
-const Hero = () => {
+export const Hero = () => {
   return (
-    <section className="bg-home bg-gradient" id="home">
-      <div className="home-center">
-        <div className="home-desc-center">
-          <Container className="container-fluid">
-            <Row className="align-items-center">
-              <Col lg={6}>
-                <div className="home-title mo-mb-20">
-                  <h1 className="mb-4 text-white">
-                    DineEas is a fully featured premium admin template
-                  </h1>
-                  <p className="text-white-50 home-desc mb-5">
-                    DineEas is a fully featured premium admin template built on
-                    top of awesome Bootstrap 5, modern web technology HTML5,
-                    CSS3 and JavaScript library (React). It has many ready to
-                    use hand crafted components.{" "}
-                  </p>
-                  <div className="subscribe">
-                    <form>
-                      <Row>
-                        <Col md={8}>
-                          <div className="mb-2">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Enter your e-mail address"
-                            />
-                          </div>
-                        </Col>
-                        <Col md={4}>
-                          <button type="submit" className="btn btn-primary">
-                            Subscribe Us
-                          </button>
-                        </Col>
-                      </Row>
-                    </form>
-                  </div>
-                </div>
-              </Col>
-              <Col
-                lg={{ span: 5, offset: 1 }}
-                md={7}
-                xl={{ span: 4, offset: 2 }}
+    <div
+      className="hero-section d-flex align-items-center justify-content-center py-5"
+      style={{
+        backgroundImage:
+          'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "90vh",  
+      }}
+    >
+      <Container>
+        <Row className="justify-content-center">
+          <Col xs={12} md={10} lg={8} className="text-center text-white">
+            {/* Centered Heading */}
+            <h1 className="display-4 fw-bold text-white mb-4">
+              Your Personalized Culinary Experience Awaits!
+            </h1>
+            {/* Centered Paragraph */}
+            <p className="lead mb-5">
+              Order meals in advance, streamline your kitchen menus, and savor
+              personalized meal plans—all from a single platform!
+            </p>
+            {/* Centered Buttons */}
+            <div className="d-flex flex-column flex-md-row justify-content-center gap-3">
+              <Button
+                variant="primary"
+                size="lg"
+                className="d-inline-flex align-items-center gap-2"
               >
-                <div className="home-img position-relative">
-                  <img src={homeImage} alt="" className="home-first-img" />
-                  <img
-                    src={homeImage}
-                    alt=""
-                    className="home-second-img mx-auto d-block"
-                  />
-                  <img src={homeImage} alt="" className="home-third-img" />
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </div>
-    </section>
+                Add a Kitchen
+              </Button>
+              <Button
+                variant="primary"
+                size="lg"
+                className="d-inline-flex align-items-center gap-2"
+              >
+                Add an Organization
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
-
-export default Hero;
