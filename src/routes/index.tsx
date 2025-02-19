@@ -1454,7 +1454,7 @@ const authRoutes: RoutesProps[] = [
     route: Route,
   },
   {
-    path: "/auth/forget-password2",
+    path: "/auth/forget-password2", 
     name: "Forget Password2",
     element: <ForgetPassword2 />,
     route: Route,

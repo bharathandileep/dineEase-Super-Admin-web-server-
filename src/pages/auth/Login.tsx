@@ -11,7 +11,6 @@ import { VerticalForm, FormInput } from "../../components/";
 import AuthLayout from "./AuthLayout";
 import { AuthAdminCredentials } from "../../server/admin/auth";
 import { toast } from "react-toastify";
-// import { isUserAuthenticated } from "../../helpers/api/apiCore";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { loginUser } from "../../redux/actions";
@@ -69,6 +68,12 @@ const Login = () => {
             <Button variant="primary" type="submit">
               {t("Log In")}
             </Button>
+          </div>
+          
+          <div className="text-center mt-3">
+            <Link to="/auth/forget-password" className="text-muted">
+              {t("Forgot Password?")}
+            </Link>
           </div>
         </VerticalForm>
       </AuthLayout>

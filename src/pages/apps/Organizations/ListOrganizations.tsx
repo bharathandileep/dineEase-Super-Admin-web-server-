@@ -1,55 +1,126 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { getAllOrg } from "../../../server/admin/organization";
 import { Link, useNavigate } from "react-router-dom";
 import PageTitle from "../../../components/PageTitle";
 
 function ListOrganizations() {
-  const [orgDetails, setOrgDetails] = useState([]);
-  const [companyInfo, setCompanyInfo] = useState<any[]>();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [companyInfo, setCompanyInfo] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalItems, setTotalItems] = useState(0);
 
-  const onSearchData = (searchValue: string) => {
-    setSearchTerm(searchValue.toLowerCase().trim());
+  const navigate = useNavigate();
+  const isLoadingRef = useRef(false);
+
+  // Fetch data with pagination
+  const fetchData = async (currentPage: number, isNewSearch: boolean = false) => {
+    if (isLoadingRef.current) return;
+
+    if (isNewSearch) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+    isLoadingRef.current = true;
+
+    try {
+      const response = await getAllOrg({ page: currentPage, limit: 4 });
+      const { orgnization
+        , totalPages, totalOrganizations } = response.data;
+
+      if (isNewSearch) {
+        setCompanyInfo(orgnization);
+      } else {
+        // Prevent duplicates
+        setCompanyInfo((prev) => {
+          const existingIds = new Set(prev.map((item) => item._id));
+          const newItems = orgnization.filter(
+            (item: any) => !existingIds.has(item._id)
+          );
+          return [...prev, ...newItems];
+        });
+      }
+
+      setTotalItems(totalOrganizations);
+      setHasMore(currentPage < totalPages);
+      setPage(currentPage + 1);
+    } catch (error) {
+      console.error("Error fetching organizations:", error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+      isLoadingRef.current = false;
+    }
   };
 
-  const filteredMenuItems = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return companyInfo;
-    }
+  // Initial load
+  useEffect(() => {
+    fetchData(1, true);
+  }, []);
 
+  // Handle search
+  const handleSearch = (value: string) => {
+    setSearchTerm(value.toLowerCase().trim());
+    setPage(1);
+    setHasMore(true);
+    fetchData(1, true);
+  };
+
+  // Throttle function for scroll handling
+  const throttle = (func: (...args: any[]) => void, limit: number) => {
+    let inThrottle = false;
+    return (...args: any[]) => {
+      if (!inThrottle) {
+        func(...args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    };
+  };
+
+  // Scroll handler
+  useEffect(() => {
+    const handleScroll = throttle(() => {
+      if (isLoadingRef.current || !hasMore) return;
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight - 100) {
+        fetchData(page, false);
+      }
+    }, 200);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, page]);
+
+  // Filtered items based on search term
+  const filteredMenuItems = useMemo(() => {
+    if (!searchTerm.trim()) return companyInfo;
+  
     return companyInfo?.filter((item) => {
       return (
-        item.contact_number?.toLowerCase().includes(searchTerm) ||
-        item.email?.toLowerCase().includes(searchTerm) ||
-        item.managerName?.toLowerCase().includes(searchTerm) ||
-        item.employeeCount?.toString().includes(searchTerm) ||
-        item.organizationName?.toLowerCase().includes(searchTerm) ||
-        item.register_number?.toLowerCase().includes(searchTerm) ||
+        item.contact_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.managerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.employeeCount?.toString().includes(searchTerm.toLowerCase()) ||
+        item.organizationName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.register_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.addresses?.some((address: any) =>
-          address.street_address?.toLowerCase().includes(searchTerm)
+          address.street_address?.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     });
   }, [searchTerm, companyInfo]);
+  
 
-  useEffect(() => {
-    const fetchAllOrganizations = async () => {
-      setLoading(true);
-      try {
-        const response = await getAllOrg();
-        setCompanyInfo(response.data.kitchens || []);
-      } catch (error) {
-        console.error("Error fetching organizations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllOrganizations();
-  }, []);
-
+  // Loading state
   if (loading) {
     return (
       <div className="text-center my-5">
@@ -61,7 +132,7 @@ function ListOrganizations() {
     );
   }
 
-  // Show message when no data is available
+  // No data available
   if (!companyInfo || companyInfo.length === 0) {
     return (
       <div className="text-center my-5">
@@ -132,31 +203,10 @@ function ListOrganizations() {
                         className="form-control my-1 my-lg-0"
                         id="inputPassword2"
                         placeholder="Search..."
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          onSearchData(e.target.value)
-                        }
+                        onChange={(e) => handleSearch(e.target.value)}
                       />
                     </div>
                   </form>
-                </Col>
-                <Col className="col-auto">
-                  <div className="d-flex align-items-center">
-                    <label htmlFor="status-select" className="me-2 mb-0">
-                      Sort By
-                    </label>
-                    <div>
-                      <select
-                        className="form-select my-1 my-lg-0"
-                        id="status-select"
-                      >
-                        <option defaultValue="all">All</option>
-                        <option value="popular">Popular</option>
-                        <option value="pricelow">Price Low</option>
-                        <option value="pricehigh">Price High</option>
-                        <option value="soldout">Sold Out</option>
-                      </select>
-                    </div>
-                  </div>
                 </Col>
               </Row>
             </Card.Body>
@@ -164,7 +214,6 @@ function ListOrganizations() {
         </Col>
       </Row>
 
-      {/* Show "No results found" message when search returns no results */}
       {searchTerm && (!filteredMenuItems || filteredMenuItems.length === 0) ? (
         <div className="text-center my-5">
           <Card>
@@ -183,11 +232,11 @@ function ListOrganizations() {
       ) : (
         <Row>
           {filteredMenuItems?.map((item, index) => (
-            <Col key={index} md={6} xl={3} className="mb-1">
+            <Col key={item._id || index} md={6} xl={3} className="mb-3">
               <Link to={`/apps/organizations/${item._id}`}>
                 <Card className="product-box h-100">
                   <Card.Body className="d-flex flex-column">
-                    <div className="bg-light mb-1">
+                    <div className="bg-light mb-3">
                       <img
                         src={item?.organizationLogo}
                         alt={item?.organizationName}
@@ -200,41 +249,28 @@ function ListOrganizations() {
                       />
                     </div>
                     <div className="product-info mt-auto">
-                      <div className="row align-items-center">
-                        <div className="col">
-                          <h5
-                            className="font-24 mt-0 font-bold sp-line-1"
-                          >
-                            {item?.organizationName}
-                          </h5>
-                          <div className="text-muted font-14">
-                            <div className="d-flex align-items-center mb-1 text-black">
-                              <i className="mdi mdi-map-marker me-1"></i>
-                              <span>
-                                {item?.addresses[0]?.street_address},{" "}
-                                {item?.addresses[0]?.city},{" "}
-                                {item?.addresses[0]?.country}
-                              </span>
-                            </div>
-                            <div className="d-flex align-items-center mb-1 text-black">
-                              <i className="mdi mdi-phone-classic me-1"></i>
-                              <span>{item?.contact_number}</span>
-                            </div>
-                            <div className="d-flex align-items-center mb-1 text-black">
-                              <i className="mdi mdi-email me-1 text-black"></i>
-                              <span>{item?.email}</span>
-                            </div>
-                            <div className="d-flex align-items-center mb-1 text-black">
-                              <i className="mdi mdi-card-account-details me-1 text-black"></i>
-                              <span>Reg No: {item?.register_number}</span>
-                            </div>
-                            <div className="d-flex align-items-center text-black">
-                              <i className="mdi mdi-account-group me-1 text-black"></i>
-                              <span>Employees: {item?.no_of_employees}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <h5 className="font-16 mt-0">
+                        <Link
+                          to={`/apps/organizations/${item._id}`}
+                          className="text-dark"
+                        >
+                          {item?.organizationName}
+                        </Link>
+                      </h5>
+                      <p className="text-muted">
+                        <i className="mdi mdi-map-marker me-1"></i>
+                        {item?.addresses[0]?.street_address},{" "}
+                        {item?.addresses[0]?.city},{" "}
+                        {item?.addresses[0]?.country}
+                      </p>
+                      <p className="text-muted">
+                        <i className="mdi mdi-phone-classic me-1"></i>
+                        {item?.contact_number}
+                      </p>
+                      <p className="text-muted">
+                        <i className="mdi mdi-email me-1"></i>
+                        {item?.email}
+                      </p>
                     </div>
                   </Card.Body>
                 </Card>
@@ -242,6 +278,12 @@ function ListOrganizations() {
             </Col>
           ))}
         </Row>
+      )}
+
+      {loadingMore && (
+        <div className="text-center my-4">
+          <i className="mdi mdi-spin mdi-loading me-1"></i> Loading more...
+        </div>
       )}
     </>
   );

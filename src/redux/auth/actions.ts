@@ -10,7 +10,9 @@ export interface AuthActionType {
     | AuthActionTypes.LOGIN_USER
     | AuthActionTypes.LOGOUT_USER
     | AuthActionTypes.RESET
-    | AuthActionTypes.SIGNUP_USER;
+    | AuthActionTypes.SIGNUP_USER
+    | AuthActionTypes.VERIFY_OTP
+    | AuthActionTypes.RESET_PASSWORD;
   payload: {} | string;
 }
 
@@ -71,4 +73,13 @@ export const forgotPassword = (username: string): AuthActionType => ({
 export const resetAuth = (): AuthActionType => ({
   type: AuthActionTypes.RESET,
   payload: {},
+});
+ 
+export const verifyOtp = (otp: string): AuthActionType => ({
+type: AuthActionTypes.VERIFY_OTP,
+payload: { otp },
+});
+export const resetPassword = (otp: string): AuthActionType => ({
+type: AuthActionTypes.RESET_PASSWORD,
+payload: { otp },
 });
