@@ -18,6 +18,9 @@ import {
   loginOTPVerify,
   loginUserWithMail,
 } from "../../server/admin/auth";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const NavigationBar = () => {
   const [showModal, setShowModal] = useState(false);
@@ -30,6 +33,18 @@ export const NavigationBar = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
+  
+  const navigate = useNavigate();
+  const { userLoggedIn, user, loading } = useSelector(
+    (state: RootState) => state.Auth
+  );
+  useEffect(() => {
+    // if (userLoggedIn && user) {
+    if (user) {
+      // navigate("/");
+      setIsLoggedIn(true);
+    }
+  }, [userLoggedIn, user, navigate]);
 
   const otpRefs = [
     useRef<HTMLInputElement>(null),
@@ -39,6 +54,8 @@ export const NavigationBar = () => {
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
   ];
+
+
 
   useEffect(() => {
     let interval: any | undefined;
@@ -136,9 +153,7 @@ export const NavigationBar = () => {
   };
 
   const handleloginwithPhone = async () => {
-    // Get phone number from state
     console.log("Phone Number: ", phoneNumber);
-    // Handle your login with phone logic here
   };
 
   const handleSignUpEmail = async () => {
@@ -160,10 +175,8 @@ export const NavigationBar = () => {
   };
 
   const handleSignUpphone = async () => {
-    // Get full name and phone number from state
     console.log("Full Name: ", fullName);
     console.log("Phone Number: ", phoneNumber);
-    // Handle your sign-up with phone logic here
   };
 
   const switchForm = (tab: string) => {
@@ -221,10 +234,10 @@ export const NavigationBar = () => {
                 </>
               ) : (
                 <>
-                  <Nav.Link href="#add-kitchen" className="me-3 text-dark">
+                  <Nav.Link href="/apps/kitchen/new" className="me-3 text-dark">
                     Add Kitchen
                   </Nav.Link>
-                  <Nav.Link href="#add-organization" className="text-dark">
+                  <Nav.Link href="/apps/organizations/new" className="text-dark">
                     Add Organization
                   </Nav.Link>
                 </>
