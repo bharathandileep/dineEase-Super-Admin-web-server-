@@ -47,6 +47,10 @@ export const apiConfig = {
       `/kitchens/subcategories/${id}`,
     toggleSubcategoryStatus: (id: string | undefined) =>
       `/kitchens/subcategories/${id}/toggle-status`,
+
+    
+  
+     
   },
   organization: {
     newOrganization: "/organization/new",
@@ -146,4 +150,18 @@ export const apiConfig = {
     toggleOrgEmployeeStatus: (id: string | undefined) =>
       `/orgemployee/orgemployee/${id}/toggle-status`,
   },
+
+  kitchenMenu: {
+    getKitchenMenu: (id: string | undefined) => `/kitchen-menu/${id}`,
+    removekitchenMenu: (item: string | undefined, kitchenId: string | undefined) => `/kitchen-menu/${kitchenId}/item/${item}`,
+    createkitchenMenu: (id: string | undefined) => `/kitchen-menu/${id}`,
+    kitchenMenuItemChange: (kitchenId: string | undefined, itemId: string | undefined) => `/kitchen-menu/${kitchenId}/item/${itemId}`,
+  },
+
+  addressDetails:{
+    getAllCountries:"/addressDetails/allcountries",
+    getStatesByCountry:(countryName: string |undefined)=>`/addressDetails/states/${countryName}`,
+    getCitiesByState:(stateId: string | undefined)=>`/addressDetails/cities/${stateId}`,
+    getDistrictsByState:(stateId: string | undefined)=>`/addressDetails/districts/${stateId}`
+  }
 };
