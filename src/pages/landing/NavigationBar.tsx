@@ -18,9 +18,6 @@ import {
   loginOTPVerify,
   loginUserWithMail,
 } from "../../server/admin/auth";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 
 export const NavigationBar = () => {
   const [showModal, setShowModal] = useState(false);
@@ -33,19 +30,6 @@ export const NavigationBar = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
-
-  const navigate = useNavigate();
-
-  const { userLoggedIn, user, loading } = useSelector(
-    (state: RootState) => state.Auth
-  );
-  useEffect(() => {
-    // if (userLoggedIn && user) {
-    if (user) {
-      // navigate("/");
-      setIsLoggedIn(true);
-    }
-  }, [userLoggedIn, user, navigate]);
 
   const otpRefs = [
     useRef<HTMLInputElement>(null),
@@ -237,13 +221,10 @@ export const NavigationBar = () => {
                 </>
               ) : (
                 <>
-                  <Nav.Link href="/apps/kitchen/new" className="me-3 text-dark">
+                  <Nav.Link href="#add-kitchen" className="me-3 text-dark">
                     Add Kitchen
                   </Nav.Link>
-                  <Nav.Link
-                    href="/apps/organizations/new"
-                    className="text-dark"
-                  >
+                  <Nav.Link href="#add-organization" className="text-dark">
                     Add Organization
                   </Nav.Link>
                 </>
@@ -265,11 +246,11 @@ export const NavigationBar = () => {
             <Tabs
               activeKey={activeTab}
               onSelect={(k) => k && setActiveTab(k)}
-              className="justify-content-center"
+              className="mb-4 justify-content-center"
             >
               <Tab eventKey="signin-email" title="Email">
                 <Form className="py-3">
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-4">
                     <Form.Label className="fw-medium">Email address</Form.Label>
                     <Form.Control
                       type="email"
@@ -286,25 +267,7 @@ export const NavigationBar = () => {
                   >
                     Continue
                   </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
-                    onClick={handleGoogleSignIn}
-                  >
-                    <img
-                      src="https://www.google.com/favicon.ico"
-                      alt="Google"
-                      style={{ width: "20px", height: "20px" }}
-                    />
-                    Continue with Google
-                  </Button>
-                  <div className="position-relative mb-2">
-                    <hr className="my-4" />
-                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
-                      <span className="text-muted">or</span>
-                    </div>
-                  </div>
-                  <div className="text-center">
+                  <div className="text-center mb-4">
                     <span className="text-muted">Don't have an account? </span>
                     <a
                       href="#"
@@ -317,26 +280,29 @@ export const NavigationBar = () => {
                       Sign Up
                     </a>
                   </div>
-                  <div className="text-center mb-4">
-                    <span className="text-muted">
-                      Login with Email and password?{" "}
-                    </span>
-                    <a
-                      href="#"
-                      className="text-decoration-none"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        switchForm("signin-phone");
-                      }}
-                    >
-                      Sign In
-                    </a>
+                  <div className="position-relative mb-4">
+                    <hr className="my-4" />
+                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                      <span className="text-muted">or</span>
+                    </div>
                   </div>
+                  <Button
+                    variant="outline-dark"
+                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <img
+                      src="https://www.google.com/favicon.ico"
+                      alt="Google"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                    Continue with Google
+                  </Button>
                 </Form>
               </Tab>
               <Tab eventKey="signin-phone" title="Phone">
                 <Form className="py-3">
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-4">
                     <Form.Label className="fw-medium">Phone number</Form.Label>
                     <Form.Control
                       type="tel"
@@ -353,25 +319,7 @@ export const NavigationBar = () => {
                   >
                     Continue
                   </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
-                    onClick={handleGoogleSignIn}
-                  >
-                    <img
-                      src="https://www.google.com/favicon.ico"
-                      alt="Google"
-                      style={{ width: "20px", height: "20px" }}
-                    />
-                    Continue with Google
-                  </Button>
-                  <div className="position-relative mb-2">
-                    <hr className="my-4" />
-                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
-                      <span className="text-muted">or</span>
-                    </div>
-                  </div>
-                  <div className="text-center ">
+                  <div className="text-center mb-4">
                     <span className="text-muted">Don't have an account? </span>
                     <a
                       href="#"
@@ -384,21 +332,24 @@ export const NavigationBar = () => {
                       Sign Up
                     </a>
                   </div>
-                  <div className="text-center">
-                    <span className="text-muted">
-                      Login with Email and passwords?{" "}
-                    </span>
-                    <a
-                      href="/auth/employee/login"
-                      className="text-decoration-none"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        switchForm("signin-phone");
-                      }}
-                    >
-                      Sign In
-                    </a>
+                  <div className="position-relative mb-4">
+                    <hr className="my-4" />
+                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                      <span className="text-muted">or</span>
+                    </div>
                   </div>
+                  <Button
+                    variant="outline-dark"
+                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <img
+                      src="https://www.google.com/favicon.ico"
+                      alt="Google"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                    Continue with Google
+                  </Button>
                 </Form>
               </Tab>
             </Tabs>
@@ -417,7 +368,7 @@ export const NavigationBar = () => {
             <Tabs
               activeKey={activeTab}
               onSelect={(k) => k && setActiveTab(k)}
-              className=" justify-content-center"
+              className="mb-4 justify-content-center"
             >
               <Tab eventKey="signup-email" title="Email">
                 <Form className="py-3">
@@ -431,7 +382,7 @@ export const NavigationBar = () => {
                       onChange={(e) => setFullName(e.target.value)}
                     />
                   </Form.Group>
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-4">
                     <Form.Label className="fw-medium">Email address</Form.Label>
                     <Form.Control
                       type="email"
@@ -448,25 +399,7 @@ export const NavigationBar = () => {
                   >
                     Continue
                   </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
-                    onClick={handleGoogleSignIn}
-                  >
-                    <img
-                      src="https://www.google.com/favicon.ico"
-                      alt="Google"
-                      style={{ width: "20px", height: "20px" }}
-                    />
-                    Continue with Google
-                  </Button>
-                  <div className="position-relative mb-2">
-                    <hr className="my-4" />
-                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
-                      <span className="text-muted">or</span>
-                    </div>
-                  </div>
-                  <div className="text-center">
+                  <div className="text-center mb-4">
                     <span className="text-muted">
                       Already have an account?{" "}
                     </span>
@@ -481,21 +414,24 @@ export const NavigationBar = () => {
                       Sign In
                     </a>
                   </div>
-                  <div className="text-center">
-                    <span className="text-muted">
-                      Login with Email and password?{" "}
-                    </span>
-                    <a
-                      href="/auth/employee/login"
-                      className="text-decoration-none"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        switchForm("signin-phone");
-                      }}
-                    >
-                      Sign In
-                    </a>
+                  <div className="position-relative mb-4">
+                    <hr className="my-4" />
+                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                      <span className="text-muted">or</span>
+                    </div>
                   </div>
+                  <Button
+                    variant="outline-dark"
+                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <img
+                      src="https://www.google.com/favicon.ico"
+                      alt="Google"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                    Continue with Google
+                  </Button>
                 </Form>
               </Tab>
               <Tab eventKey="signup-phone" title="Phone">
@@ -510,7 +446,7 @@ export const NavigationBar = () => {
                       onChange={(e) => setFullName(e.target.value)}
                     />
                   </Form.Group>
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-4">
                     <Form.Label className="fw-medium">Phone number</Form.Label>
                     <Form.Control
                       type="tel"
@@ -527,25 +463,7 @@ export const NavigationBar = () => {
                   >
                     Continue
                   </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
-                    onClick={handleGoogleSignIn}
-                  >
-                    <img
-                      src="https://www.google.com/favicon.ico"
-                      alt="Google"
-                      style={{ width: "20px", height: "20px" }}
-                    />
-                    Continue with Google
-                  </Button>
-                  <div className="position-relative">
-                    <hr className="" />
-                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
-                      <span className="text-muted">or</span>
-                    </div>
-                  </div>
-                  <div className="text-center">
+                  <div className="text-center mb-4">
                     <span className="text-muted">
                       Already have an account?{" "}
                     </span>
@@ -560,21 +478,24 @@ export const NavigationBar = () => {
                       Sign In
                     </a>
                   </div>
-                  <div className="text-center ">
-                    <span className="text-muted">
-                      Login with Email and password?{" "}
-                    </span>
-                    <a
-                      href="/auth/employee/login"
-                      className="text-decoration-none"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        switchForm("signin-phone");
-                      }}
-                    >
-                      Sign In
-                    </a>
+                  <div className="position-relative mb-4">
+                    <hr className="my-4" />
+                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                      <span className="text-muted">or</span>
+                    </div>
                   </div>
+                  <Button
+                    variant="outline-dark"
+                    className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <img
+                      src="https://www.google.com/favicon.ico"
+                      alt="Google"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                    Continue with Google
+                  </Button>
                 </Form>
               </Tab>
             </Tabs>
