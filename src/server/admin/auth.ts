@@ -12,12 +12,14 @@ interface ForgotPasswordData {
 interface VerifyOtpData {
   email: string;
   otp: string;
+  token: string;
 }
 
 interface UpdatePasswordData {
   email: string;
   newPassword: string;
   confirmPassword: string;
+  token: string;
 }
 export const AuthAdminCredentials = async (adminCredentials: UserData) => {
   try {
@@ -56,7 +58,8 @@ export const verifyForgotPasswordOtp = async (otpData: VerifyOtpData) => {
     console.error("Verify OTP Error:", error.response?.data || error.message);
     throw error;
   }
-};
+}
+
 
 export const updateAdminPassword = async (passwordData: UpdatePasswordData) => {
   try {

@@ -54,6 +54,7 @@ const ForgetPassword = () => {
   const [step, setStep] = useState<'email' | 'otp' | 'password'>('email');
   const [userEmail, setUserEmail] = useState<string>('');
   const [isResending, setIsResending] = useState<boolean>(false);
+  const [isToken, setIsToken] = useState<string>('');
 
   useEffect(() => {
     dispatch(resetAuth());
@@ -130,7 +131,7 @@ const ForgetPassword = () => {
     try {
       setApiError(null);
       setApiSuccess(null);
-
+  
       switch (step) {
         case 'email':
           const emailResponse = await generateForgotPasswordOtp({ 
@@ -141,38 +142,44 @@ const ForgetPassword = () => {
           
           if (emailResponse.status) { // Adjusted to match API response structure
             setUserEmail(formData.email!);
-            setApiSuccess(emailResponse.message|| t("OTP sent successfully. Please check your email."));
-       
+            setApiSuccess(emailResponse.message || t("OTP sent successfully. Please check your email."));
             setStep('otp');
-       
           } else {
             setApiError(emailResponse?.data?.message || t("Failed to send OTP. Please try again."));
           }
           break;
-
+  
         case 'otp':
           const otpResponse = await verifyForgotPasswordOtp({ 
             email: userEmail, 
-            otp: formData.otp! 
+            otp: formData.otp!,
+            token: isToken // Pass the token here
           });
-          
-          console.log('OTP Response:', otpResponse); // Debug log
-          
-          if (otpResponse.status) { // Adjusted to match API response structure
+          setIsToken(otpResponse.data.token); 
+
+          if (otpResponse.data.isToken) {
             setApiSuccess(otpResponse?.data?.message || t("OTP verified successfully. Please set your new password."));
+            setTimeout(() => {
+              setStep('password');
+            }, 2000);
+          } else {
+            setApiError(otpResponse?.data?.message || t("Invalid token. Please try again."));
+          }
+          
+          if (otpResponse.status) { 
             setTimeout(() => {
               setStep('password');
             }, 1000);
           } else {
-            setApiError(otpResponse?.data?.message || t("Invalid OTP. Please try again."));
           }
           break;
-
+  
         case 'password':
           const passwordResponse = await updateAdminPassword({
             email: userEmail,
             newPassword: formData.newPassword!,
-            confirmPassword: formData.confirmPassword!
+            confirmPassword: formData.confirmPassword!,
+            token: isToken 
           });
           
           console.log('Password Response:', passwordResponse); // Debug log
