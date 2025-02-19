@@ -76,25 +76,26 @@ function OrgCategories() {
     return menuItems.filter((value) => {
       const categoryName = value.category?.toLowerCase() || "";
       const searchLower = searchTerm.toLowerCase();
-  
+
       // Ensure category name search works properly
       const categoryMatch = categoryName.includes(searchLower);
-  
+
       // Handle date conversion safely
       const createdAtString = value.createdAt
         ? new Date(value.createdAt).toLocaleDateString()
         : "";
-      const createdAtMatch = createdAtString.toLowerCase().includes(searchLower);
-  
+      const createdAtMatch = createdAtString
+        .toLowerCase()
+        .includes(searchLower);
+
       // **Fix status filtering logic**
       let statusMatch = true;
       if (statusFilter === "active") statusMatch = value.status === true;
       if (statusFilter === "inactive") statusMatch = value.status === false;
-  
+
       return (categoryMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, menuItems]);
-  
 
   const handleDelete = async (id: any) => {
     if (!window.confirm("Are you sure you want to delete this category?"))
@@ -280,17 +281,17 @@ function OrgCategories() {
               </div>
             ) : (
               <Table
-                        columns={columns}
-                        data={filteredMenuItems}
-                        isSearchable={false}
-                        pageSize={10}
-                        sizePerPageList={sizePerPageList}
-                        isSortable={true}
-                        pagination={false}
-                        isSelectable={false}
-                        theadClass="table-light"
-                        searchBoxClass="mb-2"
-                      />
+                columns={columns}
+                data={filteredMenuItems}
+                isSearchable={false}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={false}
+                isSelectable={false}
+                theadClass="table-light"
+                searchBoxClass="mb-2"
+              />
             )}
           </div>
         </div>

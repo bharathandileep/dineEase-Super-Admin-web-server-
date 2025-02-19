@@ -32,11 +32,9 @@ export const AuthAdminCredentials = async (adminCredentials: UserData) => {
       `${apiConfig.admin.login}`,
       adminCredentials
     );
-    // localStorage.setItem("token", response.data.data.token);
     return response.data;
   } catch (error: any) {
     console.error("Login Error:", error.response?.data || error.message);
-    // throw error;
   }
 };
 

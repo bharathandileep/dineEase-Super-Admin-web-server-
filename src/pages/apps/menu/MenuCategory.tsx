@@ -276,7 +276,7 @@ function MenuCategory() {
             ) : (
               <Table
                 columns={columns}
-                data={menuItems}
+                data={filteredMenuItems}
                 isSearchable={false}
                 pageSize={10}
                 sizePerPageList={sizePerPageList}
