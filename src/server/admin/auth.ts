@@ -46,7 +46,7 @@ export const googleAuth = async () => {
       }
     );
     api.setLoggedInUser(response.data.data);
-    return response.data;
+    return response.data; 
   } catch (error: any) {
     return error.response.data;
   }
