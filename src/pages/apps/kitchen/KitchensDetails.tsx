@@ -417,7 +417,9 @@ function KitchensDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title text-bold text-black">FSSAI License</h5>
+                <h5 className="card-title text-bold text-black">
+                  FSSAI License
+                </h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
@@ -483,7 +485,9 @@ function KitchensDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title text-bold text-black">GST Registration</h5>
+                <h5 className="card-title text-bold text-black">
+                  GST Registration
+                </h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
@@ -515,7 +519,9 @@ function KitchensDetails() {
         <Col md={6}>
           <Card className="h-100 shadow-sm">
             <Card.Body>
-              <h5 className="card-title text-bold text-black mb-3">Location Details</h5>
+              <h5 className="card-title text-bold text-black mb-3">
+                Location Details
+              </h5>
               <p className="card-text mb-4">
                 {[
                   kitchenData?.addresses?.[0]?.street_address,

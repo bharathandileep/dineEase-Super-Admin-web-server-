@@ -522,7 +522,7 @@ const dashboardRoutes = {
   path: "/",
   name: "Dashboard",
   route: PrivateRoute,
-  roles: ["Admin"],
+  roles: ["Admin", "User"],
   icon: "airplay",
   element: <Dashboard3 />,
 };

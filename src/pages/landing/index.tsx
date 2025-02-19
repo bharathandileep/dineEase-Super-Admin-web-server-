@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ContactUs from "./ContactUs";
 import { Hero } from "./Hero";
 import { NavigationBar } from "./NavigationBar";
@@ -10,6 +10,9 @@ import Metrics from "./Metrics";
 import PlatformHighlights from "./PlatformHighlights";
 import AppDownload from "./AppDownload";
 import Footer from "./Footer";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 function index() {
   return (
@@ -23,7 +26,7 @@ function index() {
       <Metrics />
       <PlatformHighlights />
       <AppDownload />
-      <Footer  />
+      <Footer />
     </div>
   );
 }

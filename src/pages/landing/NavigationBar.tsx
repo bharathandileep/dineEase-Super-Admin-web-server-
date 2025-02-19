@@ -136,7 +136,9 @@ export const NavigationBar = () => {
   };
 
   const handleloginwithPhone = async () => {
+    // Get phone number from state
     console.log("Phone Number: ", phoneNumber);
+    // Handle your login with phone logic here
   };
 
   const handleSignUpEmail = async () => {
@@ -158,8 +160,10 @@ export const NavigationBar = () => {
   };
 
   const handleSignUpphone = async () => {
+    // Get full name and phone number from state
     console.log("Full Name: ", fullName);
     console.log("Phone Number: ", phoneNumber);
+    // Handle your sign-up with phone logic here
   };
 
   const switchForm = (tab: string) => {

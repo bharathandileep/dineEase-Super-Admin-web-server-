@@ -11,7 +11,7 @@ export const Hero = () => {
           'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80")',
         backgroundSize: "cover",
         backgroundPosition: "center",
-        minHeight: "90vh",  
+        minHeight: "90vh",
       }}
     >
       <Container>
@@ -27,22 +27,6 @@ export const Hero = () => {
               personalized meal plans—all from a single platform!
             </p>
             {/* Centered Buttons */}
-            <div className="d-flex flex-column flex-md-row justify-content-center gap-3">
-              <Button
-                variant="primary"
-                size="lg"
-                className="d-inline-flex align-items-center gap-2"
-              >
-                Add a Kitchen
-              </Button>
-              <Button
-                variant="primary"
-                size="lg"
-                className="d-inline-flex align-items-center gap-2"
-              >
-                Add an Organization
-              </Button>
-            </div>
           </Col>
         </Row>
       </Container>

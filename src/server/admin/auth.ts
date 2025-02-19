@@ -45,7 +45,8 @@ export const googleAuth = async () => {
         },
       }
     );
-    api.setLoggedInUser(response.data);
+    console.log(response.data)
+    api.setLoggedInUser(response.data.data);
     return response.data;
   } catch (error: any) {
     return error.response.data;
@@ -53,7 +54,6 @@ export const googleAuth = async () => {
 };
 
 export const authUserWithCredentials = async (userCredentials: any) => {
-  console.log(userCredentials);
   try {
     const response = await axiosInstance.post(
       "/auth/send-otp",
@@ -71,6 +71,7 @@ export const authvaliadateOTP = async (userCredentials: any) => {
       "/auth/verify-otp",
       userCredentials
     );
+    api.setLoggedInUser(response.data.data);
     return response.data;
   } catch (error: any) {
     return error.response.data;
@@ -97,6 +98,7 @@ export const loginOTPVerify = async (userCredentials: any) => {
       "/auth/verify-loginotp",
       userCredentials
     );
+    api.setLoggedInUser(response.data.data);
     return response.data;
   } catch (error: any) {
     return error.response.data;

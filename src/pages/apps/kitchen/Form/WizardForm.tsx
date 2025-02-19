@@ -87,7 +87,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [kitchenData, setKitchenData] = useState<IKitchenDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const steps = [
@@ -291,7 +291,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
           // Kitchen Image
           kitchen_image: response.data.kitchen_image || "",
         }));
-
       } catch (error) {
         console.error("Error fetching kitchen details:", error);
       } finally {
