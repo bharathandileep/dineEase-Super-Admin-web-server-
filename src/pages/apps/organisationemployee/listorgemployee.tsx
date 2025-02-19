@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, Button, Row, Col, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { getAllOrgEmployees, deleteOrgEmployee, toggleOrgEmployeeStatus } from "../../../server/admin/orgemployeemanagment";
-import { Pencil, Trash, ToggleLeft, ToggleRight } from "lucide-react"; 
+import { Pencil, Trash, ToggleLeft, ToggleRight } from "lucide-react";
 
 interface OrgEmployee {
   _id: string;
@@ -18,29 +18,81 @@ interface OrgEmployee {
 const OrgEmployeeList = () => {
   const [orgemployees, setEmployees] = useState<OrgEmployee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalItems, setTotalItems] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const response = await getAllOrgEmployees();
-        if (response.status) {
-          setEmployees(response.data);
+  // Use a ref to store the current loading state to access in scroll handler
+  const isLoadingRef = useRef(false);
+
+  const fetchEmployees = async (currentPage: number, isNewSearch: boolean = false) => {
+    if (isLoadingRef.current) return;
+
+    if (isNewSearch) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+    isLoadingRef.current = true;
+
+    try {
+      const response = await getAllOrgEmployees({ page: currentPage, limit: 10 });
+      if (response.status) {
+        const { orgEmployees, totalPages, totalEmployees } = response.data; // Changed from data to orgEmployees
+
+        if (isNewSearch) {
+          setEmployees(orgEmployees); // Changed from data to orgEmployees
         } else {
-          toast.error("Failed to load employees.");
+          setEmployees((prev) => {
+            const existingIds = new Set(prev.map((item) => item._id));
+            const newItems = orgEmployees.filter((item: any) => !existingIds.has(item._id));
+            return [...prev, ...newItems];
+          });
         }
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-        toast.error("An error occurred while fetching employees.");
-      } finally {
-        setLoading(false);
+
+        setTotalItems(totalEmployees);
+        setHasMore(currentPage < totalPages);
+        setPage(currentPage + 1);
+      } else {
+        toast.error("Failed to load employees.");
       }
-    };
-    fetchEmployees();
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      toast.error("An error occurred while fetching employees.");
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+      isLoadingRef.current = false;
+    }
+  };
+  
+  // Initial load
+  useEffect(() => {
+    fetchEmployees(1, true);
   }, []);
 
+  // Scroll handler with throttling
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isLoadingRef.current || !hasMore) return;
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight - 100) {
+        fetchEmployees(page, false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, page]);
+
   const handleEdit = (id: string) => {
-    navigate(`/apps/organizations/employ/edit/${id}`);  
+    navigate(`/apps/organizations/employ/edit/${id}`);
   };
 
   const handleDelete = async (id: string) => {
@@ -60,21 +112,27 @@ const OrgEmployeeList = () => {
     }
   };
 
- const handleToggleStatus = async (id: string) => {
-     try {
-       const response = await toggleOrgEmployeeStatus(id);
-       if (response.status) {
-         toast.success("Employee status updated successfully!");
-         setEmployees(orgemployees.map(emp => emp._id === id ? { ...emp, employee_status: emp.employee_status === "Active" ? "Inactive" : "Active" } : emp));
-       } else {
-         toast.error("Failed to update status.");
-       }
-     } catch (error) {
-       console.error("Error updating employee status:", error);
-       toast.error("An error occurred while updating status.");
-     }
-   };
- 
+  const handleToggleStatus = async (id: string) => {
+    try {
+      const response = await toggleOrgEmployeeStatus(id);
+      if (response.status) {
+        toast.success("Employee status updated successfully!");
+        setEmployees(
+          orgemployees.map((emp) =>
+            emp._id === id
+              ? { ...emp, employee_status: emp.employee_status === "Active" ? "Inactive" : "Active" }
+              : emp
+          )
+        );
+      } else {
+        toast.error("Failed to update status.");
+      }
+    } catch (error) {
+      console.error("Error updating employee status:", error);
+      toast.error("An error occurred while updating status.");
+    }
+  };
+
   return (
     <React.Fragment>
       {/* Breadcrumb Navigation */}
@@ -84,7 +142,7 @@ const OrgEmployeeList = () => {
             <Link to="/employees/list">Organisation Employees</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
-          Organisation Employee List
+            Organisation Employee List
           </li>
         </ol>
       </nav>
@@ -93,7 +151,7 @@ const OrgEmployeeList = () => {
       <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
         <div className="d-flex align-items-center justify-content-between">
           <h3 className="page-title m-0" style={{ color: "#fff" }}>Organisation Employees</h3>
-          <Link to="/apps/organizations/employ/add"className="btn btn-danger waves-effect waves-light">
+          <Link to="/apps/organizations/employ/add" className="btn btn-danger waves-effect waves-light">
             <i className="mdi mdi-plus-circle me-1"></i> Add New Employee
           </Link>
         </div>
@@ -112,7 +170,7 @@ const OrgEmployeeList = () => {
                 <Card
                   className="product-box h-100 shadow-sm position-relative"
                   style={{ transition: "all 0.3s ease-in-out", cursor: "pointer" }}
-                  onClick={() => navigate(`/apps/organizations/employ/details/${orgemployees._id}`)}  
+                  onClick={() => navigate(`/apps/organizations/employ/details/${orgemployees._id}`)}
                 >
                   <Card.Body className="d-flex flex-column align-items-center text-center">
                     {/* Profile Picture */}
@@ -190,6 +248,12 @@ const OrgEmployeeList = () => {
             <p className="text-center">No employees found.</p>
           )}
         </Row>
+      )}
+
+      {loadingMore && (
+        <div className="text-center my-4">
+          <i className="mdi mdi-spin mdi-loading me-1"></i> Loading more...
+        </div>
       )}
     </React.Fragment>
   );

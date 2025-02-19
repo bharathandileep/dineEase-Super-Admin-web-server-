@@ -22,7 +22,7 @@ const OrgEmployeeManagement = () => {
     const fetchDesignations = async () => {
       setLoading(true);
       try {
-        const response = await getAllDesignations();
+        const response = await getAllDesignations( {page:1,limit:10});
         if (response.status) {
           setDesignations(response.data);
         } else {

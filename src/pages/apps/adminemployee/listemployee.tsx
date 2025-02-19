@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, Button, Row, Col, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -18,26 +18,79 @@ interface Employee {
 const EmployeeList = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalItems, setTotalItems] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const response = await getAllEmployees();
-        if (response.status) {
-          setEmployees(response.data);
+  const isLoadingRef = useRef(false);
+
+
+
+  const fetchEmployees = async (currentPage: number, isNewSearch: boolean = false) => {
+    if (isLoadingRef.current) return;
+
+    if (isNewSearch) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+    isLoadingRef.current = true;
+
+    try {
+      const response = await getAllEmployees({ page: currentPage, limit: 8 });
+      if (response.status) {
+        const { employees, totalPages, totalEmployees } = response.data; // Changed from data to orgEmployees
+
+        if (isNewSearch) {
+          setEmployees(employees); // Changed from data to orgEmployees
         } else {
-          toast.error("Failed to load employees.");
+          setEmployees((prev) => {
+            const existingIds = new Set(prev.map((item) => item._id));
+            const newItems = employees.filter((item: any) => !existingIds.has(item._id));
+            return [...prev, ...newItems];
+          });
         }
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-        toast.error("An error occurred while fetching employees.");
-      } finally {
-        setLoading(false);
+
+        setTotalItems(totalEmployees);
+        setHasMore(currentPage < totalPages);
+        setPage(currentPage + 1);
+      } else {
+        toast.error("Failed to load employees.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      toast.error("An error occurred while fetching employees.");
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+      isLoadingRef.current = false;
+    }
+  };
+  
+  // Initial load
+  useEffect(() => {
+    fetchEmployees(1, true);
+  }, []);
+
+  // Scroll handler with throttling
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isLoadingRef.current || !hasMore) return;
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight - 100) {
+        fetchEmployees(page, false);
       }
     };
-    fetchEmployees();
-  }, []);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, page]);
 
   const handleEdit = (id: string) => {
     navigate(`/apps/employee/edit/${id}`);
@@ -65,7 +118,13 @@ const EmployeeList = () => {
       const response = await toggleEmployeeStatus(id);
       if (response.status) {
         toast.success("Employee status updated successfully!");
-        setEmployees(employees.map(emp => emp._id === id ? { ...emp, employee_status: emp.employee_status === "Active" ? "Inactive" : "Active" } : emp));
+        setEmployees(
+          employees.map((emp) =>
+            emp._id === id
+              ? { ...emp, employee_status: emp.employee_status === "Active" ? "Inactive" : "Active" }
+              : emp
+          )
+        );
       } else {
         toast.error("Failed to update status.");
       }
@@ -74,6 +133,7 @@ const EmployeeList = () => {
       toast.error("An error occurred while updating status.");
     }
   };
+
 
   return (
     <React.Fragment>

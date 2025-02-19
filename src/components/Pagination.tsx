@@ -8,35 +8,32 @@ interface PaginationProps {
     text: string;
     value: number;
   }[];
+  onPageChange?: (page: number) => void;
+  onSizePerPageChange?: (size: number) => void;
 }
 
-const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
-  /**
-   * pagination count , index
-   */
-  const [pageCount, setPageCount] = useState<number>(tableProps.pageCount);
-  const [pageIndex, setPageIndex] = useState<number>(
-    tableProps.state.pageIndex
-  );
+const Pagination = ({ 
+  tableProps, 
+  sizePerPageList, 
+  onPageChange, 
+  onSizePerPageChange 
+}: PaginationProps) => {
+  const { 
+    pageIndex,
+    gotoPage,
+    setPageSize,
+    pageCount,
+  } = tableProps;
 
-  useEffect(() => {
-    setPageCount(tableProps.pageCount);
-    setPageIndex(tableProps.state.pageIndex);
-  }, [tableProps.pageCount, tableProps.state.pageIndex]);
+  const [visiblePages] = useState<number[]>([]);
 
-  /**
-   * get filter pages
-   */
   const filterPages = useCallback(
-    (visiblePages: any, totalPages: number) => {
-      return visiblePages.filter((page: any) => page <= pageCount);
+    (visiblePages: number[], totalPages: number) => {
+      return visiblePages.filter((page) => page <= totalPages);
     },
-    [pageCount]
+    []
   );
 
-  /**
-   * handle visible pages
-   */
   const getVisiblePages = useCallback(
     (page: number | null, total: number) => {
       if (total < 7) {
@@ -54,33 +51,19 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
     [filterPages]
   );
 
-  /**
-   * handle page change
-   * @param page - current page
-   * @returns
-   */
   const changePage = (page: number) => {
     const activePage = pageIndex + 1;
-
-    if (page === activePage) {
-      return;
-    }
-
-    const visiblePages = getVisiblePages(page, pageCount);
-    setVisiblePages(filterPages(visiblePages, pageCount));
-
-    tableProps.gotoPage(page - 1);
+    if (page === activePage) return;
+    gotoPage(page - 1);
+    if (onPageChange) onPageChange(page);
   };
 
   useEffect(() => {
-    const visiblePages = getVisiblePages(null, pageCount);
-    setVisiblePages(visiblePages);
-  }, [pageCount, getVisiblePages]);
+    const visible = getVisiblePages(null, pageCount);
+    visiblePages.push(...visible);
+  }, [pageCount, getVisiblePages, visiblePages]);
 
-  const [visiblePages, setVisiblePages] = useState<number[]>(
-    getVisiblePages(null, pageCount)
-  );
-  const activePage: number = pageIndex + 1;
+  const activePage = pageIndex + 1;
 
   return (
     <>
@@ -91,17 +74,16 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
             <select
               value={tableProps.state.pageSize}
               onChange={(e: any) => {
-                tableProps.setPageSize(Number(e.target.value));
+                setPageSize(Number(e.target.value));
+                if (onSizePerPageChange) onSizePerPageChange(Number(e.target.value));
               }}
               className="form-select d-inline-block w-auto"
             >
-              {(sizePerPageList || []).map((pageSize, index) => {
-                return (
-                  <option key={index} value={pageSize.value}>
-                    {pageSize.text}
-                  </option>
-                );
-              })}
+              {sizePerPageList.map((pageSize, index) => (
+                <option key={index} value={pageSize.value}>
+                  {pageSize.text}
+                </option>
+              ))}
             </select>
           </div>
         )}
@@ -109,7 +91,7 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
         <span className="me-3">
           Page{" "}
           <strong>
-            {pageIndex + 1} of {tableProps.pageOptions.length}
+            {pageIndex + 1} of {pageCount}
           </strong>{" "}
         </span>
 
@@ -121,8 +103,8 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
             min="1"
             onChange={(e: any) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              tableProps.gotoPage(page);
-              setPageIndex(tableProps.state.pageIndex);
+              gotoPage(page);
+              if (onPageChange) onPageChange(page + 1);
             }}
             className="form-control w-25 ms-1 d-inline-block"
           />
@@ -134,16 +116,13 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
             className={classNames("page-item", "paginate_button", "previous", {
               disabled: activePage === 1,
             })}
-            onClick={() => {
-              if (activePage === 1) return;
-              changePage(activePage - 1);
-            }}
+            onClick={() => changePage(activePage - 1)}
           >
             <Link to="#" className="page-link">
               <i className="mdi mdi-chevron-left"></i>
             </Link>
           </li>
-          {(visiblePages || []).map((page, index, array) => {
+          {visiblePages.map((page, index, array) => {
             return array[index - 1] + 1 < page ? (
               <React.Fragment key={page}>
                 <li className="page-item disabled d-none d-xl-inline-block">
@@ -152,15 +131,10 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
                   </Link>
                 </li>
                 <li
-                  className={classNames(
-                    "page-item",
-                    "d-none",
-                    "d-xl-inline-block",
-                    {
-                      active: activePage === page,
-                    }
-                  )}
-                  onClick={(e: any) => changePage(page)}
+                  className={classNames("page-item", "d-none", "d-xl-inline-block", {
+                    active: activePage === page,
+                  })}
+                  onClick={() => changePage(page)}
                 >
                   <Link to="#" className="page-link">
                     {page}
@@ -170,15 +144,10 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
             ) : (
               <li
                 key={page}
-                className={classNames(
-                  "page-item",
-                  "d-none",
-                  "d-xl-inline-block",
-                  {
-                    active: activePage === page,
-                  }
-                )}
-                onClick={(e: any) => changePage(page)}
+                className={classNames("page-item", "d-none", "d-xl-inline-block", {
+                  active: activePage === page,
+                })}
+                onClick={() => changePage(page)}
               >
                 <Link to="#" className="page-link">
                   {page}
@@ -189,12 +158,9 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps) => {
           <li
             key="nextpage"
             className={classNames("page-item", "paginate_button", "next", {
-              disabled: activePage === tableProps.pageCount,
+              disabled: activePage === pageCount,
             })}
-            onClick={() => {
-              if (activePage === tableProps.pageCount) return;
-              changePage(activePage + 1);
-            }}
+            onClick={() => changePage(activePage + 1)}
           >
             <Link to="#" className="page-link">
               <i className="mdi mdi-chevron-right"></i>

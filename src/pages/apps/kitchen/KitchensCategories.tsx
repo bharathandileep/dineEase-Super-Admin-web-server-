@@ -282,7 +282,7 @@ function KitchensCategories() {
                 pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
-                pagination={false}
+                pagination={true}
                 isSelectable={false}
                 theadClass="table-light"
                 searchBoxClass="mb-2"

@@ -118,7 +118,7 @@ export const apiConfig = {
   },
   designation: {
     createDesignation: "/designation/designations",
-    getAllDesignations: "/designation/designations/all",
+   getAllDesignations:(query:any)=> `/designation/designations/all?page=${query.page}&limit=${query.limit}`,  
     getDesignationById: (id: string | undefined) =>
       `/designation/designations/${id}`,
     updateDesignation: (id: string | undefined) =>
@@ -130,7 +130,7 @@ export const apiConfig = {
   },
   employee: {
     createEmployee: "/employee/employees",
-    getAllEmployees: "/employee/employees/all",
+    getAllEmployees:(query:any)=> `/employee/employees/all?page=${query.page}&limit=${query.limit}`,  
     getEmployeeById: (id: string | undefined) => `/employee/employees/${id}`,
     updateEmployee: (id: string | undefined) => `/employee/employees/${id}`,
     deleteEmployee: (id: string | undefined) => `/employee/employees/${id}`,
@@ -139,7 +139,7 @@ export const apiConfig = {
   },
   orgemployee: {
     createOrgEmployee: "/org-employee/orgemployee",
-    getAllOrgEmployees: "/org-employee/orgemployee/all",
+    getAllOrgEmployees:(query:any)=> `/org-employee/orgemployee/all?page=${query.page}&limit=${query.limit}`,  
     getOrgEmployeeById: (id: string | undefined) =>
       `/org-employee/orgemployee/${id}`,
     updateOrgEmployee: (id: string | undefined) =>
