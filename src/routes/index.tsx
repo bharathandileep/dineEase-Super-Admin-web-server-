@@ -29,6 +29,7 @@ import MenuDetails from "../pages/apps/kitchen/MenuDetails";
 
 // lazy load all the views
 // auth
+
 const Login = React.lazy(() => import("../pages/auth/Login"));
 const Logout = React.lazy(() => import("../pages/auth/Logout"));
 const Confirm = React.lazy(() => import("../pages/auth/Confirm"));
@@ -49,7 +50,7 @@ const LockScreen2 = React.lazy(() => import("../pages/auth2/LockScreen2"));
 const SignInSignUp2 = React.lazy(() => import("../pages/auth2/SignInSignUp2"));
 
 // landing
-const Landing = React.lazy(() => import("../pages/landing/"));
+const Landing = React.lazy(() => import("../pages/landing"));
 
 // dashboard
 // const Dashboard1 = React.lazy(() => import("../pages/dashboard/Dashboard1/"));
@@ -363,7 +364,7 @@ const kitchenAppRoutes = {
   path: "/apps/kitchen",
   name: "Kitchens",
   route: PrivateRoute,
-  roles: ["Admin"  ],
+  roles: ["Admin"],
   children: [
     {
       path: "/apps/kitchen/new",
@@ -521,9 +522,9 @@ const dashboardRoutes = {
   path: "/",
   name: "Dashboard",
   route: PrivateRoute,
-  roles: ["Admin"],
+  roles: ["Admin", "User"],
   icon: "airplay",
-  element: <Dashboard3 />,
+  element: <EcommerceDashboard />,
 };
 
 const calendarAppRoutes: RoutesProps = {
@@ -1381,9 +1382,15 @@ const uiRoutes = {
 // auth
 const authRoutes: RoutesProps[] = [
   {
-    path: "/auth/login",
+    path: "/auth/admin/login",
     name: "Login",
     element: <Login />,
+    route: Route,
+  },
+  {
+    path: "/auth/login",
+    name: "Login",
+    element: <Landing />,
     route: Route,
   },
   {
@@ -1423,9 +1430,9 @@ const authRoutes: RoutesProps[] = [
     route: Route,
   },
   {
-    path: "/auth/login2",
+    path: "/auth/access/login",
     name: "Login2",
-    element: <Login2 />,
+    element: <Login2 />,  
     route: Route,
   },
   {
@@ -1447,7 +1454,7 @@ const authRoutes: RoutesProps[] = [
     route: Route,
   },
   {
-    path: "/auth/forget-password2",
+    path: "/auth/forget-password2", 
     name: "Forget Password2",
     element: <ForgetPassword2 />,
     route: Route,

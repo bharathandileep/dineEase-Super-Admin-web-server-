@@ -30,7 +30,7 @@ export default function MenuDetails() {
     description: "",
     custom_image: "",
     ingredients: [],
-    price: null,
+    price: 0.0,
   });
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -38,6 +38,7 @@ export default function MenuDetails() {
   const handleSave = async () => {
     setLoading(true);
     setFood(editedFood);
+    console.log(editedFood)
     setIsEditing(false);
     setPreviewUrl(null);
 
@@ -237,7 +238,6 @@ export default function MenuDetails() {
                     </div>
                   )}
                 </div>
-
                 <div className="card-body">
                   <div className="d-flex justify-content-between align-items-center mb-4">
                     <div className="flex-grow-1">
@@ -303,29 +303,32 @@ export default function MenuDetails() {
                     )}
                   </div>
 
-                  {editedFood.price !== null && (
-                    <div className="mb-4">
-                      <h2 className="fs-5 fw-semibold mb-2">Price</h2>
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          value={editedFood.price}
-                          onChange={(e) =>
-                            setEditedFood((prev: any) => ({
-                              ...prev,
-                              price: parseFloat(e.target.value),
-                            }))
-                          }
-                          className="form-control w-auto"
-                          step="0.01"
-                        />
-                      ) : (
-                        <p className="fs-4 fw-bold text-success">
-                          ${food?.price?.toFixed(2)}
-                        </p>
-                      )}
-                    </div>
-                  )}
+                  <div className="mb-4">
+                    <h2 className="fs-5 fw-semibold mb-2">Price</h2>
+                    {isEditing ? (
+                      <input
+                        type="number"
+                        value={editedFood.price || ""}
+                        onChange={(e) =>
+                          setEditedFood((prev: any) => ({
+                            ...prev,
+                            price: e.target.value
+                              ? parseFloat(e.target.value)
+                              : "",
+                          }))
+                        }
+                        className="form-control w-auto"
+                        step="0.01"
+                        placeholder="Enter price"
+                      />
+                    ) : (
+                      <p className="fs-4 fw-bold text-success">
+                        {editedFood.price
+                          ? `$${Number(editedFood.price).toFixed(2)}`
+                          : "No price set"}
+                      </p>
+                    )}
+                  </div>
 
                   <div className="mb-4">
                     <h2 className="fs-5 fw-semibold mb-2">Ingredients</h2>

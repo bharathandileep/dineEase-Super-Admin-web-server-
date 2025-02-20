@@ -1,14 +1,15 @@
 import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
-export const getAllOrg = async () => {
+export const getAllOrg = async (query:any) => {
   try {
     const response = await axiosInstance.get(
-      `${apiConfig.organization.getAllOrganization}`
+      `${apiConfig.organization.getAllOrganization(query)}`
     );
     return response.data;
   } catch (error: any) {
     console.error("Login Error:", error.response?.data || error.message);
+    throw error;
   }
 };
 

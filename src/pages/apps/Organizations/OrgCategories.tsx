@@ -74,16 +74,25 @@ function OrgCategories() {
 
   const filteredMenuItems = useMemo(() => {
     return menuItems.filter((value) => {
-      const categoryMatch = value.category.toLowerCase().includes(searchTerm);
-      const createdAtString =
-        value.createdAt && !isNaN(new Date(value.createdAt).getTime())
-          ? new Date(value.createdAt).toLocaleDateString()
-          : "";
-      const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
-      const statusMatch =
-        statusFilter === "all" ||
-        (statusFilter === "active" && value.status) ||
-        (statusFilter === "inactive" && !value.status);
+      const categoryName = value.category?.toLowerCase() || "";
+      const searchLower = searchTerm.toLowerCase();
+
+      // Ensure category name search works properly
+      const categoryMatch = categoryName.includes(searchLower);
+
+      // Handle date conversion safely
+      const createdAtString = value.createdAt
+        ? new Date(value.createdAt).toLocaleDateString()
+        : "";
+      const createdAtMatch = createdAtString
+        .toLowerCase()
+        .includes(searchLower);
+
+      // **Fix status filtering logic**
+      let statusMatch = true;
+      if (statusFilter === "active") statusMatch = value.status === true;
+      if (statusFilter === "inactive") statusMatch = value.status === false;
+
       return (categoryMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, menuItems]);
@@ -272,17 +281,17 @@ function OrgCategories() {
               </div>
             ) : (
               <Table
-                        columns={columns}
-                        data={menuItems}
-                        isSearchable={false}
-                        pageSize={10}
-                        sizePerPageList={sizePerPageList}
-                        isSortable={true}
-                        pagination={false}
-                        isSelectable={false}
-                        theadClass="table-light"
-                        searchBoxClass="mb-2"
-                      />
+                columns={columns}
+                data={filteredMenuItems}
+                isSearchable={false}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={false}
+                isSelectable={false}
+                theadClass="table-light"
+                searchBoxClass="mb-2"
+              />
             )}
           </div>
         </div>

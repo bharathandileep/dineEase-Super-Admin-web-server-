@@ -4,6 +4,9 @@ export const apiConfig = {
   },
   admin: {
     login: "/auth/admin/login",
+    generateForgotOtp: "/auth/admin/forgot-password",
+    verifyForgotOtp: "/auth/admin/verify-password",
+    updatePassword: "/auth/admin/update-password",
   },
   auth: {
     google: "/google-auth",
@@ -12,6 +15,7 @@ export const apiConfig = {
     verifyOtp: "/verify-otp",
     verifyLoginOtp: "/verify-loginotp",
     logout: "/logout",
+    accessAccount:"/user/access/login"
   },
   users: {
     getUser: "/users/:id",
@@ -55,7 +59,7 @@ export const apiConfig = {
       `/organization/update/${orgId}`,
     deleteOrganization: (orgId: string | undefined) =>
       `/organization/delete/${orgId}`,
-    getAllOrganization: "/organization/all",
+    getAllOrganization:(query:any)=> `/organization/all?page=${query.page}&limit=${query.limit}`,    
     getOrganizationById: (orgId: string | undefined) =>
       `/organization/${orgId}`,
     getAllCategoriesByStatus: "/organization/category/status",
@@ -84,7 +88,7 @@ export const apiConfig = {
   },
   menu: {
     createCategory: "/menu-category/categories",
-    getAllCategories: "/menu-category/categories",
+    getAllCategories: "/menu-category/categories",      
     updateCategory: (id: string | undefined) =>
       `/menu-category/categories/${id}`,
     deleteCategory: (id: string | undefined) =>

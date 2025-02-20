@@ -5,7 +5,7 @@ import { apiConfig } from "../../helpers/api/apis";
 
 export const getAllKitches = async (query:any) => {
   try {
-
+    console.log("haii")
     const response = await axiosInstance.get(
       `${apiConfig.kitchens.getAllkitchens(query)}`
     );
@@ -143,8 +143,9 @@ export const kitchensGetSubcategoriesByCategory = async (
   categoryId: string | undefined
 ) => {
   try {
+
     const response = await axiosInstance.get(
-      apiConfig.menu.getSubcategoriesByCategory(categoryId)
+      apiConfig.kitchens.getSubcategoriesByCategory(categoryId)
     );
     return response.data;
   } catch (error: any) {

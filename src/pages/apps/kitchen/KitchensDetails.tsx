@@ -5,42 +5,16 @@ import {
   getkitchenDetails,
 } from "../../../server/admin/kitchens";
 import {
-  Container,
   Row,
   Col,
   Card,
   Button,
-  Image,
-  Badge,
   Accordion,
   Tab,
   Tabs,
+  Badge,
 } from "react-bootstrap";
-import {
-  CheckCircle2,
-  XCircle,
-  Utensils,
-  Edit2,
-  Trash2,
-  MapPin,
-  FileCheck,
-  CreditCard,
-  Building2,
-  Globe,
-  Building,
-  Navigation,
-} from "lucide-react";
 import { toast } from "react-toastify";
-
-// Add this import for profile image
-import defaultProfile from "../../../assets/images/products/product-10.jpg";
-
-// Add these imports for card images
-import dashboardUI from "../../../assets/images/macbook.png";
-import cakeImage from "../../../assets/images/products/product-5.png";
-
-// Add this import for menu item images (you should replace with actual images)
-import defaultFoodImage from "../../../assets/images/products/product-5.png";
 import { listItems } from "../../../server/admin/items";
 import { createNewkitchenMenu } from "../../../server/admin/kitchensMenuCreation";
 
@@ -121,7 +95,7 @@ function KitchensDetails() {
   const { id } = useParams();
   const [kitchenData, setKitchenData] = useState<IKitchenDetails | null>(null);
   const [groupedItems, setGroupedItems] = useState<TransformedData>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [activeKey, setActiveKey] = useState<string>("");
@@ -148,18 +122,23 @@ function KitchensDetails() {
   };
 
   const transformFoodData = (items: any[]): TransformedData => {
-    return items.reduce((acc: TransformedData, item) => {
-      const categoryName = item.category.category;
-      const subcategoryName = item.subcategory.subcategoryName;
-
+    const transformed = items.reduce((acc: TransformedData, item) => {
+      const categoryName = item.category?.category;
+      const subcategoryName = item.subcategory?.subcategoryName;
+  
+      if (!categoryName || !subcategoryName) {
+        console.warn("Skipping item due to missing category/subcategory:", item);
+        return acc;
+      }
+  
       if (!acc[categoryName]) {
         acc[categoryName] = {};
       }
-
+  
       if (!acc[categoryName][subcategoryName]) {
         acc[categoryName][subcategoryName] = [];
       }
-
+  
       acc[categoryName][subcategoryName].push({
         name: item.item_name,
         description: item.item_description,
@@ -167,10 +146,15 @@ function KitchensDetails() {
         status: item.status,
         itemId: item._id,
       });
-
+  
+      console.log("inside transformFoodData:", acc);
       return acc;
     }, {} as TransformedData);
+  
+    console.log("Final transformed data before return:", transformed);
+    return transformed;
   };
+  
 
   useEffect(() => {
     const fetchKitchenDetails = async () => {
@@ -190,8 +174,20 @@ function KitchensDetails() {
     const fetchItemDetails = async () => {
       try {
         const response = await listItems();
-        const transformedData = transformFoodData(response.data);
+        console.log("API Response:", response.data); // Ensure data exists
+  
+        let transformedData;
+        try {
+          transformedData = transformFoodData(response.data);
+          console.log("Transformed Data inside try:", transformedData);
+        } catch (error) {
+          console.error("Error transforming data:", error);
+          return;
+        }
+  
         setGroupedItems(transformedData);
+        console.log("Transformed Data after setGroupedItems:", transformedData);
+  
         const firstCategory = Object.keys(transformedData)[0];
         if (firstCategory) {
           setActiveKey(firstCategory);
@@ -200,8 +196,10 @@ function KitchensDetails() {
         console.error("Error fetching kitchen details:", error);
       }
     };
+  
     fetchItemDetails();
-  }, []);
+  }, [loading]);
+  
 
   const handleAddToCart = (item: FoodItem) => {
     setCartItems((prevCart) => {
@@ -443,7 +441,9 @@ function KitchensDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title text-bold text-black">FSSAI License</h5>
+                <h5 className="card-title text-bold text-black">
+                  FSSAI License
+                </h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
@@ -509,7 +509,9 @@ function KitchensDetails() {
           <Card className="h-100 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h5 className="card-title text-bold text-black">GST Registration</h5>
+                <h5 className="card-title text-bold text-black">
+                  GST Registration
+                </h5>
                 <VerificationButton />
               </div>
               <div className="mb-3">
@@ -541,7 +543,9 @@ function KitchensDetails() {
         <Col md={6}>
           <Card className="h-100 shadow-sm">
             <Card.Body>
-              <h5 className="card-title text-bold text-black mb-3">Location Details</h5>
+              <h5 className="card-title text-bold text-black mb-3">
+                Location Details
+              </h5>
               <p className="card-text mb-4">
                 {[
                   kitchenData?.addresses?.[0]?.street_address,
@@ -662,5 +666,4 @@ function KitchensDetails() {
     </div>
   );
 }
-
 export default KitchensDetails;

@@ -1,186 +1,110 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
-
-import logo from "../../assets/images/logo-light.png";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Mail,
+  Phone,
+  MessageCircle,
+} from "lucide-react";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <>
-      <footer className="bg-dark footer">
-        <div className="container-fluid">
-          <Row className="mb-5">
-            <Col lg={4}>
-              <div className="pe-lg-4">
-                <div className="mb-4 footer-logo">
-                  <img src={logo} alt="" className="logo-light" height="21" />
-                </div>
-                <p className="text-muted">
-                  A Responsive Bootstrap 5 Web App Kit
-                </p>
-                <p className="text-muted mb-4 mb-lg-0">
-                  DineEas is a fully featured premium admin template built on top
-                  of awesome Bootstrap 5, modern web technology HTML5, CSS3 and
-                  JavaScript library (React). It has many ready to use hand
-                  crafted components.
-                </p>
-              </div>
-            </Col>
-            <Col lg={2} md={6}>
-              <div className="footer-list">
-                <p className="text-light mb-2 footer-list-title">About</p>
-                <ul className="list-unstyled">
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Home
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Features
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Faq
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Clients
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </Col>
-            <Col lg={2} md={6}>
-              <div className="footer-list">
-                <p className="text-light mb-2 footer-list-title">Social</p>
-                <ul className="list-unstyled">
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Facebook{" "}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Twitter
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Behance
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Dribble
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </Col>
-            <Col lg={2} md={6}>
-              <div className="footer-list">
-                <p className="text-light mb-2 footer-list-title">Support</p>
-                <ul className="list-unstyled">
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Help &
-                      Support
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Privacy
-                      Policy
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Terms &
-                      Conditions
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </Col>
-            <Col lg={2} md={6}>
-              <div className="footer-list">
-                <p className="text-light mb-2 footer-list-title">More Info</p>
-                <ul className="list-unstyled">
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Pricing
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>For
-                      Marketing
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>For Agencies
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="mdi mdi-chevron-right me-2"></i>Our Apps
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg={12}>
-              <div className="float-start pull-none">
-                <p className="text-muted">
-                  {currentYear} &copy;DineEas. Design by{" "}
-                  <Link
-                    target="_blank"
-                    rel="noreferrer"
-                    to={{ pathname: "https://coderthemes.com/" }}
-                    className="text-muted"
-                  >
-                    Coderthemes
-                  </Link>
-                </p>
-              </div>
-              <div className="float-end pull-none">
-                <ul className="list-inline social-links">
-                  <li className="list-inline-item text-muted">Social :</li>
-                  <li className="list-inline-item">
-                    <Link to="#">
-                      <i className="mdi mdi-facebook"></i>
-                    </Link>
-                  </li>
-                  <li className="list-inline-item">
-                    <Link to="#">
-                      <i className="mdi mdi-twitter"></i>
-                    </Link>
-                  </li>
-                  <li className="list-inline-item">
-                    <Link to="#">
-                      <i className="mdi mdi-instagram"></i>
-                    </Link>
-                  </li>
-                  <li className="list-inline-item">
-                    <Link to="#">
-                      <i className="mdi mdi-google-plus"></i>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </Col>
-          </Row>
+    <footer
+      className="bg-primary text-white py-5"
+      style={{ backgroundColor: "black" }}
+    >
+      <Container>
+        <Row className="mb-5">
+          <Col md={3} className="mb-4 mb-md-0">
+            <h5 className="mb-4">Quick Links</h5>
+            <ul className="list-unstyled">
+              <li className="mb-2">
+                <a href="#" className="text-white-50 text-decoration-none">
+                  About Us
+                </a>
+              </li>
+              <li className="mb-2">
+                <a href="#" className="text-white-50 text-decoration-none">
+                  FAQs
+                </a>
+              </li>
+              <li className="mb-2">
+                <a href="#" className="text-white-50 text-decoration-none">
+                  Terms & Conditions
+                </a>
+              </li>
+              <li className="mb-2">
+                <a href="#" className="text-white-50 text-decoration-none">
+                  Privacy Policy
+                </a>
+              </li>
+            </ul>
+          </Col>
+          <Col md={3} className="mb-4 mb-md-0">
+            <h5 className="mb-4">Contact Us</h5>
+            <ul className="list-unstyled">
+              <li className="mb-2 d-flex align-items-center">
+                <Mail size={18} className="me-2" />
+                <a
+                  href="mailto:support@foodpre.com"
+                  className="text-white-50 text-decoration-none"
+                >
+                  support@foodpre.com
+                </a>
+              </li>
+              <li className="mb-2 d-flex align-items-center">
+                <Phone size={18} className="me-2" />
+                <a
+                  href="tel:+1234567890"
+                  className="text-white-50 text-decoration-none"
+                >
+                  +1 (234) 567-890
+                </a>
+              </li>
+              <li className="mb-2 d-flex align-items-center">
+                <MessageCircle size={18} className="me-2" />
+                <span className="text-white-50">Live Chat Support</span>
+              </li>
+            </ul>
+          </Col>
+          <Col md={3} className="mb-4 mb-md-0">
+            <h5 className="mb-4">Follow Us</h5>
+            <div className="d-flex gap-3">
+              <a href="#" className="text-white-50">
+                <Facebook size={24} />
+              </a>
+              <a href="#" className="text-white-50">
+                <Twitter size={24} />
+              </a>
+              <a href="#" className="text-white-50">
+                <Instagram size={24} />
+              </a>
+            </div>
+          </Col>
+          <Col md={3}>
+            <h5 className="mb-4">Newsletter</h5>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Control
+                  type="email"
+                  placeholder="Enter your email"
+                  className="bg-dark text-white"
+                />
+              </Form.Group>
+              <Button variant="outline-light" type="submit">
+                Subscribe
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+        <hr className="my-4" />
+        <div className="text-center text-white-50">
+          <small>&copy; 2024 Dineeas. All rights reserved.</small>
         </div>
-      </footer>
-    </>
+      </Container>
+    </footer>
   );
 };
 

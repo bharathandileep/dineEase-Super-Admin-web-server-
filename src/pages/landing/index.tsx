@@ -1,105 +1,33 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-
-// components
-import NavBar from "./NavBar";
-import Hero from "./Hero";
-import Services from "./Services";
-import Layouts from "./Layouts";
-import Features from "./Features";
-import Pricing from "./Pricing";
-import FAQ from "./FAQ";
-import Testimonial from "./Testimonial";
 import ContactUs from "./ContactUs";
+import { Hero } from "./Hero";
+import { NavigationBar } from "./NavigationBar";
+import Features from "./Features";
+import Benefits from "./Benefits";
+import HowItWorks from "./HowItWorks";
+import Testimonials from "./Testimonials";
+import Metrics from "./Metrics";
+import PlatformHighlights from "./PlatformHighlights";
+import AppDownload from "./AppDownload";
 import Footer from "./Footer";
-import Clients from "./Clients";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
-// dummy data
-import {
-  services,
-  layouts,
-  features,
-  // plans,
-  rawFaqs,
-  testimonial,
-} from "./data";
-
-const Landing = () => {
-  useEffect(() => {
-    if (document.body)
-      document.body.classList.remove(
-        "authentication-bg",
-        "authentication-bg-pattern"
-      );
-
-    // manage go to top button
-    let mybutton = document.getElementById("back-to-top-btn");
-    window.addEventListener("scroll", () => {
-      if (
-        document.body.scrollTop > 200 ||
-        document.documentElement.scrollTop > 200
-      ) {
-        mybutton!.style.display = "block";
-      } else {
-        mybutton!.style.display = "none";
-      }
-    });
-  }, []);
-
-  /**
-   * reach to top of web page
-   */
-  const topFunction = () => {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-  };
-
+function index() {
   return (
-    <div id="landing">
-      {/* navbar */}
-      <NavBar  />
-
-      {/* hero */}
+    <div>
+      <NavigationBar />
       <Hero />
-
-      {/* Clients */}
-      <Clients />
-
-      {/* services */}
-      <Services services={services} />
-
-      {/* layout demos */}
-      <Layouts layouts={layouts} />
-
-      {/* features */}
-      <Features features={features} />
-
-      {/* pricing */}
-      <Pricing />
-
-      {/* faqs */}
-      <FAQ rawFaqs={rawFaqs} />
-
-      {/* testimonial */}
-      <Testimonial testimonial={testimonial} />
-
-      {/* contact */}
-      <ContactUs />
-
-      {/* footer */}
+      <Features />
+      <Benefits />
+      <HowItWorks />
+      <Testimonials />
+      <Metrics />
+      <PlatformHighlights />
+      <AppDownload />
       <Footer />
-
-      <Link
-        to="#"
-        onClick={() => topFunction()}
-        className="back-to-top-btn btn btn-primary"
-        id="back-to-top-btn"
-      >
-        <i className="mdi mdi-chevron-up"></i>
-      </Link>
     </div>
   );
-};
-
-
-export default Landing;
+}
+export default index;

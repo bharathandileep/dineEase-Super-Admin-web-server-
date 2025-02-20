@@ -1,13 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Edit2, Trash2 } from "lucide-react";
 import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
-import {
-  deleteSubcategory,
-  getSubcategories,
-  toggleSubcategoryStatus,
-} from "../../../server/admin/menu";
+import { toggleSubcategoryStatus } from "../../../server/admin/menu";
 import { toast } from "react-toastify";
-import AddCategory from "../menu/modal/AddCategory";
 import AddkitchenCategory from "./modal/AddkitchenCategory";
 import {
   kitchensDeleteSubcategory,
@@ -52,21 +46,24 @@ function KitchensSubCategories() {
 
   const filteredMenuItems = useMemo(() => {
     return menuItems.filter((value) => {
-      // Search filter
-      const categoryMatch = value.subcategoryName
-        .toLowerCase()
-        .includes(searchTerm);
-      const createdAtString =
-        value.createdAt && !isNaN(new Date(value.createdAt).getTime())
-          ? new Date(value.createdAt).toLocaleDateString()
-          : "";
-      const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
+      const searchLower = searchTerm.toLowerCase();
 
-      // Status filter
-      const statusMatch =
-        statusFilter === "all" ||
-        (statusFilter === "active" && value.status) ||
-        (statusFilter === "inactive" && !value.status);
+      // Ensure subcategory name search works properly
+      const subcategoryName = value.subcategoryName?.toLowerCase() || "";
+      const categoryMatch = subcategoryName.includes(searchLower);
+
+      // Handle date conversion safely
+      const createdAtString = value.createdAt
+        ? new Date(value.createdAt).toLocaleDateString()
+        : "";
+      const createdAtMatch = createdAtString
+        .toLowerCase()
+        .includes(searchLower);
+
+      // **Fix status filtering logic**
+      let statusMatch = true;
+      if (statusFilter === "active") statusMatch = value.status === true;
+      if (statusFilter === "inactive") statusMatch = value.status === false;
 
       return (categoryMatch || createdAtMatch) && statusMatch;
     });
@@ -291,7 +288,7 @@ function KitchensSubCategories() {
             ) : (
               <Table
                 columns={columns}
-                data={menuItems}
+                data={filteredMenuItems}
                 isSearchable={false}
                 pageSize={10}
                 sizePerPageList={sizePerPageList}
