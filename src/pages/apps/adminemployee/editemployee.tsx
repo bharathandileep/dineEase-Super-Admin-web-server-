@@ -19,6 +19,10 @@ const EditEmployee = () => {
   const { id } = useParams();
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [aadharImage, setAadharImage] = useState<File | null>(null);
+  const [aadharImagePreview, setAadharImagePreview] = useState<string | null>(null);
+  const [panImage, setPanImage] = useState<File | null>(null);
+  const [panImagePreview, setPanImagePreview] = useState<string | null>(null);
   const [designations, setDesignations] = useState<
     { _id: string; designation_name: string }[]
   >([]);
@@ -37,6 +41,12 @@ const EditEmployee = () => {
             // Set image preview if exists
             if (response.data.profile_picture) {
               setImagePreview(response.data.profile_picture);
+            }
+            if (response.data.aadhar_image) {
+              setAadharImagePreview(response.data.aadhar_image);
+            }
+            if (response.data.pan_image) {
+              setPanImagePreview(response.data.pan_image);
             }
           } else {
             toast.error("Failed to load employee data.");
@@ -153,6 +163,16 @@ const EditEmployee = () => {
       if (profileImage) {
         formData.append("profile_picture", profileImage);
       }
+      
+      // Append Aadhaar image if updated
+      if (aadharImage) {
+        formData.append("aadhar_image", aadharImage);
+      }
+
+      // Append PAN image if updated
+      if (panImage) {
+        formData.append("pan_image", panImage);
+      }
 
       if (id) {
         const response = await updateEmployee(id, formData);
@@ -176,10 +196,26 @@ const EditEmployee = () => {
     if (files.length > 0) {
       const file = files[0];
       setProfileImage(file);
-
-      // Create preview URL for the new image
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
+    }
+  };
+
+  const handleAadharFileUpload = (files: File[]) => {
+    if (files.length > 0) {
+      const file = files[0];
+      setAadharImage(file);
+      const previewUrl = URL.createObjectURL(file);
+      setAadharImagePreview(previewUrl);
+    }
+  };
+
+  const handlePanFileUpload = (files: File[]) => {
+    if (files.length > 0) {
+      const file = files[0];
+      setPanImage(file);
+      const previewUrl = URL.createObjectURL(file);
+      setPanImagePreview(previewUrl);
     }
   };
 
@@ -390,6 +426,56 @@ const EditEmployee = () => {
                       errors={errors}
                       control={control}
                     />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col lg={6}>
+                    <Card>
+                      <Card.Body className='text-center'>
+                        <h5 className='text-uppercase mt-0 mb-3'>Aadhaar Card</h5>
+                        {aadharImagePreview && (
+                          <div className='mb-3'>
+                            <img
+                              src={aadharImagePreview}
+                              alt='Aadhaar Preview'
+                              style={{
+                                maxWidth: "200px",
+                                maxHeight: "200px",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                              }}
+                            />
+                          </div>
+                        )}
+                        <FileUploader
+                          onFileUpload={(files) => handleAadharFileUpload(Array.from(files))}
+                        />
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                  <Col lg={6}>
+                    <Card>
+                      <Card.Body className='text-center'>
+                        <h5 className='text-uppercase mt-0 mb-3'>PAN Card</h5>
+                        {panImagePreview && (
+                          <div className='mb-3'>
+                            <img
+                              src={panImagePreview}
+                              alt='PAN Preview'
+                              style={{
+                                maxWidth: "200px",
+                                maxHeight: "200px",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                              }}
+                            />
+                          </div>
+                        )}
+                        <FileUploader
+                          onFileUpload={(files) => handlePanFileUpload(Array.from(files))}
+                        />
+                      </Card.Body>
+                    </Card>
                   </Col>
                 </Row>
               </Card.Body>

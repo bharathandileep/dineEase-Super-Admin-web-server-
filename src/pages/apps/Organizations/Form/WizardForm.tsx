@@ -42,8 +42,8 @@ interface FormData {
   gstCertificateImage?: any;
   expiryDate: string;
 
-  category:string;
-  subcategoryName:string;
+  category: string;
+  subcategoryName: string;
 }
 const initialFormData: FormData = {
   organizationLogo: "",
@@ -66,8 +66,8 @@ const initialFormData: FormData = {
   expiryDate: "",
   gstCertificateImage: "",
   panCardImage: "",
-  category:"",
-  subcategoryName:"",
+  category: "",
+  subcategoryName: "",
 };
 
 export function WizardForm({ initialData }: WizardFormProps) {
@@ -75,11 +75,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [loading, setLoading] = useState(true);
-const [categories, setCategories] = useState<any[]>([]);
-  const [subcategories, setSubcategories] = useState<any[]>(
-      []
-    );
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
@@ -151,7 +149,6 @@ const [categories, setCategories] = useState<any[]>([]);
     }
   };
 
-
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
   };
@@ -164,17 +161,14 @@ const [categories, setCategories] = useState<any[]>([]);
       if (response.status) {
         toast.success(response.message);
         navigate("/apps/organizations/list");
-        console.log(response,"s")
       } else {
         toast.error(response.message || "Update failed. Please try again.");
-        console.log(response,"e")
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
-      console.log(error,"f")
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -217,26 +211,28 @@ const [categories, setCategories] = useState<any[]>([]);
     fetchCategories();
   }, []);
 
-    useEffect(() => {
-      if (selectedCategoryId) {
-        const fetchSubcategories = async () => {
-          try {
-            const response = await  orgGetSubcategoriesByCategory(selectedCategoryId);
-            if (response.status) {
-              setSubcategories(response.data);
-            } else {
-              toast.error("Failed to load subcategories.");
-            }
-          } catch (error) {
-            console.error("Error fetching subcategories:", error);
-            toast.error("An error occurred while fetching subcategories.");
+  useEffect(() => {
+    if (selectedCategoryId) {
+      const fetchSubcategories = async () => {
+        try {
+          const response = await orgGetSubcategoriesByCategory(
+            selectedCategoryId
+          );
+          if (response.status) {
+            setSubcategories(response.data);
+          } else {
+            toast.error("Failed to load subcategories.");
           }
-        };
-        fetchSubcategories();
-      } else {
-        setSubcategories([]);
-      }
-    }, [selectedCategoryId]);
+        } catch (error) {
+          console.error("Error fetching subcategories:", error);
+          toast.error("An error occurred while fetching subcategories.");
+        }
+      };
+      fetchSubcategories();
+    } else {
+      setSubcategories([]);
+    }
+  }, [selectedCategoryId]);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -429,54 +425,66 @@ const [categories, setCategories] = useState<any[]>([]);
                         </div>
                       </div>
                       <div className="row g-3">
-  {/* Category Field */}
-  <div className="col-md-6">
-  <div className="form-group">
-    <label className="form-label">Category</label>
-    <select
-      name="category"
-      value={formData.category}
-      onChange={(e) => {
-        const selectedCategory = e.target.value;
-        setFormData((prev) => ({ ...prev, category: selectedCategory, subcategoryName: "" }));
-        setSelectedCategoryId(selectedCategory);
-      }}
-      className="form-select form-control" // Added form-control for consistent styling
-    >
-      <option value="">Select Category</option>
-      {categories.map((cat) => (
-        <option key={cat._id} value={cat._id}>
-          {cat?.category}
-        </option>
-      ))}
-    </select>
-    {!categories.length && <div className="text-muted mt-1">Loading categories...</div>}
-  </div>
-</div>
+                        {/* Category Field */}
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Category</label>
+                            <select
+                              name="category"
+                              value={formData.category}
+                              onChange={(e) => {
+                                const selectedCategory = e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  category: selectedCategory,
+                                  subcategoryName: "",
+                                }));
+                                setSelectedCategoryId(selectedCategory);
+                              }}
+                              className="form-select form-control" // Added form-control for consistent styling
+                            >
+                              <option value="">Select Category</option>
+                              {categories.map((cat) => (
+                                <option key={cat._id} value={cat._id}>
+                                  {cat?.category}
+                                </option>
+                              ))}
+                            </select>
+                            {!categories.length && (
+                              <div className="text-muted mt-1">
+                                Loading categories...
+                              </div>
+                            )}
+                          </div>
+                        </div>
 
-{/* Subcategory Field */}
-{/* Subcategory Field */}
-<div className="col-md-6">
-  <div className="form-group">
-    <label className="form-label">Subcategory</label>
-    <select
-      name="subcategoryName"  // Changed from "subcategory" to "subcategoryName"
-      value={formData.subcategoryName}
-      onChange={(e) => setFormData((prev) => ({ ...prev, subcategoryName: e.target.value }))}
-      className="form-select"
-      disabled={!formData.category} // Disable if no category is selected
-    >
-      <option value="">Select Subcategory</option>
-      {subcategories.map((sub) => (
-        <option key={sub._id} value={sub._id}>
-          {sub?.subcategoryName}
-        </option>
-      ))}
-    </select>
-  </div>
-</div>
-
-</div>
+                        {/* Subcategory Field */}
+                        {/* Subcategory Field */}
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Subcategory</label>
+                            <select
+                              name="subcategoryName" // Changed from "subcategory" to "subcategoryName"
+                              value={formData.subcategoryName}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  subcategoryName: e.target.value,
+                                }))
+                              }
+                              className="form-select"
+                              disabled={!formData.category} // Disable if no category is selected
+                            >
+                              <option value="">Select Subcategory</option>
+                              {subcategories.map((sub) => (
+                                <option key={sub._id} value={sub._id}>
+                                  {sub?.subcategoryName}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
                       <div className="col-12">
                         <div className="form-group">
                           <label className="form-label">
@@ -790,9 +798,25 @@ const [categories, setCategories] = useState<any[]>([]);
                     type="button"
                     onClick={handleNext}
                     className="btn btn-primary d-flex align-items-center ms-auto"
+                    disabled={loading}
                   >
-                    {currentStep === 2 ? "Submit" : "Next"}
-                    {currentStep === 1 && <ChevronRight className="ms-2" />}
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        />
+                        <span
+                          className="spinner-grow spinner-grow-sm"
+                          role="status"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {currentStep === 2 ? "Submit" : "Next"}
+                        {currentStep === 1 && <ChevronRight className="ms-2" />}
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

@@ -1,14 +1,15 @@
 import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
-export const getAllOrg = async () => {
+export const getAllOrg = async (query:any) => {
   try {
     const response = await axiosInstance.get(
-      `${apiConfig.organization.getAllOrganization}`
+      `${apiConfig.organization.getAllOrganization(query)}`
     );
     return response.data;
   } catch (error: any) {
     console.error("Login Error:", error.response?.data || error.message);
+    throw error;
   }
 };
 
@@ -63,6 +64,7 @@ export const deleteOrgDetails = async (id: string | undefined) => {
     return response.data;
   } catch (error: any) {
     console.error("Error:", error.response?.data || error.message);
+    return error.response?.data
   }
 };
 
@@ -92,7 +94,7 @@ export const orgGetAllCategories = async () => {
 };
 
 export const orgUpdateCategory = async (id: string | undefined, data: any) => {
-  console.log(id, data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.organization.updateCategory(id),
@@ -127,7 +129,7 @@ export const orgToggleCategoryStatus = async (id: string | undefined) => {
 };
 
 export const orgCreateSubcategory = async (data: any | undefined) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.post(
       apiConfig.organization.createSubcategory,

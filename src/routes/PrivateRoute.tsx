@@ -1,38 +1,42 @@
-import React from "react";
-import { Route, Navigate, RouteProps } from "react-router-dom";
+import React, { ReactNode } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { APICore } from "../helpers/api/apiCore";
 
-const PrivateRoute = ({ component: Component, roles, ...rest }: any) => {
-  const api = new APICore();
-  return (
-    <Route
-      {...rest}
-      render={(props: RouteProps) => {
-        if (api.isUserAuthenticated() === false) {
-          // not logged in so redirect to login page with the return url
-          return (
-            <Navigate
-              // state={from: props['path']}
-              to={{
-                pathname: "/auth/login",
-                // state: { from: props['path'] },
-              }}
-            />
-          );
-        }
+interface PrivateRouteProps {
+  roles?: string[];
+  children: ReactNode;
+}
+interface LoggedInUser {
+  id: string;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
+}
 
-        const loggedInUser = api.getLoggedInUser();
-        // check if route is restricted by role
-        // if (roles && roles.indexOf(loggedInUser.role) === -1) {
-        if (roles) {
-          // role not authorised so redirect to login page
-          return <Navigate to={{ pathname: "/" }} />;
-        }
-        // authorised so return component
-        return <Component {...props} />;
-      }}
-    />
-  );
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ roles, children }) => {
+  const api = new APICore();
+  const location = useLocation();
+
+  const isAuthenticated = api.isUserAuthenticated();
+  const loggedInUser = api.getLoggedInUserInfo() as LoggedInUser | null;
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" />;
+  } 
+
+  if (roles && roles.length > 0) {
+    if (
+      !roles.some(
+        (role) => role.toLowerCase() === loggedInUser?.role.toLowerCase()
+      )
+    ) {
+      console.log("User does not have required role. Redirecting to /");
+      return <Navigate to="/" replace />;
+    }
+  }
+
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

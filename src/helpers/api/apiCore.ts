@@ -3,11 +3,12 @@ import axios, { AxiosInstance } from "axios";
 import config from "../../config";
 
 const AUTH_SESSION_KEY = "Session_token";
-const REFRESH_INTERVAL = 14 * 60 * 1000; // 14 minutes
+const REFRESH_INTERVAL = 14 * 60 * 1000;
 
 // Create axios instance
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: config.API_URL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,15 +31,15 @@ const getUserFromCookie = () => {
 const refreshTokenLogic = async (): Promise<string> => {
   try {
     const response = await axiosInstance.post(
-      "/auth/refresh-token",
+      "/auth/new/access-token",
       {},
-      { withCredentials: true }
+      {
+        withCredentials: true,
+      }
     );
-    const { accessToken } = response.data;
-    localStorage.setItem(
-      AUTH_SESSION_KEY,
-      JSON.stringify({ token: accessToken })
-    );
+
+    const accessToken = response.data.data;
+    localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(accessToken));
     setAuthorization(accessToken);
     return accessToken;
   } catch (error) {
@@ -118,15 +119,20 @@ class APICore {
     });
   };
 
+  getLoggedInUserInfo = () => {
+    const user = this.getLoggedInUser();
+    return jwtDecode(user);
+  };
+
   isUserAuthenticated = () => {
     const user = this.getLoggedInUser();
     if (!user) {
       return false;
     }
-    const decoded: any = jwtDecode(user);
+    const decoded: any = this.getLoggedInUserInfo();
     const currentTime = Date.now() / 1000;
     if (decoded.exp < currentTime) {
-      console.warn("access token expired");
+      console.warn("Please log in again");
       return false;
     } else {
       return true;

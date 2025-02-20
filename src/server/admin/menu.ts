@@ -33,7 +33,7 @@ export const getAllCategoriesByStatus = async () => {
 };
 
 export const updateCategory = async (id: string | undefined, data: any) => {
-  console.log(id, data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.menu.updateCategory(id),
@@ -68,7 +68,7 @@ export const toggleCategoryStatus = async (id: string | undefined) => {
 };
 
 export const createSubcategory = async (data: any | undefined) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.post(
       apiConfig.menu.createSubcategory,
@@ -116,7 +116,7 @@ export const getSubcategoryById = async (id: string | undefined) => {
 };
 
 export const updateSubcategory = async (id: string | undefined, data: any) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.menu.updateSubcategory(id),

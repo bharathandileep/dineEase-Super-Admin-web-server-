@@ -4,6 +4,9 @@ export const apiConfig = {
   },
   admin: {
     login: "/auth/admin/login",
+    generateForgotOtp: "/auth/admin/forgot-password",
+    verifyForgotOtp: "/auth/admin/verify-password",
+    updatePassword: "/auth/admin/update-password",
   },
   auth: {
     google: "/google-auth",
@@ -12,6 +15,7 @@ export const apiConfig = {
     verifyOtp: "/verify-otp",
     verifyLoginOtp: "/verify-loginotp",
     logout: "/logout",
+    accessAccount:"/user/access/login"
   },
   users: {
     getUser: "/users/:id",
@@ -24,7 +28,8 @@ export const apiConfig = {
       `/kitchens/update/${kitchenId}`,
     deletekitchens: (kitchenId: string | undefined) =>
       `/kitchens/delete/${kitchenId}`,
-    getAllkitchens: "/kitchens/all",
+    getAllkitchens: (query: any) =>
+      `/kitchens/all?page=${query.page}&limit=${query.limit}`,
     getkitchensById: (kitchenId: string | undefined) =>
       `/kitchens/${kitchenId}`,
 
@@ -58,7 +63,7 @@ export const apiConfig = {
       `/organization/update/${orgId}`,
     deleteOrganization: (orgId: string | undefined) =>
       `/organization/delete/${orgId}`,
-    getAllOrganization: "/organization/all",
+    getAllOrganization:(query:any)=> `/organization/all?page=${query.page}&limit=${query.limit}`,    
     getOrganizationById: (orgId: string | undefined) =>
       `/organization/${orgId}`,
     getAllCategoriesByStatus: "/organization/category/status",
@@ -87,7 +92,7 @@ export const apiConfig = {
   },
   menu: {
     createCategory: "/menu-category/categories",
-    getAllCategories: "/menu-category/categories",
+    getAllCategories: "/menu-category/categories",      
     updateCategory: (id: string | undefined) =>
       `/menu-category/categories/${id}`,
     deleteCategory: (id: string | undefined) =>
@@ -139,16 +144,30 @@ export const apiConfig = {
       `/employee/employees/${id}/toggle-status`,
   },
   orgemployee: {
-    createOrgEmployee: "/orgemployee/orgemployee",
-    getAllOrgEmployees: "/orgemployee/orgemployee/all",
+    createOrgEmployee: "/org-employee/orgemployee",
+    getAllOrgEmployees: "/org-employee/orgemployee/all",
     getOrgEmployeeById: (id: string | undefined) =>
-      `/orgemployee/orgemployee/${id}`,
+      `/org-employee/orgemployee/${id}`,
     updateOrgEmployee: (id: string | undefined) =>
-      `/orgemployee/orgemployee/${id}`,
+      `/org-employee/orgemployee/${id}`,
     deleteOrgEmployee: (id: string | undefined) =>
-      `/orgemployee/orgemployee/${id}`,
+      `/org-employee/orgemployee/${id}`,
     toggleOrgEmployeeStatus: (id: string | undefined) =>
-      `/orgemployee/orgemployee/${id}/toggle-status`,
+      `/org-employee/orgemployee/${id}/toggle-status`,
+  },
+  kitchenMenu: {
+    getKitchenMenu: (id: string | undefined) =>
+      `/kitchens-menu/kitchen-menu/${id}`,
+    createkitchenMenu: (id: string | undefined) =>
+      `/kitchens-menu/kitchen-menu/${id}`,
+    removekitchenMenu: (
+      item: string | undefined,
+      kitchenId: string | undefined
+    ) => `/kitchens-menu/kitchen-menu/${kitchenId}/remove/${item}`,
+    kitchenMenuItemChange: (
+      kitchenId: string | undefined,
+      itemId: string | undefined
+    ) => `/kitchens-menu/${kitchenId}/menu-item/${itemId}`,
   },
 
   kitchenMenu: {

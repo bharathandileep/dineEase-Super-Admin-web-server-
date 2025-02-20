@@ -1071,10 +1071,11 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [kitchenData, setKitchenData] = useState<IKitchenDetails | null>(null);
+  const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [CategoryId, setCategoryId] = useState("");
-  const [loading, setLoading] = useState(true);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [countries, setCountries] = useState<any[]>([]);
@@ -1118,8 +1119,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
- 
 
   const validateStep2 = () => {
     const newErrors: Partial<FormData> = {};
@@ -1248,7 +1247,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
     }
   };
 
-
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
   };
@@ -1315,9 +1313,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
     if (CategoryId) {
       const fetchSubcategories = async () => {
         try {
-          const response = await kitchensGetSubcategoriesByCategory(
-            CategoryId
-          );
+          const response = await kitchensGetSubcategoriesByCategory(CategoryId);
           if (response.status) {
             setSubcategories(response.data);
           } else {
@@ -1339,7 +1335,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
       try {
         const response = await getkitchenDetails(id);
         setKitchenData(response.data);
-        console.log(response.data);
         setFormData((prevFormData) => ({
           ...prevFormData,
           kitchen_name: response.data.kitchen_name || "",
@@ -1394,8 +1389,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
           // Kitchen Image
           kitchen_image: response.data.kitchen_image || "",
         }));
-
-        console.log(response);
       } catch (error) {
         console.error("Error fetching kitchen details:", error);
       } finally {
@@ -1597,7 +1590,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                                 }));
                                 setCategoryId(selectedCategory);
                               }}
-                              className="form-select form-control" 
+                              className="form-select form-control"
                             >
                               <option value="">Select Category</option>
                               {categories.map((cat) => (
@@ -1618,7 +1611,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           <div className="form-group">
                             <label className="form-label">Subcategory</label>
                             <select
-                              name="subcategoryName" 
+                              name="subcategoryName"
                               value={formData.subcategoryName}
                               onChange={(e) =>
                                 setFormData((prev) => ({
@@ -1627,7 +1620,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                                 }))
                               }
                               className="form-select"
-                              disabled={!formData.category} 
+                              disabled={!formData.category}
                             >
                               <option value="">Select Subcategory</option>
                               {subcategories.map((sub) => (
@@ -2015,9 +2008,25 @@ export function WizardForm({ initialData }: WizardFormProps) {
                     type="button"
                     onClick={handleNext}
                     className="btn btn-primary d-flex align-items-center ms-auto"
+                    disabled={loading}
                   >
-                    {currentStep === 2 ? "Submit" : "Next"}
-                    {currentStep === 1 && <ChevronRight className="ms-2" />}
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        />
+                        <span
+                          className="spinner-grow spinner-grow-sm"
+                          role="status"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {currentStep === 2 ? "Submit" : "Next"}
+                        {currentStep === 1 && <ChevronRight className="ms-2" />}
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

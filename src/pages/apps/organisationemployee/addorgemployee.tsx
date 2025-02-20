@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Row, Col, Card, Button } from "react-bootstrap";
+import { Row, Col, Card, Button,Image } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -12,6 +12,8 @@ import { getAllDesignations } from "../../../server/admin/designations";
 const OrgEmployeeManagement = () => {
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState<File | null>(null);
+    const [aadharImage, setAadharImage] = useState<File | null>(null);
+    const [panImage, setPanImage] = useState<File | null>(null);
   const [designations, setDesignations] = useState<{ _id: string; designation_name: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -48,8 +50,8 @@ const OrgEmployeeManagement = () => {
     try {
       const formData = new FormData();
 
-      formData.append("entity_id", "67a1083b3c9f01a384e9683c");
-      formData.append("entity_type", "admin");
+      formData.append("entity_id", "67aad807dcbe481e9d130696");
+      formData.append("entity_type", "Organization");
       formData.append("designation", data.designation);
       formData.append("username", data.username);
       formData.append("email", data.email);
@@ -71,12 +73,21 @@ const OrgEmployeeManagement = () => {
       if (profileImage) {
         formData.append("profile_picture", profileImage);
       }
+        // Aadhaar Card Upload
+        if (aadharImage) {
+          formData.append("aadhar_image", aadharImage);
+        }
+  
+        // PAN Card Upload
+        if (panImage) {
+          formData.append("pan_image", panImage);
+        }
 
       const response = await createOrgEmployee(formData);
 
       if (response.status) {
         toast.success("Employee added successfully!");
-        navigate("/apps/orgemployee/list");
+        navigate("/apps/organizations/employ/list");
       } else {
         toast.error(response.message || "Failed to add employee.");
       }
@@ -87,9 +98,9 @@ const OrgEmployeeManagement = () => {
   };
 
   // Handle File Upload
-  const handleFileUpload = (files: File[]) => {
+  const handleFileUpload = (files: File[], setImage: React.Dispatch<React.SetStateAction<File | null>>) => {
     if (files.length > 0) {
-      setProfileImage(files[0]);
+      setImage(files[0]);
     }
   };
 
@@ -97,7 +108,7 @@ const OrgEmployeeManagement = () => {
     <div className="container py-2">
       <Card className="mb-2">
         <Card.Body>
-          <h3 className="text-uppercase">Add Employee</h3>
+          <h3 className="text-uppercase">Add Organisation Employee</h3>
         </Card.Body>
       </Card>
 
@@ -167,10 +178,19 @@ const OrgEmployeeManagement = () => {
             <Card>
               <Card.Body className="text-center">
                 <h5 className="text-uppercase mt-0 mb-3">Profile Picture</h5>
-                <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files))} />
+                <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setProfileImage)} />
+                {profileImage && (
+                  <Image
+                    src={URL.createObjectURL(profileImage)}
+                    alt="Profile Preview"
+                    className="mt-3"
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  />
+                )}
               </Card.Body>
             </Card>
           </Col>
+          
         </Row>
 
         {/* Address Information */}
@@ -252,8 +272,8 @@ const OrgEmployeeManagement = () => {
           </Col>
         </Row>
 
-        {/* Aadhaar & PAN Details */}
-        <Row>
+           {/* Aadhaar & PAN Details */}
+           <Row>
           <Col lg={12}>
             <Card className="mt-3">
               <Card.Body>
@@ -269,6 +289,18 @@ const OrgEmployeeManagement = () => {
                       errors={errors}
                       validation={{ required: "Aadhaar number is required" }}
                     />
+                    <div className="mb-3">
+                      <label className="form-label">Aadhaar Card Image</label>
+                      <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setAadharImage)} />
+                      {aadharImage && (
+                        <Image
+                          src={URL.createObjectURL(aadharImage)}
+                          alt="Aadhaar Preview"
+                          className="mt-3"
+                          style={{ maxWidth: "100%", maxHeight: "200px" }}
+                        />
+                      )}
+                    </div>
                   </Col>
                   <Col md={6}>
                     <FormInput
@@ -280,6 +312,18 @@ const OrgEmployeeManagement = () => {
                       errors={errors}
                       validation={{ required: "PAN number is required" }}
                     />
+                    <div className="mb-3">
+                      <label className="form-label">PAN Card Image</label>
+                      <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setPanImage)} />
+                      {panImage && (
+                        <Image
+                          src={URL.createObjectURL(panImage)}
+                          alt="PAN Preview"
+                          className="mt-3"
+                          style={{ maxWidth: "100%", maxHeight: "200px" }}
+                        />
+                      )}
+                    </div>
                   </Col>
                 </Row>
               </Card.Body>
@@ -287,10 +331,11 @@ const OrgEmployeeManagement = () => {
           </Col>
         </Row>
 
+
         {/* Submit Button */}
         <Row>
           <Col className="text-center">
-            <Button variant="light" className="me-2" onClick={() => navigate("/apps/orgemployee/list")}>
+            <Button variant="light" className="me-2" onClick={() => navigate("/apps/organizations/employ/list")}>
               Cancel
             </Button>
             <Button type="submit" variant="success">
