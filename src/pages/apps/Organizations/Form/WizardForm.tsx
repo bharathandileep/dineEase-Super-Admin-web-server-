@@ -1270,6 +1270,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                         <div className="form-group">
                           <label className="form-label">Contact Number</label>
                           <input
+                          
                             type="tel"
                             name="contactNumber"
                             value={formData.contactNumber}
@@ -1388,7 +1389,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="col-12">
                         <div className="form-group">
                           <label className="form-label">
