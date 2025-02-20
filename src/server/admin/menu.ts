@@ -15,7 +15,7 @@ export const createCategory = async (data: any) => {
 
 export const getAllCategories = async () => {
   try {
-    const response = await axiosInstance.get(apiConfig.menu.getAllCategories);
+    const response = await axiosInstance.get(apiConfig.menu.getAllCategories( {page: 1, limit: 10} ));
     return response.data;
   } catch (error: any) {
     console.error("Error:", error.response?.data || error.message);
@@ -33,7 +33,7 @@ export const getAllCategoriesByStatus = async () => {
 };
 
 export const updateCategory = async (id: string | undefined, data: any) => {
-  console.log(id, data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.menu.updateCategory(id),
@@ -68,7 +68,7 @@ export const toggleCategoryStatus = async (id: string | undefined) => {
 };
 
 export const createSubcategory = async (data: any | undefined) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.post(
       apiConfig.menu.createSubcategory,
@@ -96,7 +96,7 @@ export const getSubcategoriesByCategory = async (
 export const getSubcategories = async () => {
   try {
     const response = await axiosInstance.get(
-      apiConfig.menu.getAllSubCategories
+      apiConfig.menu.getAllSubCategories( {page: 1, limit: 10})
     );
     return response.data;
   } catch (error: any) {
@@ -116,7 +116,7 @@ export const getSubcategoryById = async (id: string | undefined) => {
 };
 
 export const updateSubcategory = async (id: string | undefined, data: any) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.menu.updateSubcategory(id),

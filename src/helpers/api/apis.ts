@@ -27,12 +27,13 @@ export const apiConfig = {
       `/kitchens/update/${kitchenId}`,
     deletekitchens: (kitchenId: string | undefined) =>
       `/kitchens/delete/${kitchenId}`,
-    getAllkitchens:(query:any)=> `/kitchens/all?page=${query.page}&limit=${query.limit}`,
+    getAllkitchens: (query: any) =>
+      `/kitchens/all?page=${query.page}&limit=${query.limit}`,
     getkitchensById: (kitchenId: string | undefined) =>
       `/kitchens/${kitchenId}`,
 
     createCategory: "/kitchens/categories",
-    getAllCategories: "/kitchens/categories/all",
+    getAllCategories:(query:any)=> `/kitchens/categories/all?page=${query.page}&limit=${query.limit}`,    
     updateCategory: (id: string | undefined) => `/kitchens/categories/${id}`,
     deleteCategory: (id: string | undefined) => `/kitchens/categories/${id}`,
     toggleCategoryStatus: (id: string | undefined) =>
@@ -63,7 +64,7 @@ export const apiConfig = {
     getAllCategoriesByStatus: "/organization/category/status",
 
     createCategory: "/organization/categories",
-    getAllCategories: "/organization/categories/all",
+    getAllCategories:(query:any)=> `/organization/categories/all?page=${query.page}&limit=${query.limit}`,    
     updateCategory: (id: string | undefined) =>
       `/organization/categories/${id}`,
     deleteCategory: (id: string | undefined) =>
@@ -72,7 +73,7 @@ export const apiConfig = {
       `/organization/categories/${id}/toggle-status`,
 
     createSubcategory: "/organization/subcategories",
-    getAllSubCategories: "/organization/subcategories/all",
+    getAllSubCategories:(query:any)=> `/organization/subcategories/all?page=${query.page}&limit=${query.limit}`,    
     getSubcategoriesByCategory: (categoryId: string | undefined) =>
       `/organization/categories/${categoryId}/subcategories`,
     getSubcategoryById: (id: string | undefined) =>
@@ -86,7 +87,7 @@ export const apiConfig = {
   },
   menu: {
     createCategory: "/menu-category/categories",
-    getAllCategories: "/menu-category/categories",      
+    getAllCategories:(query:any)=> `/menu-category/categories?page=${query.page}&limit=${query.limit}`,       
     updateCategory: (id: string | undefined) =>
       `/menu-category/categories/${id}`,
     deleteCategory: (id: string | undefined) =>
@@ -96,7 +97,8 @@ export const apiConfig = {
 
     createSubcategory: "/sub-menu-category/subcategories",
     getAllCategoriesByStatus: "/sub-menu-category/category/status",
-    getAllSubCategories: "/sub-menu-category/subcategories",
+    getAllSubCategories:(query:any)=> `/sub-menu-category/subcategories?page=${query.page}&limit=${query.limit}`,       
+
     getSubcategoriesByCategory: (categoryId: string | undefined) =>
       `/sub-menu-category/categories/${categoryId}/subcategories`,
     getSubcategoryById: (id: string | undefined) =>
@@ -158,5 +160,9 @@ export const apiConfig = {
       item: string | undefined,
       kitchenId: string | undefined
     ) => `/kitchens-menu/kitchen-menu/${kitchenId}/remove/${item}`,
+    kitchenMenuItemChange: (
+      kitchenId: string | undefined,
+      itemId: string | undefined
+    ) => `/kitchens-menu/${kitchenId}/menu-item/${itemId}`,
   },
 };

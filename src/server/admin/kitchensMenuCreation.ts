@@ -37,6 +37,42 @@ export const createNewkitchenMenu = async (
     );
     return response.data;
   } catch (error: any) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "An error occurred");
+    } else if (error.request) {
+      throw new Error("No response received from the server");
+    } else {
+      throw new Error(error.message || "An unexpected error occurred");
+    }
+  }
+};
+
+export const getKitchenMenuItemDetails = async (
+  kitchenId: string | undefined,
+  itemId: string | undefined
+) => {
+  try {
+    const response = await axiosInstance.get(
+      `${apiConfig.kitchenMenu.kitchenMenuItemChange(kitchenId, itemId)}`
+    );
+    return response.data;
+  } catch (error: any) {
     console.error("Login Error:", error.response?.data || error.message);
+  }
+};
+export const updateKitchenMenuItemDetails = async (
+  kitchenId: string | undefined,
+  itemId: string | undefined,
+  itemUpdateDetails: any
+) => {
+  try {
+    const response = await axiosInstance.put(
+      `${apiConfig.kitchenMenu.kitchenMenuItemChange(kitchenId, itemId)}`,
+      itemUpdateDetails
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Login Error:", error.response?.data || error.message);
+    return error.response;
   }
 };

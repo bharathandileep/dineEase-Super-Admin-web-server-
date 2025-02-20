@@ -12,7 +12,7 @@ import {
 import DesignationModal from "./modal/DesignationModal";
 import PageTitle from "../../../components/PageTitle";
 import Table from "../../../components/Table";
-
+ 
 function Designations() {
   const [action, setAction] = useState("");
   const [show, setShow] = useState<boolean>(false);
@@ -22,28 +22,14 @@ function Designations() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalItems: 0,
-    totalPages: 0,
-    itemsPerPage: 10,
-  });
-
+ 
   useEffect(() => {
     const fetchAllDesignations = async () => {
       setLoading(true);
       try {
-        const response = await getAllDesignations({
-          page: pagination.currentPage,
-          limit: pagination.itemsPerPage,
-        });
+        const response = await getAllDesignations( {page:1,limit:10});
         if (response.status) {
-          setDesignations(response.data.designations);
-          setPagination({
-            ...pagination,
-            totalItems: response.data.totalItems,
-            totalPages: response.data.totalPages,
-          });
+          setDesignations(response.data.designations); 
         } else {
           toast.error("Failed to load designations.");
         }
@@ -55,12 +41,12 @@ function Designations() {
       }
     };
     fetchAllDesignations();
-  }, [pagination.currentPage, pagination.itemsPerPage, isDeleted, show]);
-
+  }, [isDeleted, show]);
+ 
   const onSearchData = (searchValue: string) => {
     setSearchTerm(searchValue.toLowerCase());
   };
-
+ 
   const handleToggleStatus = async (id: string) => {
     try {
       const response = await toggleDesignationStatus(id);
@@ -78,16 +64,17 @@ function Designations() {
       toast.error("Error toggling status.");
     }
   };
-
+ 
   const handleEdit = (id: string) => {
     const item = designations.find((designation) => designation._id === id);
     setAction("edit");
     setSelectedItem(item);
     setShow(true);
   };
-
+ 
   const handleDelete = async (id: any) => {
-    if (!window.confirm("Are you sure you want to delete this designation?")) return;
+    if (!window.confirm("Are you sure you want to delete this designation?"))
+      return;
     try {
       const response = await deleteDesignation(id);
       if (response.status) {
@@ -101,13 +88,16 @@ function Designations() {
       toast.error("Delete failed. Please try again.");
     }
   };
-
+ 
   const filteredDesignations = useMemo(() => {
-    return designations.filter((value) => {
-      const designationMatch = value.designation_name.toLowerCase().includes(searchTerm);
-      const createdAtString = value.createdAt
-        ? new Date(value.createdAt).toLocaleDateString()
-        : "";
+    return designations?.filter((value) => {
+      const designationMatch = value.designation_name
+        .toLowerCase()
+        .includes(searchTerm);
+      const createdAtString =
+        value.createdAt && !isNaN(new Date(value.createdAt).getTime())
+          ? new Date(value.createdAt).toLocaleDateString()
+          : "";
       const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
       const statusMatch =
         statusFilter === "all" ||
@@ -116,28 +106,16 @@ function Designations() {
       return (designationMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, designations]);
-
-  const handlePageChange = (page: number) => {
-    setPagination((prev) => ({ ...prev, currentPage: page }));
-  };
-
-  const handleSizePerPageChange = (size: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      itemsPerPage: size,
-      currentPage: 1, // Reset to page 1 when changing page size
-    }));
-  };
-
+ 
   /* Column render functions */
   const DesignationColumn = ({ row }: { row: any }) => {
     return <span className="fw-bold">{row?.original?.designation_name}</span>;
   };
-
+ 
   const CreatedAtColumn = ({ row }: { row: any }) => {
     return <span>{new Date(row?.original?.createdAt).toLocaleString()}</span>;
   };
-
+ 
   const StatusColumn = ({ row }: { row: any }) => {
     return (
       <button
@@ -150,7 +128,7 @@ function Designations() {
       </button>
     );
   };
-
+ 
   const ActionColumn = ({ row }: { row: any }) => {
     return (
       <>
@@ -169,7 +147,7 @@ function Designations() {
       </>
     );
   };
-
+ 
   // Define columns
   const columns = [
     {
@@ -193,24 +171,31 @@ function Designations() {
       Cell: ActionColumn,
     },
   ];
-
+ 
   const sizePerPageList = [
     { text: "10", value: 10 },
     { text: "20", value: 20 },
     { text: "50", value: 50 },
   ];
-
+ 
   return (
     <>
       <div className="container py-2">
         <PageTitle
           breadCrumbItems={[
             { label: "Designations", path: "/apps/designations/list" },
-            { label: "List", path: "/apps/designations/list", active: true },
+            {
+              label: "List",
+              path: "/apps/designations/list",
+              active: true,
+            },
           ]}
           title={"Designations"}
         />
-        <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
+        <div
+          className="mb-3"
+          style={{ backgroundColor: "#5bd2bc", padding: "10px" }}
+        >
           <div className="d-flex align-items-center justify-content-between">
             <h3 className="page-title m-0" style={{ color: "#fff" }}>
               Designations
@@ -234,7 +219,10 @@ function Designations() {
                 <Row className="justify-content-between">
                   <Col className="col-auto">
                     <form className="d-flex align-items-center">
-                      <label htmlFor="inputPassword2" className="visually-hidden">
+                      <label
+                        htmlFor="inputPassword2"
+                        className="visually-hidden"
+                      >
                         Search
                       </label>
                       <div>
@@ -271,7 +259,7 @@ function Designations() {
             </Card>
           </Col>
         </Row>
-
+ 
         <div className="card shadow">
           <div className="table-responsive">
             {loading ? (
@@ -288,36 +276,23 @@ function Designations() {
                 <p>No results found for "{searchTerm}"</p>
               </div>
             ) : (
-              <Row>
-                <Col>
-                  <Card>
-                    <Card.Body className="p-0">
-                      <Table
-                        columns={columns}
-                        data={filteredDesignations}
-                        isSearchable={false}
-                        pageSize={pagination.itemsPerPage}
-                        sizePerPageList={sizePerPageList}
-                        isSortable={true}
-                        pagination={true}
-                        isSelectable={false}
-                        theadClass="table-light"
-                        searchBoxClass="mb-2"
-                        onPageChange={handlePageChange}
-                        onSizePerPageChange={handleSizePerPageChange}
-                        currentPage={pagination.currentPage}
-                        totalPages={pagination.totalPages}
-                        totalItems={pagination.totalItems}
-                      />
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
+              <Table
+                columns={columns}
+                data={filteredDesignations}
+                isSearchable={false}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={false}
+                isSelectable={false}
+                theadClass="table-light"
+                searchBoxClass="mb-2"
+              />
             )}
           </div>
         </div>
       </div>
-
+ 
       <DesignationModal
         show={show}
         onHide={() => setShow(false)}
@@ -327,5 +302,6 @@ function Designations() {
     </>
   );
 }
-
+ 
 export default Designations;
+ 

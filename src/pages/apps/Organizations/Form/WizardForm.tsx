@@ -4,6 +4,8 @@ import { FileUpload } from "../../../../components/FileUpload";
 import {
   createNewOrg,
   getOrgDetails,
+  orgGetAllCategories,
+  orgGetSubcategoriesByCategory,
   updateOrgDetails,
 } from "../../../../server/admin/organization";
 import { toast } from "react-toastify";
@@ -39,6 +41,9 @@ interface FormData {
   gstNumber: string;
   gstCertificateImage?: any;
   expiryDate: string;
+
+  category: string;
+  subcategoryName: string;
 }
 const initialFormData: FormData = {
   organizationLogo: "",
@@ -61,6 +66,8 @@ const initialFormData: FormData = {
   expiryDate: "",
   gstCertificateImage: "",
   panCardImage: "",
+  category: "",
+  subcategoryName: "",
 };
 
 export function WizardForm({ initialData }: WizardFormProps) {
@@ -68,7 +75,10 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
   const steps = [
@@ -108,20 +118,20 @@ export function WizardForm({ initialData }: WizardFormProps) {
     const newErrors: Partial<FormData> = {};
 
     if (!formData.panNumber) {
-      newErrors.panNumber = "Required";
+      newErrors.panNumber = "Invalid PAN number(must be 10 elements)";
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)) {
-      newErrors.panNumber = "Invalid PAN number";
+      newErrors.panNumber = "Invalid PAN number(must be 10 elements)";
     }
     if (!formData.panCardUserName) newErrors.panCardUserName = "Required";
     if (!formData.panCardImage) newErrors.panCardImage = "Required";
     if (!formData.gstNumber) {
-      newErrors.gstNumber = "Required";
+      newErrors.gstNumber = "Invalid GST number(must be 15 elements)";
     } else if (
       !/\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/.test(
         formData.gstNumber
       )
     ) {
-      newErrors.gstNumber = "Invalid GST number";
+      newErrors.gstNumber = "Invalid GST number(must be 15 elements)";
     }
     if (!formData.gstCertificateImage)
       newErrors.gstCertificateImage = "Required";
@@ -153,11 +163,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
         navigate("/apps/organizations/list");
       } else {
         toast.error(response.message || "Update failed. Please try again.");
-        console.log(response, "e");
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
-      console.log(error, "f");
       toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
       setLoading(false);
@@ -184,6 +192,47 @@ export function WizardForm({ initialData }: WizardFormProps) {
     }
   };
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await orgGetAllCategories();
+        if (response.status) {
+          setCategories(response.data);
+        } else {
+          toast.error("Failed to load categories.");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error("An error occurred while fetching categories.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCategoryId) {
+      const fetchSubcategories = async () => {
+        try {
+          const response = await orgGetSubcategoriesByCategory(
+            selectedCategoryId
+          );
+          if (response.status) {
+            setSubcategories(response.data);
+          } else {
+            toast.error("Failed to load subcategories.");
+          }
+        } catch (error) {
+          console.error("Error fetching subcategories:", error);
+          toast.error("An error occurred while fetching subcategories.");
+        }
+      };
+      fetchSubcategories();
+    } else {
+      setSubcategories([]);
+    }
+  }, [selectedCategoryId]);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -209,6 +258,8 @@ export function WizardForm({ initialData }: WizardFormProps) {
           managerName: orgData.managerName || "",
           registerNumber: orgData.register_number || "",
           contactNumber: orgData.contact_number || "",
+          category: orgData.category || "",
+          subcategoryName: orgData.subcategoryName || "",
           email: orgData.email || "",
           numberOfEmployees: orgData.no_of_employees.toString() || "",
           addressType: orgData.addresses[0]?.address_type || "Office",
@@ -373,7 +424,67 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           )}
                         </div>
                       </div>
+                      <div className="row g-3">
+                        {/* Category Field */}
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Category</label>
+                            <select
+                              name="category"
+                              value={formData.category}
+                              onChange={(e) => {
+                                const selectedCategory = e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  category: selectedCategory,
+                                  subcategoryName: "",
+                                }));
+                                setSelectedCategoryId(selectedCategory);
+                              }}
+                              className="form-select form-control" // Added form-control for consistent styling
+                            >
+                              <option value="">Select Category</option>
+                              {categories?.map((cat) => (
+                                <option key={cat._id} value={cat._id}>
+                                  {cat?.category}
+                                </option>
+                              ))}
+                            </select>
+                            {!categories.length && (
+                              <div className="text-muted mt-1">
+                                Loading categories...
+                              </div>
+                            )}
+                          </div>
+                        </div>
 
+                        {/* Subcategory Field */}
+                        {/* Subcategory Field */}
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Subcategory</label>
+                            <select
+                              name="subcategoryName" // Changed from "subcategory" to "subcategoryName"
+                              value={formData.subcategoryName}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  subcategoryName: e.target.value,
+                                }))
+                              }
+                              className="form-select"
+                              disabled={!formData.category} // Disable if no category is selected
+                            >
+                              <option value="">Select Subcategory</option>
+                              {subcategories.map((sub) => (
+                                <option key={sub._id} value={sub._id}>
+                                  {sub?.subcategoryName}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
                       <div className="col-12">
                         <div className="form-group">
                           <label className="form-label">

@@ -1,195 +1,74 @@
 import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { Link } from "react-router-dom";
-import { yupResolver } from "@hookform/resolvers/yup";
-
-// components
-import { FormInput } from "../../components";
-
-// Images
-import BGShape from '../../assets/images/landing/bg-shape.png'
-
+import { Mail, Phone, MapPin } from "lucide-react";
+import { Card } from "react-bootstrap";
 
 const ContactUs = () => {
-  /*
-   * form validation schema
-   */
-  const schemaResolver = yupResolver(
-    yup.object().shape({
-      fullname: yup.string().required("Please enter your name"),
-      emailaddress: yup.string().required("Please enter your name"),
-      subject: yup.string().required("Please enter your name"),
-    })
-  );
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
 
-  /*
-   * form methods
-   */
-  const methods = useForm({ resolver: schemaResolver });
-  const {
-    handleSubmit,
-    register,
-    control,
-    formState: { errors },
-  } = methods;
+  };
 
   return (
-    <>
-      <section className="section pb-0 bg-gradient" id="contact">
-        <div className="bg-shape">
-        <img src={BGShape} alt="bg-img" className="img-fluid mx-auto d-block" />
-          {/* <BgShapeSVG /> */}
-        </div>
-        <Container>
-          <Row>
-            <Col lg={12}>
-              <div className="title text-center mb-4">
-                <h3 className="text-white">Have any Questions ?</h3>
-                <p className="text-white-50">
-                  Please fill out the following form and we will get back to you
-                  shortly
-                </p>
-              </div>
-            </Col>
-          </Row>
+    <div className="py-12 container mx-auto px-4">
+      <h2 className="text-3xl font-bold text-center mb-10">Contact Us</h2>
 
-          <Row className="mb-4">
-            <Col md={4}>
-              <div className="contact-content text-center mt-4">
-                <div className="contact-icon mb-2">
-                  <i className="mdi mdi-email-outline text-info h2"></i>
-                </div>
-                <div className="contact-details text-white">
-                  <h6 className="text-white">E-mail</h6>
-                  <p className="text-white-50">example@abc.com</p>
-                </div>
-              </div>
-            </Col>
-            <Col md={4}>
-              <div className="contact-content text-center mt-4">
-                <div className="contact-icon mb-2">
-                  <i className="mdi mdi-cellphone-iphone text-info h2"></i>
-                </div>
-                <div className="contact-details">
-                  <h6 className="text-white">Phone</h6>
-                  <p className="text-white-50">012-345-6789</p>
-                </div>
-              </div>
-            </Col>
-            <Col md={4}>
-              <div className="contact-content text-center mt-4">
-                <div className="contact-icon mb-2">
-                  <i className="mdi mdi-map-marker text-info h2"></i>
-                </div>
-                <div className="contact-details">
-                  <h6 className="text-white">Address</h6>
-                  <p className="text-white-50">4413 Redbud Drive, New York</p>
-                </div>
-              </div>
-            </Col>
-          </Row>
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Contact Information */}
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-2xl font-semibold mb-4">Get in Touch</h3>
+            <p className="text-gray-600 mb-6">
+              Have questions? We'd love to hear from you.
+            </p>
+          </div>
 
-          <Row className="justify-content-center">
-            <Col lg={10}>
-              <div className="custom-form p-5 bg-white">
-                <span id="error-msg"></span>
-                <form onSubmit={handleSubmit(() => {})}>
-                  <Row>
-                    <Col lg={6}>
-                      <FormInput
-                        type="text"
-                        label="Name"
-                        name="fullname"
-                        placeholder="Enter your name..."
-                        containerClass={"mb-3"}
-                        register={register}
-                        key="fullname"
-                        errors={errors}
-                        control={control}
-                      />
-                    </Col>
-                    <Col lg={6}>
-                      <FormInput
-                        type="email"
-                        label="Email address"
-                        name="emailaddress"
-                        placeholder="Enter your email..."
-                        containerClass={"mb-3"}
-                        register={register}
-                        key="emailaddress"
-                        errors={errors}
-                        control={control}
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="mt-1">
-                    <Col lg={12}>
-                      <FormInput
-                        type="text"
-                        label="Subject"
-                        name="subject"
-                        placeholder="Enter subject..."
-                        containerClass={"mb-3"}
-                        register={register}
-                        key="subject"
-                        errors={errors}
-                        control={control}
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="mt-1">
-                    <Col lg={12}>
-                      <FormInput
-                        type="textarea"
-                        label="Message"
-                        name="comments"
-                        placeholder="Enter your message..."
-                        containerClass={"mb-3"}
-                        rows="4"
-                        register={register}
-                        key="comments"
-                        errors={errors}
-                        control={control}
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col lg={12} className="text-end">
-                      <Button variant="danger" className="submitBnt">
-                        Send Message
-                      </Button>
-                    </Col>
-                  </Row>
-                </form>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* cta */}
-      <section className="section-sm bg-light">
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-md-9">
-              <h3 className="mb-0 mo-mb-20">
-                We also customize the theme as per your needs
-              </h3>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-gray-600">
+              <Mail className="h-5 w-5" />
+              <span>support@foodiehub.com</span>
             </div>
-            <div className="col-md-3">
-              <div className="text-md-end">
-                <Link to="#" className="btn btn-outline-dark rounded-pill">
-                  <i className="mdi mdi-email-outline me-1"></i>
-                  Contact Us
-                </Link>
-              </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Phone className="h-5 w-5" />
+              <span>+1 (555) 123-4567</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <MapPin className="h-5 w-5" />
+              <span>123 Food Street, Cuisine City, FC 12345</span>
             </div>
           </div>
         </div>
-      </section>
-    </>
+
+        {/* Contact Form */}
+        <Card>
+          <Card.Body className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label htmlFor="name">Name</label>
+                <input id="name" placeholder="Enter your name" />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="email">Email</label>
+                <input id="email" type="email" placeholder="Enter your email" />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="message">Message</label>
+                <textarea
+                  id="message"
+                  placeholder="Your message"
+                  className="min-h-[120px]"
+                />
+              </div>
+
+              <button type="submit" className="w-full">
+                Send Message
+              </button>
+            </form>
+          </Card.Body>
+        </Card>
+      </div>
+    </div>
   );
 };
 

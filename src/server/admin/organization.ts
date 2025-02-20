@@ -85,7 +85,7 @@ export const orgCreateCategory = async (data: any) => {
 export const orgGetAllCategories = async () => {
   try {
     const response = await axiosInstance.get(
-      apiConfig.organization.getAllCategories
+      apiConfig.organization.getAllCategories( {page: 1, limit: 10})
     );
     return response.data;
   } catch (error: any) {
@@ -157,7 +157,7 @@ export const orgGetSubcategoriesByCategory = async (
 export const orgGetSubcategories = async () => {
   try {
     const response = await axiosInstance.get(
-      apiConfig.organization.getAllSubCategories
+      apiConfig.organization.getAllSubCategories( {page: 1, limit: 10})
     );
     return response.data;
   } catch (error: any) {

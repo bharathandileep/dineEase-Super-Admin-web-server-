@@ -79,7 +79,7 @@ export const kitchenCreateCategory = async (data: any) => {
 export const kitchensGetAllCategories = async () => {
   try {
     const response = await axiosInstance.get(
-      apiConfig.kitchens.getAllCategories
+      apiConfig.kitchens.getAllCategories({ page: 1, limit: 10 })
     );
     return response.data;
   } catch (error: any) {
@@ -91,7 +91,7 @@ export const kitchensUpdateCategory = async (
   id: string | undefined,
   data: any
 ) => {
-  console.log(id, data);
+
   try {
     const response = await axiosInstance.put(
       apiConfig.kitchens.updateCategory(id),
@@ -126,7 +126,7 @@ export const kitchensToggleCategoryStatus = async (id: string | undefined) => {
 };
 
 export const kitchensCreateSubcategory = async (data: any | undefined) => {
-  console.log(data);
+
   try {
     const response = await axiosInstance.post(
       apiConfig.kitchens.createSubcategory,
@@ -142,8 +142,9 @@ export const kitchensGetSubcategoriesByCategory = async (
   categoryId: string | undefined
 ) => {
   try {
+
     const response = await axiosInstance.get(
-      apiConfig.menu.getSubcategoriesByCategory(categoryId)
+      apiConfig.kitchens.getSubcategoriesByCategory(categoryId)
     );
     return response.data;
   } catch (error: any) {

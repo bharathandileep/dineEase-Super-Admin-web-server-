@@ -210,7 +210,7 @@ const AddFoodItem = () => {
       try {
         const response = await getAllCategories();
         if (response.status) {
-          setCategories(response.data);
+          setCategories(response.data.categories);
         } else {
           toast.error("Failed to load categories.");
         }
@@ -231,6 +231,7 @@ const AddFoodItem = () => {
           const response = await getSubcategoriesByCategory(selectedCategoryId);
           if (response.status) {
             setSubcategories(response.data);
+            console.log(response.data);
           } else {
             toast.error("Failed to load subcategories.");
           }
@@ -323,7 +324,7 @@ const AddFoodItem = () => {
                   onChange={(e) => setSelectedCategoryId(e.target.value)}
                 >
                   <option value="">Select Category</option>
-                  {categories.map((cat: any) => (
+                  {categories?.map((cat: any) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.category || cat.name}
                     </option>
@@ -340,7 +341,7 @@ const AddFoodItem = () => {
                   defaultValue=""
                 >
                   <option value="">Select Subcategory</option>
-                  {subcategories.map((sub: any) => (
+                  {subcategories?.map((sub: any) => (
                     <option key={sub._id} value={sub._id}>
                       {sub.subcategoryName || sub.name}
                     </option>

@@ -157,9 +157,7 @@ const AddkitchenCategory = ({
             <Button variant="success" type="submit" className="me-1">
               {action === "edit" ? "Update" : "Add"}
             </Button>
-            <Button variant="danger" onClick={onHide}>
-              Cancel
-            </Button>
+           
           </div>
         </VerticalForm>
       </Modal.Body>

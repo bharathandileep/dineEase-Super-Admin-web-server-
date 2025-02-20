@@ -7,20 +7,19 @@ import {
   useGlobalFilter,
   useAsyncDebounce,
   useExpanded,
-  PluginHook,
 } from "react-table";
 import classNames from "classnames";
-
+ 
 // components
 import Pagination from "./Pagination";
-
+ 
 interface GlobalFilterProps {
   preGlobalFilteredRows: any;
   globalFilter: any;
   setGlobalFilter: any;
   searchBoxClass: any;
 }
-
+ 
 // Define a default UI for filtering
 const GlobalFilter = ({
   preGlobalFilteredRows,
@@ -33,7 +32,7 @@ const GlobalFilter = ({
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 200);
-
+ 
   return (
     <div className={classNames(searchBoxClass)}>
       <span className="d-flex align-items-center">
@@ -52,23 +51,23 @@ const GlobalFilter = ({
     </div>
   );
 };
-
+ 
 interface IndeterminateCheckboxProps {
   indeterminate: any;
   children?: React.ReactNode;
 }
-
+ 
 const IndeterminateCheckbox = forwardRef<
   HTMLInputElement,
   IndeterminateCheckboxProps
 >(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef();
   const resolvedRef: any = ref || defaultRef;
-
+ 
   useEffect(() => {
     resolvedRef.current.indeterminate = indeterminate;
   }, [resolvedRef, indeterminate]);
-
+ 
   return (
     <>
       <div className="form-check">
@@ -83,18 +82,13 @@ const IndeterminateCheckbox = forwardRef<
     </>
   );
 });
-
+ 
 interface TableProps {
   isSearchable?: boolean;
   isSortable?: boolean;
   pagination?: boolean;
   isSelectable?: boolean;
   isExpandable?: boolean;
-  onPageChange?: (page: number) => void;
-  onSizePerPageChange?: (size: number) => void;
-  currentPage?: number;
-  totalPages?: number;
-  totalItems?: number;
   sizePerPageList?: {
     text: string;
     value: number;
@@ -107,35 +101,22 @@ interface TableProps {
     className?: string;
   }[];
   data: any[];
-  pageSize?: number;
+  pageSize?: any;
   searchBoxClass?: string;
   tableClass?: string;
   theadClass?: string;
 }
-
+ 
 const Table = (props: TableProps) => {
-  const {
-    isSearchable = false,
-    isSortable = false,
-    pagination = false,
-    isSelectable = false,
-    isExpandable = false,
-    sizePerPageList = [],
-    columns,
-    data,
-    pageSize = 10,
-    onPageChange,
-    onSizePerPageChange,
-    currentPage = 1,
-    totalPages,
-    totalItems,
-    searchBoxClass,
-    tableClass,
-    theadClass,
-  } = props;
-
+  const isSearchable = props["isSearchable"] || false;
+  const isSortable = props["isSortable"] || false;
+  const pagination = props["pagination"] || false;
+  const isSelectable = props["isSelectable"] || false;
+  const isExpandable = props["isExpandable"] || false;
+  const sizePerPageList = props["sizePerPageList"] || [];
+  console.log(props.data)
   let otherProps: any = {};
-
+ 
   if (isSearchable) {
     otherProps["useGlobalFilter"] = useGlobalFilter;
   }
@@ -151,26 +132,36 @@ const Table = (props: TableProps) => {
   if (isSelectable) {
     otherProps["useRowSelect"] = useRowSelect;
   }
-
+ 
   const dataTable = useTable(
     {
-      columns,
-      data,
-      initialState: { pageIndex: currentPage - 1, pageSize },
-      manualPagination: pagination,
-      pageCount: totalPages,
+      columns: props["columns"],
+      data: props["data"],
+      initialState: { pageSize: props["pageSize"] || 10 },
     },
-    ...(Object.values(otherProps) as PluginHook<any>[]),
+    otherProps.hasOwnProperty("useGlobalFilter") &&
+      otherProps["useGlobalFilter"],
+    otherProps.hasOwnProperty("useSortBy") && otherProps["useSortBy"],
+    otherProps.hasOwnProperty("useExpanded") && otherProps["useExpanded"],
+    otherProps.hasOwnProperty("usePagination") && otherProps["usePagination"],
+    otherProps.hasOwnProperty("useRowSelect") && otherProps["useRowSelect"],
     (hooks) => {
-      if (isSelectable) {
-        hooks.visibleColumns.push((columns) => [
+      isSelectable &&
+        hooks.visibleColumns.push((columns: any) => [
+          // Let's make a column for selection
           {
             id: "selection",
+            // The header can use the table's getToggleAllRowsSelectedProps method
+            // to render a checkbox
             Header: ({ getToggleAllPageRowsSelectedProps }: any) => (
               <div>
-                <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
+                <IndeterminateCheckbox
+                  {...getToggleAllPageRowsSelectedProps()}
+                />
               </div>
             ),
+            // The cell can use the individual row's getToggleRowSelectedProps method
+            // to the render a checkbox
             Cell: ({ row }: any) => (
               <div>
                 <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -179,12 +170,13 @@ const Table = (props: TableProps) => {
           },
           ...columns,
         ]);
-      }
-
-      if (isExpandable) {
-        hooks.visibleColumns.push((columns) => [
+ 
+      isExpandable &&
+        hooks.visibleColumns.push((columns: any) => [
+          // Let's make a column for selection
           {
-            id: "expander",
+            // Build our expander column
+            id: "expander", // Make sure it has an ID
             Header: ({
               getToggleAllRowsExpandedProps,
               isAllRowsExpanded,
@@ -193,41 +185,31 @@ const Table = (props: TableProps) => {
                 {isAllRowsExpanded ? "-" : "+"}
               </span>
             ),
-            Cell: ({ row }: any) =>
+            Cell: ({ row }) =>
+              // Use the row.canExpand and row.getToggleRowExpandedProps prop getter
+              // to build the toggle for expanding a row
               row.canExpand ? (
-                <span {...row.getToggleRowExpandedProps({ style: { paddingLeft: `${row.depth * 2}rem` } })}>
+                <span
+                  {...row.getToggleRowExpandedProps({
+                    style: {
+                      // We can even use the row.depth property
+                      // and paddingLeft to indicate the depth
+                      // of the row
+                      paddingLeft: `${row.depth * 2}rem`,
+                    },
+                  })}
+                >
                   {row.isExpanded ? "-" : "+"}
                 </span>
               ) : null,
           },
           ...columns,
         ]);
-      }
     }
   );
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    gotoPage,
-    setPageSize,
-    state: { pageIndex, pageSize: currentPageSize },
-  } = dataTable;
-
-  useEffect(() => {
-    if (pagination && onPageChange) onPageChange(pageIndex + 1);
-  }, [pageIndex, onPageChange, pagination]);
-
-  useEffect(() => {
-    if (pagination && onSizePerPageChange) onSizePerPageChange(currentPageSize);
-  }, [currentPageSize, onSizePerPageChange, pagination]);
-
+ 
+  let rows = pagination ? dataTable.page : dataTable.rows;
+ 
   return (
     <>
       {isSearchable && (
@@ -235,27 +217,30 @@ const Table = (props: TableProps) => {
           preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
           globalFilter={dataTable.state.globalFilter}
           setGlobalFilter={dataTable.setGlobalFilter}
-          searchBoxClass={searchBoxClass}
+          searchBoxClass={props["searchBoxClass"]}
         />
       )}
-
+ 
       <div className="table-responsive">
         <table
-          {...getTableProps()}
-          className={classNames("table table-centered react-table", tableClass)}
+          {...dataTable.getTableProps()}
+          className={classNames(
+            "table table-centered react-table",
+            props["tableClass"]
+          )}
         >
-          <thead className={theadClass}>
-            {headerGroups.map((headerGroup) => (
+          <thead className={props["theadClass"]}>
+            {(dataTable.headerGroups || []).map((headerGroup: any) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
+                {(headerGroup.headers || []).map((column: any) => (
                   <th
                     {...column.getHeaderProps(
-                      column.canSort ? column.getSortByToggleProps() : undefined
+                      column.sort && column.getSortByToggleProps()
                     )}
                     className={classNames({
-                      sorting_desc: column.isSortedDesc,
-                      sorting_asc: column.isSorted && !column.isSortedDesc,
-                      sortable: column.canSort,
+                      sorting_desc: column.isSortedDesc === true,
+                      sorting_asc: column.isSortedDesc === false,
+                      sortable: column.sort === true,
                     })}
                   >
                     {column.render("Header")}
@@ -264,14 +249,24 @@ const Table = (props: TableProps) => {
               </tr>
             ))}
           </thead>
-          <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
-              prepareRow(row);
+          <tbody {...dataTable.getTableBodyProps()}>
+            {(rows || []).map((row: any, i: number) => {
+              dataTable.prepareRow(row);
               return (
                 <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  ))}
+                  {(row.cells || []).map((cell: any) => {
+                    return (
+                      <td
+                        {...cell.getCellProps([
+                          {
+                            className: cell.column.className,
+                          },
+                        ])}
+                      >
+                        {cell.render("Cell")}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}
@@ -279,15 +274,10 @@ const Table = (props: TableProps) => {
         </table>
       </div>
       {pagination && (
-        <Pagination 
-          tableProps={dataTable} 
-          sizePerPageList={sizePerPageList}
-          onPageChange={onPageChange}
-          onSizePerPageChange={onSizePerPageChange}
-        />
+        <Pagination tableProps={dataTable} sizePerPageList={sizePerPageList} />
       )}
     </>
   );
 };
-
+ 
 export default Table;

@@ -20,12 +20,12 @@ import {
   publicProtectedFlattenRoutes,
 } from "./index";
 import { APICore } from "../helpers/api/apiCore";
+import PrivateRoute from "./PrivateRoute";
 // import { isUserAuthenticated } from "../helpers/api/apiCore";
 
 interface IRoutesProps {}
 
 const AllRoutes = (props: IRoutesProps) => {
-  // const [isAuthenticated, setIsAuthenticated] = useState(isUserAuthenticated());
   const { layout } = useSelector((state: RootState) => ({
     layout: state.Layout,
   }));
@@ -51,9 +51,7 @@ const AllRoutes = (props: IRoutesProps) => {
     return layoutCls;
   };
   useEffect(() => {
-    const checkAuth = () => {
-      // setIsAuthenticated(isUserAuthenticated());
-    };
+    const checkAuth = () => {};
 
     window.addEventListener("storage", checkAuth);
 
@@ -79,7 +77,7 @@ const AllRoutes = (props: IRoutesProps) => {
             />
           ))}
         </Route>
-      
+
         <Route>
           {authProtectedFlattenRoutes.map((route, idx) => (
             <Route
@@ -92,7 +90,9 @@ const AllRoutes = (props: IRoutesProps) => {
                     }}
                   />
                 ) : (
-                  <Layout {...props}>{route.element}</Layout>
+                  <PrivateRoute roles={route.roles}>
+                    <Layout {...props}>{route.element}</Layout>
+                  </PrivateRoute>
                 )
               }
               key={idx}

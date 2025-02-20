@@ -38,9 +38,10 @@ const Login = () => {
   };
   useEffect(() => {
     if (userLoggedIn && user) {
-      navigate("/"); // ✅ Redirect to Dashboard
+      navigate("/");
     }
-  }, [userLoggedIn, user, navigate]); // Run when these values change
+  }, [userLoggedIn, user, navigate]); 
+
 
   return (
     <>

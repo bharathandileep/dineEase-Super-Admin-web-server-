@@ -9,6 +9,8 @@ export enum AuthActionTypes {
   FORGOT_PASSWORD_CHANGE = "@@auth/FORGOT_PASSWORD_CHANGE",
   RESET_PASSWORD = "@@auth/RESET_PASSWORD",
 
+  GOOGLE_LOGIN_USER = "@@auth/GOOGLE_LOGIN_USER",
+
   RESET = "@@auth/RESET",
   VERIFY_OTP = "VERIFY_OTP",
 }

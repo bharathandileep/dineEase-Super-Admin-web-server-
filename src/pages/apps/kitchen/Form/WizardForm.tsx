@@ -4,6 +4,8 @@ import { FileUpload } from "../../../../components/FileUpload";
 import {
   createNewkitchen,
   getkitchenDetails,
+  kitchensGetAllCategories,
+  kitchensGetSubcategoriesByCategory,
   updatekitchenDetails,
 } from "../../../../server/admin/kitchens";
 import { toast } from "react-toastify";
@@ -49,6 +51,9 @@ interface FormData {
   ffsai_card_owner_name: string;
   ffsai_certificate_image?: any;
   ffsai_expiry_date: string;
+
+  category: string;
+  subcategoryName: string;
 }
 
 const initialFormData: FormData = {
@@ -59,7 +64,7 @@ const initialFormData: FormData = {
   owner_email: "",
   owner_phone_number: "",
   restaurant_type: "",
-  kitchen_type: " ",
+  kitchen_type: "",
   kitchen_phone_number: "",
   address_type: "Home",
   street_address: "",
@@ -79,6 +84,8 @@ const initialFormData: FormData = {
   pan_card_image: "",
   gst_certificate_image: "",
   ffsai_certificate_image: "",
+  category: "",
+  subcategoryName: "",
 };
 
 export function WizardForm({ initialData }: WizardFormProps) {
@@ -87,7 +94,11 @@ export function WizardForm({ initialData }: WizardFormProps) {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [kitchenData, setKitchenData] = useState<IKitchenDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
+  const [CategoryId, setCategoryId] = useState("");
+
   const { id } = useParams();
   const navigate = useNavigate();
   const steps = [
@@ -133,30 +144,40 @@ export function WizardForm({ initialData }: WizardFormProps) {
     const newErrors: Partial<FormData> = {};
 
     if (!formData.pan_card_number) {
-      newErrors.pan_card_number = "Required";
+      newErrors.pan_card_number = "Invalid PAN number(must be 10 elements)";
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan_card_number)) {
-      newErrors.pan_card_number = "Invalid PAN number";
+      newErrors.pan_card_number = "Invalid PAN number(must be 10 elements)";
     }
+
     if (!formData.pan_card_user_name) newErrors.pan_card_user_name = "Required";
-    if (!formData.pan_card_user_name) newErrors.pan_card_user_name = "Required";
+
     if (!formData.gst_number) {
-      newErrors.gst_number = "Required";
+      newErrors.gst_number = "Invalid GST number(must be 15 elements)";
     } else if (
-      !/\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/.test(
+      !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(
         formData.gst_number
       )
     ) {
-      newErrors.gst_number = "Invalid GST number";
+      newErrors.gst_number = "Invalid GST number(must be 15 elements)";
     }
+
     if (!formData.gst_certificate_image)
       newErrors.gst_certificate_image = "Required";
+
     if (!formData.gst_expiry_date) newErrors.gst_expiry_date = "Required";
+
     if (!formData.ffsai_certificate_number) {
-      newErrors.ffsai_certificate_number = "Required";
+      newErrors.ffsai_certificate_number =
+        "Invalid FSSAI number (must be 14 digits and start with '1')";
+    } else if (!/^1\d{13}$/.test(formData.ffsai_certificate_number)) {
+      newErrors.ffsai_certificate_number =
+        "Invalid FSSAI number (must be 14 digits and start with '1')";
     }
+
     if (!formData.ffsai_card_owner_name) {
       newErrors.ffsai_card_owner_name = "Required";
     }
+
     if (!formData.ffsai_certificate_image) {
       newErrors.ffsai_certificate_image = "Required";
     }
@@ -172,13 +193,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
       initialData ? handleEdit() : handleSubmit();
     }
   };
-  // const handleNext = () => {
-  //   if (currentStep === 1) {
-  //     setCurrentStep(2);
-  //   } else if (currentStep === 2) {
-  //     initialData ? handleEdit() : handleSubmit();
-  //   }
-  // };
 
   const handleBack = () => {
     setCurrentStep(currentStep - 1);
@@ -223,6 +237,46 @@ export function WizardForm({ initialData }: WizardFormProps) {
     }
   };
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await kitchensGetAllCategories();
+        if (response.status) {
+          setCategories(response.data.categories);
+        } else {
+          toast.error("Failed to load categories.");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error("An error occurred while fetching categories.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (CategoryId) {
+      const fetchSubcategories = async () => {
+        try {
+          const response = await kitchensGetSubcategoriesByCategory(CategoryId);
+          if (response.status) {
+            setSubcategories(response.data);
+          } else {
+            toast.error("Failed to load subcategories.");
+          }
+        } catch (error) {
+          console.error("Error fetching subcategories:", error);
+          toast.error("An error occurred while fetching subcategories.");
+        }
+      };
+      fetchSubcategories();
+    } else {
+      setSubcategories([]);
+    }
+  }, [CategoryId]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -239,7 +293,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
       try {
         const response = await getkitchenDetails(id);
         setKitchenData(response.data);
-        console.log(response.data);
         setFormData((prevFormData) => ({
           ...prevFormData,
           kitchen_name: response.data.kitchen_name || "",
@@ -248,8 +301,10 @@ export function WizardForm({ initialData }: WizardFormProps) {
           owner_email: response.data.owner_email || "",
           owner_phone_number: response.data.owner_phone_number || "",
           restaurant_type: response.data.restaurant_type || "",
-          kitchen_type: response.data.kitchen_type || "Veg",
+          kitchen_type: response.data.kitchen_type || "",
           kitchen_phone_number: response.data.kitchen_phone_number || "",
+          category: response.data.category || "",
+          subcategoryName: response.data.subcategoryName || "",
 
           // Address mapping (taking first address if multiple exist)
           address_type: response.data.addresses?.[0]?.address_type || "Home",
@@ -292,8 +347,6 @@ export function WizardForm({ initialData }: WizardFormProps) {
           // Kitchen Image
           kitchen_image: response.data.kitchen_image || "",
         }));
-
-        console.log(response);
       } catch (error) {
         console.error("Error fetching kitchen details:", error);
       } finally {
@@ -476,6 +529,65 @@ export function WizardForm({ initialData }: WizardFormProps) {
                               {errors.kitchen_image}
                             </div>
                           )}
+                        </div>
+                      </div>
+                      <div className="row g-3">
+                        {/* Category Field */}
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Category</label>
+                            <select
+                              name="category"
+                              value={formData.category}
+                              onChange={(e) => {
+                                const selectedCategory = e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  category: selectedCategory,
+                                  subcategoryName: "",
+                                }));
+                                setCategoryId(selectedCategory);
+                              }}
+                              className="form-select form-control"
+                            >
+                              <option value="">Select Category</option>
+                              {categories?.map((cat) => (
+                                <option key={cat._id} value={cat._id}>
+                                  {cat?.category}
+                                </option>
+                              ))}
+                            </select>
+                            {!categories.length && (
+                              <div className="text-muted mt-1">
+                                Loading categories...
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Subcategory</label>
+                            <select
+                              name="subcategoryName"
+                              value={formData.subcategoryName}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  subcategoryName: e.target.value,
+                                }))
+                              }
+                              className="form-select"
+                              disabled={!formData.category}
+                            >
+                              <option value="">Select Subcategory</option>
+                              {subcategories.map((sub) => (
+                                <option key={sub._id} value={sub._id}>
+                                  {sub?.subcategoryName}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
                         </div>
                       </div>
 

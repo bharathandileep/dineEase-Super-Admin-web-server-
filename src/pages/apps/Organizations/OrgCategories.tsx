@@ -22,7 +22,6 @@ function OrgCategories() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [orderList, setOrderList] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchAllCategories = async () => {
@@ -30,8 +29,7 @@ function OrgCategories() {
       try {
         const response = await orgGetAllCategories();
         if (response.status) {
-          setMenuItems(response.data);
-          setOrderList(response.data);
+          setMenuItems(response.data.categories);
         } else {
           toast.error("Failed to load menu categories.");
         }
@@ -74,16 +72,25 @@ function OrgCategories() {
 
   const filteredMenuItems = useMemo(() => {
     return menuItems.filter((value) => {
-      const categoryMatch = value.category.toLowerCase().includes(searchTerm);
-      const createdAtString =
-        value.createdAt && !isNaN(new Date(value.createdAt).getTime())
-          ? new Date(value.createdAt).toLocaleDateString()
-          : "";
-      const createdAtMatch = createdAtString.toLowerCase().includes(searchTerm);
-      const statusMatch =
-        statusFilter === "all" ||
-        (statusFilter === "active" && value.status) ||
-        (statusFilter === "inactive" && !value.status);
+      const categoryName = value.category?.toLowerCase() || "";
+      const searchLower = searchTerm.toLowerCase();
+
+      // Ensure category name search works properly
+      const categoryMatch = categoryName.includes(searchLower);
+
+      // Handle date conversion safely
+      const createdAtString = value.createdAt
+        ? new Date(value.createdAt).toLocaleDateString()
+        : "";
+      const createdAtMatch = createdAtString
+        .toLowerCase()
+        .includes(searchLower);
+
+      // **Fix status filtering logic**
+      let statusMatch = true;
+      if (statusFilter === "active") statusMatch = value.status === true;
+      if (statusFilter === "inactive") statusMatch = value.status === false;
+
       return (categoryMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, menuItems]);
@@ -107,7 +114,7 @@ function OrgCategories() {
 
   /* order column render */
   const CategoryColumn = ({ row }: { row: any }) => {
-    return <span className="fw-bold">{row?.original?.category}</span>;
+    return <span className='fw-bold'>{row?.original?.category}</span>;
   };
 
   const CreatedAtColumn = ({ row }: { row: any }) => {
@@ -131,16 +138,16 @@ function OrgCategories() {
     return (
       <>
         <button
-          className="action-icon border-0 bg-transparent"
+          className='action-icon border-0 bg-transparent'
           onClick={() => handleEdit(row?.original?._id)}
         >
-          <i className="mdi mdi-square-edit-outline"></i>
+          <i className='mdi mdi-square-edit-outline'></i>
         </button>
         <button
-          className="action-icon border-0 bg-transparent"
+          className='action-icon border-0 bg-transparent'
           onClick={() => handleDelete(row?.original?._id)}
         >
-          <i className="mdi mdi-delete text-danger"></i>
+          <i className='mdi mdi-delete text-danger'></i>
         </button>
       </>
     );
@@ -178,7 +185,7 @@ function OrgCategories() {
 
   return (
     <>
-      <div className="container py-2">
+      <div className='container py-2'>
         <PageTitle
           breadCrumbItems={[
             { label: "Organizations", path: "/apps/org/category" },
@@ -191,19 +198,19 @@ function OrgCategories() {
           title={"Customers"}
         />
         <div
-          className="mb-3"
+          className='mb-3'
           style={{ backgroundColor: "#5bd2bc", padding: "10px" }}
         >
-          <div className="d-flex align-items-center justify-content-between">
-            <h3 className="page-title m-0" style={{ color: "#fff" }}>
+          <div className='d-flex align-items-center justify-content-between'>
+            <h3 className='page-title m-0' style={{ color: "#fff" }}>
               Organizations Category
             </h3>
             <Link
-              to="#"
-              className="btn btn-danger waves-effect waves-light"
+              to='#'
+              className='btn btn-danger waves-effect waves-light'
               onClick={() => setShow(true)}
             >
-              <i className="mdi mdi-plus-circle me-1"></i> Add New
+              <i className='mdi mdi-plus-circle me-1'></i> Add New
             </Link>
           </div>
         </div>
@@ -211,40 +218,40 @@ function OrgCategories() {
           <Col>
             <Card>
               <Card.Body>
-                <Row className="justify-content-between">
-                  <Col className="col-auto">
-                    <form className="d-flex align-items-center">
+                <Row className='justify-content-between'>
+                  <Col className='col-auto'>
+                    <form className='d-flex align-items-center'>
                       <label
-                        htmlFor="inputPassword2"
-                        className="visually-hidden"
+                        htmlFor='inputPassword2'
+                        className='visually-hidden'
                       >
                         Search
                       </label>
                       <div>
                         <input
-                          type="search"
-                          className="form-control my-1 my-lg-0"
-                          id="inputPassword2"
-                          placeholder="Search..."
+                          type='search'
+                          className='form-control my-1 my-lg-0'
+                          id='inputPassword2'
+                          placeholder='Search...'
                           onChange={(e) => onSearchData(e.target.value)}
                         />
                       </div>
                     </form>
                   </Col>
-                  <Col className="col-auto">
-                    <div className="d-flex align-items-center">
-                      <label htmlFor="status-select" className="me-2 mb-0">
+                  <Col className='col-auto'>
+                    <div className='d-flex align-items-center'>
+                      <label htmlFor='status-select' className='me-2 mb-0'>
                         Sort By
                       </label>
                       <div>
                         <Form.Select
-                          className="w-auto"
+                          className='w-auto'
                           value={statusFilter}
                           onChange={(e: any) => setStatusFilter(e.target.value)}
                         >
-                          <option value="all">All</option>
-                          <option value="active">Active</option>
-                          <option value="inactive">Inactive</option>
+                          <option value='all'>All</option>
+                          <option value='active'>Active</option>
+                          <option value='inactive'>Inactive</option>
                         </Form.Select>
                       </div>
                     </div>
@@ -255,34 +262,34 @@ function OrgCategories() {
           </Col>
         </Row>
 
-        <div className="card shadow">
-          <div className="table-responsive">
+        <div className='card shadow'>
+          <div className='table-responsive'>
             {loading ? (
-              <div className="text-center my-4">
-                <Spinner animation="border" />
+              <div className='text-center my-4'>
+                <Spinner animation='border' />
                 <p>Loading menu categories...</p>
               </div>
             ) : menuItems.length === 0 ? (
-              <div className="text-center my-4">
+              <div className='text-center my-4'>
                 <p>No Menu Category Found</p>
               </div>
             ) : filteredMenuItems.length === 0 ? (
-              <div className="text-center my-4">
+              <div className='text-center my-4'>
                 <p>No results found for "{searchTerm}"</p>
               </div>
             ) : (
               <Table
-                        columns={columns}
-                        data={menuItems}
-                        isSearchable={false}
-                        pageSize={10}
-                        sizePerPageList={sizePerPageList}
-                        isSortable={true}
-                        pagination={true}
-                        isSelectable={false}
-                        theadClass="table-light"
-                        searchBoxClass="mb-2"
-                      />
+                columns={columns}
+                data={filteredMenuItems}
+                isSearchable={false}
+                pageSize={10}
+                sizePerPageList={sizePerPageList}
+                isSortable={true}
+                pagination={true}
+                isSelectable={false}
+                theadClass='table-light'
+                searchBoxClass='mb-2'
+              />
             )}
           </div>
         </div>
