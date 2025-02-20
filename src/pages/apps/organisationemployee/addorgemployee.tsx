@@ -24,7 +24,7 @@ const OrgEmployeeManagement = () => {
       try {
         const response = await getAllDesignations( {page:1,limit:10});
         if (response.status) {
-          setDesignations(response.data);
+          setDesignations(response.data.designations);
         } else {
           toast.error("Failed to load designations.");
         }

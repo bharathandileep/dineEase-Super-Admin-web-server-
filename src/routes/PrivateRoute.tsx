@@ -22,7 +22,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ roles, children }) => {
   const loggedInUser = api.getLoggedInUserInfo() as LoggedInUser | null;
 
   if (!isAuthenticated) {
-    console.log("Redirecting to /auth/login");
     return <Navigate to="/auth/login" />;
   } 
 

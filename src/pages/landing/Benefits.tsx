@@ -37,7 +37,7 @@ const benefitsData = [
 
 const Benefits = () => {
   return (
-    <section className="py-5">
+    <section className="py-5 bg-primary">
       <Container>
         <h2 className="text-center mb-5">Why Choose Us</h2>
         <Row>

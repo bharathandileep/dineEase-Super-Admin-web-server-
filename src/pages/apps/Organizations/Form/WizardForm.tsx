@@ -197,7 +197,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
       try {
         const response = await orgGetAllCategories();
         if (response.status) {
-          setCategories(response.data);
+          setCategories(response.data.categories);
         } else {
           toast.error("Failed to load categories.");
         }

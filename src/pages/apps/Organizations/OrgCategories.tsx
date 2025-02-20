@@ -75,8 +75,10 @@ function OrgCategories() {
       const categoryName = value.category?.toLowerCase() || "";
       const searchLower = searchTerm.toLowerCase();
 
+
       // Ensure category name search works properly
       const categoryMatch = categoryName.includes(searchLower);
+
 
       // Handle date conversion safely
       const createdAtString = value.createdAt
@@ -86,10 +88,13 @@ function OrgCategories() {
         .toLowerCase()
         .includes(searchLower);
 
+
+
       // **Fix status filtering logic**
       let statusMatch = true;
       if (statusFilter === "active") statusMatch = value.status === true;
       if (statusFilter === "inactive") statusMatch = value.status === false;
+
 
       return (categoryMatch || createdAtMatch) && statusMatch;
     });

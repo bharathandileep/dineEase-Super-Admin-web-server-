@@ -15,6 +15,7 @@ export const apiConfig = {
     verifyOtp: "/verify-otp",
     verifyLoginOtp: "/verify-loginotp",
     logout: "/logout",
+    accessAccount:"/user/access/login"
   },
   users: {
     getUser: "/users/:id",

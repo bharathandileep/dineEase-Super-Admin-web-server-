@@ -44,6 +44,7 @@ export const NavigationBar = () => {
       // navigate("/");
       setIsLoggedIn(true);
     }
+    setIsLoggedIn(false)
   }, [userLoggedIn, user, navigate]);
 
   const otpRefs = [
@@ -259,7 +260,7 @@ export const NavigationBar = () => {
             <Tabs
               activeKey={activeTab}
               onSelect={(k) => k && setActiveTab(k)}
-              className="mb-4 justify-content-center"
+              className="mb-2 justify-content-center"
             >
               <Tab eventKey="signin-email" title="Email">
                 <Form className="py-3">
@@ -275,30 +276,11 @@ export const NavigationBar = () => {
                   </Form.Group>
                   <Button
                     variant="primary"
-                    className="w-100 py-2 rounded-pill mb-3"
+                    className="w-100 py-2 rounded-pill mb-2"
                     onClick={handleSiginWithEmail}
                   >
                     Continue
                   </Button>
-                  <div className="text-center mb-4">
-                    <span className="text-muted">Don't have an account? </span>
-                    <a
-                      href="#"
-                      className="text-decoration-none"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        switchForm("signup-email");
-                      }}
-                    >
-                      Sign Up
-                    </a>
-                  </div>
-                  <div className="position-relative mb-4">
-                    <hr className="my-4" />
-                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
-                      <span className="text-muted">or</span>
-                    </div>
-                  </div>
                   <Button
                     variant="outline-dark"
                     className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
@@ -311,6 +293,37 @@ export const NavigationBar = () => {
                     />
                     Continue with Google
                   </Button>
+                  <div className="position-relative">
+                    <hr className="" />
+                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                      <span className="text-muted">or</span>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-muted">Don't have an account? </span>
+                    <a
+                      href="#"
+                      className="text-decoration-none"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        switchForm("signup-email");
+                      }}
+                    >
+                      Sign Up
+                    </a>
+                  </div>
+                  <div className="text-center ">
+                    <span className="text-muted">Login With user name password? </span>
+                    <a
+                      href="#"
+                      className="text-decoration-none"
+                      onClick={(e) => {
+                        navigate("/auth/access/login")
+                      }}
+                    >
+                      Access
+                    </a>
+                  </div>
                 </Form>
               </Tab>
               <Tab eventKey="signin-phone" title="Phone">
@@ -332,25 +345,6 @@ export const NavigationBar = () => {
                   >
                     Continue
                   </Button>
-                  <div className="text-center mb-4">
-                    <span className="text-muted">Don't have an account? </span>
-                    <a
-                      href="#"
-                      className="text-decoration-none"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        switchForm("signup-phone");
-                      }}
-                    >
-                      Sign Up
-                    </a>
-                  </div>
-                  <div className="position-relative mb-4">
-                    <hr className="my-4" />
-                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
-                      <span className="text-muted">or</span>
-                    </div>
-                  </div>
                   <Button
                     variant="outline-dark"
                     className="w-100 py-2 rounded-pill d-flex align-items-center justify-content-center gap-2"
@@ -363,6 +357,25 @@ export const NavigationBar = () => {
                     />
                     Continue with Google
                   </Button>
+                  <div className="position-relative mb-4">
+                    <hr className="my-4" />
+                    <div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                      <span className="text-muted">or</span>
+                    </div>
+                  </div>
+                  <div className="text-center mb-4">
+                    <span className="text-muted">Don't have an account? </span>
+                    <a
+                      href="#"
+                      className="text-decoration-none"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        switchForm("signup-email");
+                      }}
+                    >
+                      Sign Up
+                    </a>
+                  </div>
                 </Form>
               </Tab>
             </Tabs>

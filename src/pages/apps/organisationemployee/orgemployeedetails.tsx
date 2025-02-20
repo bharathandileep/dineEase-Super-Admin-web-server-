@@ -162,28 +162,29 @@ const OrgEmployeeDetails = () => {
                 }}
               />
 
-              {/* Employee Name */}
-              <h4 className="mb-2 text-2xl font-bold">{orgemployee?.username}</h4>
-              <Badge
-                bg={orgemployee.employee_status === "Active" ? "success" : "danger"}
-                className="mb-3"
-              >
-                {orgemployee.employee_status}
-              </Badge>
+             
 
-              {/* Toggle Status Button */}
-              <Button
-                variant={orgemployee.employee_status === "Active" ? "warning" : "secondary"}
-                className="w-100 mb-3"
-                onClick={handleToggleStatus}
-              >
-                {orgemployee.employee_status === "Active" ? (
-                  <ToggleLeft size={16} className="me-1" />
-                ) : (
-                  <ToggleRight size={16} className="me-1" />
-                )}
-                Toggle Status
-              </Button>
+
+             {/* Employee Name */}
+<h4 className="mb-2 text-2xl font-bold">{orgemployee.username}</h4>
+<Badge
+  bg={orgemployee.employee_status === "Active" ? "success" : "danger"}
+  className="mb-3"
+  onClick={handleToggleStatus}
+  style={{ cursor: "pointer" }} // Add this to indicate the badge is clickable
+>
+  {orgemployee.employee_status}
+</Badge>
+
+
+
+
+
+
+
+
+
+
 
               {/* Contact Information */}
               <div className="text-start">

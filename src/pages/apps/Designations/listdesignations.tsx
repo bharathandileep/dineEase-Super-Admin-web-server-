@@ -279,12 +279,12 @@ function Designations() {
               <Table
                 columns={columns}
                 data={filteredDesignations}
-                isSearchable={false}
+                isSearchable={true}
                 pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
-                pagination={false}
-                isSelectable={false}
+                pagination={true}
+                isSelectable={true}
                 theadClass="table-light"
                 searchBoxClass="mb-2"
               />

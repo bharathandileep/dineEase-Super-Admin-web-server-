@@ -524,7 +524,7 @@ const dashboardRoutes = {
   route: PrivateRoute,
   roles: ["Admin", "User"],
   icon: "airplay",
-  element: <Dashboard3 />,
+  element: <EcommerceDashboard />,
 };
 
 const calendarAppRoutes: RoutesProps = {
@@ -1430,9 +1430,9 @@ const authRoutes: RoutesProps[] = [
     route: Route,
   },
   {
-    path: "/auth/employee/login",
+    path: "/auth/access/login",
     name: "Login2",
-    element: <Login2 />,
+    element: <Login2 />,  
     route: Route,
   },
   {
