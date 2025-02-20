@@ -15,8 +15,8 @@ import OrgSubCategories from "../pages/apps/Organizations/OrgSubCategories";
 import OurMenu from "../pages/apps/kitchen/OurMenu";
 import MenuItems from "../pages/apps/MenuItems/Items";
 import ItemsListing from "../pages/apps/MenuItems/ListItems";
-//import ItemsEditing from "../pages/apps/MenuItems/ItemsEditing";
-import EditItems from "../pages/apps/MenuItems/EditItems";
+import ItemsEditing from "../pages/apps/MenuItems/ItemsEditing";
+//import EditItems from "../pages/apps/MenuItems/EditItems";
 import EmployeeManagment from "../pages/apps/adminemployee/addemployee";
 import EmployeeList from "../pages/apps/adminemployee/listemployee";
 import EmployeeEdit from "../pages/apps/adminemployee/editemployee";
@@ -423,7 +423,7 @@ const kitchenAppRoutes = {
     {
       path: "/apps/kitchen/editing/:id",
       name: "Editing",
-      element: <EditItems />,
+      element: <ItemsEditing />,
     },
     {
       path: "/apps/kitchen/:kitchenId/item-details/:id",

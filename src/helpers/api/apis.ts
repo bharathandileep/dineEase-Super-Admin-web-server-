@@ -170,12 +170,12 @@ export const apiConfig = {
     ) => `/kitchens-menu/${kitchenId}/menu-item/${itemId}`,
   },
 
-  kitchenMenu: {
-    getKitchenMenu: (id: string | undefined) => `/kitchen-menu/${id}`,
-    removekitchenMenu: (item: string | undefined, kitchenId: string | undefined) => `/kitchen-menu/${kitchenId}/item/${item}`,
-    createkitchenMenu: (id: string | undefined) => `/kitchen-menu/${id}`,
-    kitchenMenuItemChange: (kitchenId: string | undefined, itemId: string | undefined) => `/kitchen-menu/${kitchenId}/item/${itemId}`,
-  },
+  // kitchenMenu: {
+  //   getKitchenMenu: (id: string | undefined) => `/kitchen-menu/${id}`,
+  //   removekitchenMenu: (item: string | undefined, kitchenId: string | undefined) => `/kitchen-menu/${kitchenId}/item/${item}`,
+  //   createkitchenMenu: (id: string | undefined) => `/kitchen-menu/${id}`,
+  //   kitchenMenuItemChange: (kitchenId: string | undefined, itemId: string | undefined) => `/kitchen-menu/${kitchenId}/item/${itemId}`,
+  // },
 
   addressDetails:{
     getAllCountries:"/addressDetails/allcountries",
