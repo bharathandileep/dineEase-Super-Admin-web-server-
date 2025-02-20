@@ -42,7 +42,8 @@ export const NavigationBar = () => {
     // if (userLoggedIn && user) {
     if (user) {
       // navigate("/");
-      setIsLoggedIn(true);
+      setIsLoggedIn(true)
+
     }
     setIsLoggedIn(false)
   }, [userLoggedIn, user, navigate]);
