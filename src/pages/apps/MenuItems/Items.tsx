@@ -9,7 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 
 import FileUploader from "../../../components/FileUploader";
-import { FormInput } from "../../../components/";
+import { FormInput } from "../../../components";
 import { createItem } from "../../../server/admin/items";
 import { getAllCategories, getSubcategoriesByCategory } from "../../../server/admin/menu";
 

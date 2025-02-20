@@ -27,10 +27,10 @@ export const getStatesByCountry = async(countryName:string | undefined)=>{
     }
 }
 
-export  const getCitiesByState = async(stateId:string | undefined)=>{
+export  const getCitiesByState = async(stateName:string | undefined)=>{
     try{
         const response =  await axiosInstance.get(
-            `${apiConfig.addressDetails.getCitiesByState(stateId)}`
+            `${apiConfig.addressDetails.getCitiesByState(stateName)}`
         );
         return response.data;
     }
@@ -40,7 +40,6 @@ export  const getCitiesByState = async(stateId:string | undefined)=>{
         
     }
 }
-
 
 export const getDistrictsByState = async(stateId:string | undefined)=>{
     try{

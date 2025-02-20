@@ -161,7 +161,7 @@ export const apiConfig = {
   addressDetails:{
     getAllCountries:"/addressDetails/allcountries",
     getStatesByCountry:(countryName: string |undefined)=>`/addressDetails/states/${countryName}`,
-    getCitiesByState:(stateId: string | undefined)=>`/addressDetails/cities/${stateId}`,
+    getCitiesByState:(stateName: string | undefined)=>`/addressDetails/cities/${stateName}`,
     getDistrictsByState:(stateId: string | undefined)=>`/addressDetails/districts/${stateId}`
   }
 };

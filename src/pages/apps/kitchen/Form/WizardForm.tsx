@@ -1192,9 +1192,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
     }
   };
   
-  const fetchCities = async (stateId: string) => {
+  const fetchCities = async (stateName: string) => {
     try {
-      const data = await getCitiesByState(stateId);
+      const data = await getCitiesByState(stateName);
       if (data?.success) {
         setCities(data.data);
       }
@@ -1675,7 +1675,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                             <option value="">Select Country</option>
                             {countries.map((country) => (
                               <option key={country._id} value={country.country_name}>
-                                {country.country_name}
+                                {country.name}
                               </option>
                             ))}
                           </select>
@@ -1700,7 +1700,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                             <option value="">Select State</option>
                             {states.map((state) => (
                               <option key={state._id} value={state._id}>
-                                {state.state_name}
+                                {state.name}
                               </option>
                             ))}
                           </select>
@@ -1725,7 +1725,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                             <option value="">Select City</option>
                             {cities.map((city) => (
                               <option key={city._id} value={city.city_name}>
-                                {city.city_name}
+                                {city.name}
                               </option>
                             ))}
                           </select>
@@ -1750,7 +1750,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                             <option value="">Select District</option>
                             {districts.map((district) => (
                               <option key={district._id} value={district.district_name}>
-                                {district.district_name}
+                                {district.name}
                               </option>
                             ))}
                           </select>
