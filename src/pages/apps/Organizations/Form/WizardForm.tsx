@@ -1487,7 +1487,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           >
                             <option value="">Select State</option>
                             {states.map((state) => (
-                              <option key={state._id} value={state._id}>
+                              <option key={state._id} value={state.id}>
                                 {state.name}
                               </option>
                             ))}

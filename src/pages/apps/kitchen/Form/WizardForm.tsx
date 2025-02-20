@@ -1184,6 +1184,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
     try {
       const data = await getStatesByCountry(countryName); 
       if (data?.success) {
+        console.log(data)
         setStates(data.data);
       }
     } catch (error) {
@@ -1192,6 +1193,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
   };
   
   const fetchCities = async (stateName: string) => {
+    console.log(stateName,"ss")
     try {
       const data = await getCitiesByState(stateName);
       if (data?.success) {
@@ -1692,7 +1694,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                           >
                             <option value="">Select State</option>
                             {states.map((state) => (
-                              <option key={state._id} value={state._id}>
+                              <option key={state._id} value={state.id}>
                                 {state.name}
                               </option>
                             ))}
