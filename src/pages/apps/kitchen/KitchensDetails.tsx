@@ -95,7 +95,7 @@ function KitchensDetails() {
   const { id } = useParams();
   const [kitchenData, setKitchenData] = useState<IKitchenDetails | null>(null);
   const [groupedItems, setGroupedItems] = useState<TransformedData>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [activeKey, setActiveKey] = useState<string>("");
@@ -122,18 +122,23 @@ function KitchensDetails() {
   };
 
   const transformFoodData = (items: any[]): TransformedData => {
-    return items.reduce((acc: TransformedData, item) => {
-      const categoryName = item.category.category;
-      const subcategoryName = item.subcategory.subcategoryName;
-
+    const transformed = items.reduce((acc: TransformedData, item) => {
+      const categoryName = item.category?.category;
+      const subcategoryName = item.subcategory?.subcategoryName;
+  
+      if (!categoryName || !subcategoryName) {
+        console.warn("Skipping item due to missing category/subcategory:", item);
+        return acc;
+      }
+  
       if (!acc[categoryName]) {
         acc[categoryName] = {};
       }
-
+  
       if (!acc[categoryName][subcategoryName]) {
         acc[categoryName][subcategoryName] = [];
       }
-
+  
       acc[categoryName][subcategoryName].push({
         name: item.item_name,
         description: item.item_description,
@@ -141,10 +146,15 @@ function KitchensDetails() {
         status: item.status,
         itemId: item._id,
       });
-
+  
+      console.log("inside transformFoodData:", acc);
       return acc;
     }, {} as TransformedData);
+  
+    console.log("Final transformed data before return:", transformed);
+    return transformed;
   };
+  
 
   useEffect(() => {
     const fetchKitchenDetails = async () => {
@@ -164,8 +174,20 @@ function KitchensDetails() {
     const fetchItemDetails = async () => {
       try {
         const response = await listItems();
-        const transformedData = transformFoodData(response.data);
+        console.log("API Response:", response.data); // Ensure data exists
+  
+        let transformedData;
+        try {
+          transformedData = transformFoodData(response.data);
+          console.log("Transformed Data inside try:", transformedData);
+        } catch (error) {
+          console.error("Error transforming data:", error);
+          return;
+        }
+  
         setGroupedItems(transformedData);
+        console.log("Transformed Data after setGroupedItems:", transformedData);
+  
         const firstCategory = Object.keys(transformedData)[0];
         if (firstCategory) {
           setActiveKey(firstCategory);
@@ -174,8 +196,10 @@ function KitchensDetails() {
         console.error("Error fetching kitchen details:", error);
       }
     };
+  
     fetchItemDetails();
-  }, []);
+  }, [loading]);
+  
 
   const handleAddToCart = (item: FoodItem) => {
     setCartItems((prevCart) => {
