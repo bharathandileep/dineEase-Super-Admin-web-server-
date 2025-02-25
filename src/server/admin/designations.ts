@@ -56,8 +56,6 @@ export const toggleDesignationStatus = async (id: string | undefined) => {
   }
 };
 
-
-
 // ✅ Delete a designation
 export const deleteDesignation = async (id: string) => {
   try {

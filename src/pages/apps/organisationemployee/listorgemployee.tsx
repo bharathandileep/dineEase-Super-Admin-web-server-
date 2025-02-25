@@ -77,7 +77,6 @@ const OrgEmployeeList = () => {
  
   return (
     <React.Fragment>
-      {/* Breadcrumb Navigation */}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb m-2">
           <li className="breadcrumb-item">
@@ -88,8 +87,6 @@ const OrgEmployeeList = () => {
           </li>
         </ol>
       </nav>
-
-      {/* Page Header */}
       <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
         <div className="d-flex align-items-center justify-content-between">
           <h3 className="page-title m-0" style={{ color: "#fff" }}>Organisation Employees</h3>
@@ -98,8 +95,6 @@ const OrgEmployeeList = () => {
           </Link>
         </div>
       </div>
-
-      {/* Loading Spinner */}
       {loading ? (
         <div className="text-center my-3">
           <Spinner animation="border" />
@@ -115,7 +110,6 @@ const OrgEmployeeList = () => {
                   onClick={() => navigate(`/apps/organizations/employ/details/${orgemployees._id}`)}  
                 >
                   <Card.Body className="d-flex flex-column align-items-center text-center">
-                    {/* Profile Picture */}
                     <div className="position-relative">
                       <img
                         src={orgemployees.profile_picture || "https://via.placeholder.com/150"}
@@ -129,8 +123,6 @@ const OrgEmployeeList = () => {
                         }}
                       />
                     </div>
-
-                    {/* User Details */}
                     <div className="product-info mt-auto w-100">
                       <h5 className="text-2xl mt-0 sp-line-1">
                         <Link to="#" className="text-dark text-decoration-none">{orgemployees.username}</Link>
@@ -146,15 +138,13 @@ const OrgEmployeeList = () => {
                         </span>
                       </h6>
                     </div>
-
-                    {/* Action Buttons */}
                     <div className="product-action d-flex justify-content-center mt-2">
                       <Button
                         variant="success"
                         size="sm"
                         className="me-1"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevents triggering card click
+                          e.stopPropagation(); 
                           handleEdit(orgemployees._id);
                         }}
                       >

@@ -127,7 +127,6 @@ export const NavigationBar = () => {
         toast.error(response.message);
       }
     } catch (error) {
-      console.error("Google sign-in error:", error);
       toast.error("Something went wrong. Please try again later.");
     } finally {
       setShowLoader(false);

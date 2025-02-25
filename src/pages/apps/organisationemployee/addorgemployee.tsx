@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Row, Col, Card, Button,Image } from "react-bootstrap";
+import { Row, Col, Card, Button, Image } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -12,9 +12,11 @@ import { getAllDesignations } from "../../../server/admin/designations";
 const OrgEmployeeManagement = () => {
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState<File | null>(null);
-    const [aadharImage, setAadharImage] = useState<File | null>(null);
-    const [panImage, setPanImage] = useState<File | null>(null);
-  const [designations, setDesignations] = useState<{ _id: string; designation_name: string }[]>([]);
+  const [aadharImage, setAadharImage] = useState<File | null>(null);
+  const [panImage, setPanImage] = useState<File | null>(null);
+  const [designations, setDesignations] = useState<
+    { _id: string; designation_name: string }[]
+  >([]);
   const [loading, setLoading] = useState(false);
 
   // Fetch designations on component mount
@@ -45,7 +47,6 @@ const OrgEmployeeManagement = () => {
     formState: { errors },
   } = useForm();
 
-  // Handle Form Submission
   const onSubmit = async (data: any) => {
     try {
       const formData = new FormData();
@@ -68,23 +69,16 @@ const OrgEmployeeManagement = () => {
       formData.append("pincode", data.pincode);
       formData.append("state", data.state);
       formData.append("country", data.country);
-
-      // Profile Picture Upload
       if (profileImage) {
         formData.append("profile_picture", profileImage);
       }
-        // Aadhaar Card Upload
-        if (aadharImage) {
-          formData.append("aadhar_image", aadharImage);
-        }
-  
-        // PAN Card Upload
-        if (panImage) {
-          formData.append("pan_image", panImage);
-        }
-
+      if (aadharImage) {
+        formData.append("aadhar_image", aadharImage);
+      }
+      if (panImage) {
+        formData.append("pan_image", panImage);
+      }
       const response = await createOrgEmployee(formData);
-
       if (response.status) {
         toast.success("Employee added successfully!");
         navigate("/apps/organizations/employ/list");
@@ -96,9 +90,10 @@ const OrgEmployeeManagement = () => {
       toast.error("Error adding employee. Please try again.");
     }
   };
-
-  // Handle File Upload
-  const handleFileUpload = (files: File[], setImage: React.Dispatch<React.SetStateAction<File | null>>) => {
+  const handleFileUpload = (
+    files: File[],
+    setImage: React.Dispatch<React.SetStateAction<File | null>>
+  ) => {
     if (files.length > 0) {
       setImage(files[0]);
     }
@@ -118,7 +113,9 @@ const OrgEmployeeManagement = () => {
           <Col lg={6}>
             <Card>
               <Card.Body>
-                <h5 className="text-uppercase mt-0 mb-3">General Information</h5>
+                <h5 className="text-uppercase mt-0 mb-3">
+                  General Information
+                </h5>
                 <FormInput
                   name="username"
                   label="Employee Name"
@@ -178,7 +175,11 @@ const OrgEmployeeManagement = () => {
             <Card>
               <Card.Body className="text-center">
                 <h5 className="text-uppercase mt-0 mb-3">Profile Picture</h5>
-                <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setProfileImage)} />
+                <FileUploader
+                  onFileUpload={(files) =>
+                    handleFileUpload(Array.from(files), setProfileImage)
+                  }
+                />
                 {profileImage && (
                   <Image
                     src={URL.createObjectURL(profileImage)}
@@ -190,7 +191,6 @@ const OrgEmployeeManagement = () => {
               </Card.Body>
             </Card>
           </Col>
-          
         </Row>
 
         {/* Address Information */}
@@ -198,7 +198,9 @@ const OrgEmployeeManagement = () => {
           <Col lg={12}>
             <Card className="mt-3">
               <Card.Body>
-                <h5 className="text-uppercase mt-0 mb-3">Address Information</h5>
+                <h5 className="text-uppercase mt-0 mb-3">
+                  Address Information
+                </h5>
                 <Row>
                   <Col md={6}>
                     <FormInput
@@ -272,12 +274,14 @@ const OrgEmployeeManagement = () => {
           </Col>
         </Row>
 
-           {/* Aadhaar & PAN Details */}
-           <Row>
+        {/* Aadhaar & PAN Details */}
+        <Row>
           <Col lg={12}>
             <Card className="mt-3">
               <Card.Body>
-                <h5 className="text-uppercase mt-0 mb-3">Identification Details</h5>
+                <h5 className="text-uppercase mt-0 mb-3">
+                  Identification Details
+                </h5>
                 <Row>
                   <Col md={6}>
                     <FormInput
@@ -291,7 +295,11 @@ const OrgEmployeeManagement = () => {
                     />
                     <div className="mb-3">
                       <label className="form-label">Aadhaar Card Image</label>
-                      <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setAadharImage)} />
+                      <FileUploader
+                        onFileUpload={(files) =>
+                          handleFileUpload(Array.from(files), setAadharImage)
+                        }
+                      />
                       {aadharImage && (
                         <Image
                           src={URL.createObjectURL(aadharImage)}
@@ -314,7 +322,11 @@ const OrgEmployeeManagement = () => {
                     />
                     <div className="mb-3">
                       <label className="form-label">PAN Card Image</label>
-                      <FileUploader onFileUpload={(files) => handleFileUpload(Array.from(files), setPanImage)} />
+                      <FileUploader
+                        onFileUpload={(files) =>
+                          handleFileUpload(Array.from(files), setPanImage)
+                        }
+                      />
                       {panImage && (
                         <Image
                           src={URL.createObjectURL(panImage)}
@@ -331,11 +343,14 @@ const OrgEmployeeManagement = () => {
           </Col>
         </Row>
 
-
         {/* Submit Button */}
         <Row>
           <Col className="text-center">
-            <Button variant="light" className="me-2" onClick={() => navigate("/apps/organizations/employ/list")}>
+            <Button
+              variant="light"
+              className="me-2"
+              onClick={() => navigate("/apps/organizations/employ/list")}
+            >
               Cancel
             </Button>
             <Button type="submit" variant="success">

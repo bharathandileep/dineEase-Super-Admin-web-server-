@@ -30,8 +30,6 @@ export const getOrgEmployeeById = async (id: string | undefined) => {
     throw error.response?.data || error;
   }
 };
-
-// ✅ Create a new organization employee
 export const createOrgEmployee = async (data: any) => {
   try {
     const response = await axiosInstance.post(apiConfig.orgemployee.createOrgEmployee, data, {

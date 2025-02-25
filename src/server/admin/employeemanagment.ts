@@ -17,8 +17,6 @@ export const getEmployeeById = async (id: string | undefined) => {
   try {
     const response = await axiosInstance.get(apiConfig.employee.getEmployeeById(id));
     const employee = response.data;
-
-    // Extract address information from the employee data
     const address = employee.address || {};
 
     return {
@@ -30,7 +28,6 @@ export const getEmployeeById = async (id: string | undefined) => {
     throw error.response?.data || error;
   }
 };
-
 
 // ✅ Create a new employee
 export const createEmployee = async (data: any) => {
@@ -46,8 +43,6 @@ export const createEmployee = async (data: any) => {
     }
   };
   
-  
-
 // ✅ Update employee details
 export const updateEmployee = async (id: string, data: FormData) => {
   try {
