@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Card, Button, Image } from "react-bootstrap";
@@ -8,6 +9,12 @@ import FileUploader from "../../../components/FileUploader";
 import { FormInput } from "../../../components";
 import { createEmployee } from "../../../server/admin/employeemanagment";
 import { getAllDesignations } from "../../../server/admin/designations";
+import { 
+  getAllCountries, 
+  getStatesByCountry, 
+  getCitiesByState, 
+  getDistrictsByState 
+} from "../../../server/admin/addressDetails";
 
 const EmployeeManagement = () => {
   const navigate = useNavigate();
@@ -16,6 +23,32 @@ const EmployeeManagement = () => {
   const [panImage, setPanImage] = useState<File | null>(null);
   const [designations, setDesignations] = useState<{ _id: string; designation_name: string }[]>([]);
   const [loading, setLoading] = useState(false);
+  
+  // Location states
+  const [countries, setCountries] = useState<{ _id: string; name: string; country_name: string }[]>([]);
+  const [states, setStates] = useState<{ _id: string; name: string; id: string }[]>([]);
+  const [cities, setCities] = useState<{ _id: string; name: string; city_name: string }[]>([]);
+  const [districts, setDistricts] = useState<{ _id: string; name: string; district_name: string }[]>([]);
+  
+  // Form data state for controlled inputs
+  const [formData, setFormData] = useState({
+    country: "",
+    state: "",
+    city: "",
+    district: "",
+    street_address: "",
+    pincode: ""
+  });
+  
+  // Custom errors state for location fields
+  const [errors, setErrors] = useState<{
+    country?: string;
+    state?: string;
+    city?: string;
+    district?: string;
+    street_address?: string;
+    pincode?: string;
+  }>({});
 
   // Fetch designations on component mount
   useEffect(() => {
@@ -37,13 +70,97 @@ const EmployeeManagement = () => {
     };
     fetchDesignations();
   }, []);
+  
+  // Fetch countries on component mount
+  useEffect(() => {
+    fetchCountries();
+  }, []);
 
   // React Hook Form setup
   const {
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors: formErrors },
+    setValue,
   } = useForm();
+
+  // Fetch location data functions
+  const fetchCountries = async () => {
+    try {
+      const data = await getAllCountries();
+      if (data?.success) {
+        setCountries(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+      toast.error("Failed to load countries.");
+    }
+  };
+
+  const fetchStates = async (countryName: string) => {
+    try {
+      const data = await getStatesByCountry(countryName);
+      if (data?.success) {
+        setStates(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching states:", error);
+      toast.error("Failed to load states.");
+    }
+  };
+
+  const fetchCities = async (stateName: string) => {
+    try {
+      const data = await getCitiesByState(stateName);
+      if (data?.success) {
+        setCities(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+      toast.error("Failed to load cities.");
+    }
+  };
+
+  const fetchDistricts = async (stateId: string) => {
+    try {
+      const data = await getDistrictsByState(stateId);
+      if (data?.success) {
+        setDistricts(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching districts:", error);
+      toast.error("Failed to load districts.");
+    }
+  };
+
+  // Handle location field changes
+  const handleChange = async (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Update the react-hook-form value
+    setValue(name, value);
+
+    if (name === "country") {
+      await fetchStates(value);
+      setFormData((prev) => ({ ...prev, state: "", city: "", district: "" }));
+      setValue("state", "");
+      setValue("city", "");
+      setValue("district", "");
+    } else if (name === "state") {
+      await fetchCities(value);
+      await fetchDistricts(value);
+      setFormData((prev) => ({ ...prev, city: "", district: "" }));
+      setValue("city", "");
+      setValue("district", "");
+    }
+
+    if (errors[name as keyof typeof formData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
 
   // Handle Form Submission
   const onSubmit = async (data: any) => {
@@ -126,7 +243,7 @@ const EmployeeManagement = () => {
                   placeholder="Enter full name"
                   containerClass="mb-3"
                   register={register}
-                  errors={errors}
+                  errors={formErrors}
                   validation={{ required: "Employee name is required" }}
                 />
                 <FormInput
@@ -135,7 +252,7 @@ const EmployeeManagement = () => {
                   placeholder="Enter email"
                   containerClass="mb-3"
                   register={register}
-                  errors={errors}
+                  errors={formErrors}
                   validation={{
                     required: "Email is required",
                     pattern: {
@@ -150,7 +267,7 @@ const EmployeeManagement = () => {
                   placeholder="Enter phone number"
                   containerClass="mb-3"
                   register={register}
-                  errors={errors}
+                  errors={formErrors}
                   validation={{ required: "Phone number is required" }}
                 />
                 <FormInput
@@ -158,7 +275,7 @@ const EmployeeManagement = () => {
                   label="Designation"
                   containerClass="mb-3"
                   register={register}
-                  errors={errors}
+                  errors={formErrors}
                   type="select"
                   defaultValue=""
                   validation={{ required: "Designation is required" }}
@@ -201,25 +318,121 @@ const EmployeeManagement = () => {
                 <h5 className="text-uppercase mt-0 mb-3">Address Information</h5>
                 <Row>
                   <Col md={6}>
+                    <div className="form-group mb-3">
+                      <label className="form-label">Country</label>
+                      <select
+                        {...register("country", { required: "Country is required" })}
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        className={`form-control ${
+                          errors.country || formErrors.country ? "is-invalid" : ""
+                        }`}
+                      >
+                        <option value="">Select Country</option>
+                        {countries.map((country) => (
+                          <option key={country._id} value={country.country_name}>
+                            {country.name}
+                          </option>
+                        ))}
+                      </select>
+                      {(errors.country || formErrors.country) && (
+                        <div className="invalid-feedback">
+                          {errors.country || (formErrors.country && formErrors.country.message)}
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div className="form-group mb-3">
+                      <label className="form-label">State</label>
+                      <select
+                        {...register("state", { required: "State is required" })}
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        className={`form-control ${
+                          errors.state || formErrors.state ? "is-invalid" : ""
+                        }`}
+                        disabled={!formData.country}
+                      >
+                        <option value="">Select State</option>
+                        {states.map((state) => (
+                          <option key={state._id} value={state.id}>
+                            {state.name}
+                          </option>
+                        ))}
+                      </select>
+                      {(errors.state || formErrors.state) && (
+                        <div className="invalid-feedback">
+                          {errors.state || (formErrors.state && formErrors.state.message)}
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div className="form-group mb-3">
+                      <label className="form-label">City</label>
+                      <select
+                        {...register("city", { required: "City is required" })}
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className={`form-control ${
+                          errors.city || formErrors.city ? "is-invalid" : ""
+                        }`}
+                        disabled={!formData.state}
+                      >
+                        <option value="">Select City</option>
+                        {cities.map((city) => (
+                          <option key={city._id} value={city.city_name}>
+                            {city.name}
+                          </option>
+                        ))}
+                      </select>
+                      {(errors.city || formErrors.city) && (
+                        <div className="invalid-feedback">
+                          {errors.city || (formErrors.city && formErrors.city.message)}
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div className="form-group mb-3">
+                      <label className="form-label">District</label>
+                      <select
+                        {...register("district", { required: "District is required" })}
+                        name="district"
+                        value={formData.district}
+                        onChange={handleChange}
+                        className={`form-control ${
+                          errors.district || formErrors.district ? "is-invalid" : ""
+                        }`}
+                        disabled={!formData.state}
+                      >
+                        <option value="">Select District</option>
+                        {districts.map((district) => (
+                          <option key={district._id} value={district.district_name}>
+                            {district.name}
+                          </option>
+                        ))}
+                      </select>
+                      {(errors.district || formErrors.district) && (
+                        <div className="invalid-feedback">
+                          {errors.district || (formErrors.district && formErrors.district.message)}
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={6}>
                     <FormInput
                       name="street_address"
                       label="Street Address"
                       placeholder="Enter street address"
                       containerClass="mb-3"
                       register={register}
-                      errors={errors}
+                      errors={formErrors}
                       validation={{ required: "Street address is required" }}
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <FormInput
-                      name="city"
-                      label="City"
-                      placeholder="Enter city"
-                      containerClass="mb-3"
-                      register={register}
-                      errors={errors}
-                      validation={{ required: "City is required" }}
                     />
                   </Col>
                   <Col md={6}>
@@ -229,41 +442,8 @@ const EmployeeManagement = () => {
                       placeholder="Enter pincode"
                       containerClass="mb-3"
                       register={register}
-                      errors={errors}
+                      errors={formErrors}
                       validation={{ required: "Pincode is required" }}
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <FormInput
-                      name="district"
-                      label="District"
-                      placeholder="Enter district"
-                      containerClass="mb-3"
-                      register={register}
-                      errors={errors}
-                      validation={{ required: "District is required" }}
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <FormInput
-                      name="state"
-                      label="State"
-                      placeholder="Enter state"
-                      containerClass="mb-3"
-                      register={register}
-                      errors={errors}
-                      validation={{ required: "State is required" }}
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <FormInput
-                      name="country"
-                      label="Country"
-                      placeholder="Enter country"
-                      containerClass="mb-3"
-                      register={register}
-                      errors={errors}
-                      validation={{ required: "Country is required" }}
                     />
                   </Col>
                 </Row>
@@ -286,7 +466,7 @@ const EmployeeManagement = () => {
                       placeholder="Enter Aadhaar number"
                       containerClass="mb-3"
                       register={register}
-                      errors={errors}
+                      errors={formErrors}
                       validation={{ required: "Aadhaar number is required" }}
                     />
                     <div className="mb-3">
@@ -309,7 +489,7 @@ const EmployeeManagement = () => {
                       placeholder="Enter PAN number"
                       containerClass="mb-3"
                       register={register}
-                      errors={errors}
+                      errors={formErrors}
                       validation={{ required: "PAN number is required" }}
                     />
                     <div className="mb-3">
@@ -333,7 +513,7 @@ const EmployeeManagement = () => {
 
         {/* Submit Button */}
         <Row>
-          <Col className="text-center">
+          <Col className="text-center mt-3 mb-3">
             <Button variant="light" className="me-2" onClick={() => navigate("/apps/employee/list")}>
               Cancel
             </Button>
