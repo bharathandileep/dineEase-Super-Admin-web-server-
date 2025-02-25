@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Edit2, Trash2 } from "lucide-react";
 import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import AddkitchenCategory from "./modal/addKitchenCategory";
+import AddkitchenCategory from "./modal/AddkitchenCategory";
 import {
   orgDeleteSubcategory,
   orgGetSubcategories,

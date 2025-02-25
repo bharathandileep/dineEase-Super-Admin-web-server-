@@ -10,7 +10,7 @@ import {
   deleteDesignation,
   toggleDesignationStatus,
 } from "../../../server/admin/designations";
-import DesignationModal from "./modal/designationModal";
+import DesignationModal from "./modal/DesignationModal";
 import PageTitle from "../../../components/PageTitle";
 import Table from "../../../components/Table";
 

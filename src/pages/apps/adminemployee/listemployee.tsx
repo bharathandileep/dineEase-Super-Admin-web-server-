@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, Button, Row, Col, Spinner, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getAllEmployees, deleteEmployee, toggleEmployeeStatus } from "../../../server/admin/employeeManagment";
+import { getAllEmployees, deleteEmployee, toggleEmployeeStatus } from "../../../server/admin/employeemanagment";
 import { Pencil, Trash, ToggleLeft, ToggleRight } from "lucide-react";
 
 interface Employee {

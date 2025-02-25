@@ -6,7 +6,7 @@ import {
   getOrgEmployeeById,
   deleteOrgEmployee,
   toggleOrgEmployeeStatus,
-} from "../../../server/admin/orgEmployeeManagment";
+} from "../../../server/admin/orgemployeemanagment";
 import {
   Pencil,
   Trash,
