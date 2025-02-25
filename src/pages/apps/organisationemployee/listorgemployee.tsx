@@ -40,7 +40,7 @@ const OrgEmployeeList = () => {
       const params = {
         page: currentPage,
         limit: 8,
-        search: searchQuery, // Pass search term to the backend
+        search: searchQuery,
       };
 
       const response = await getAllOrgEmployees(params);
@@ -48,12 +48,12 @@ const OrgEmployeeList = () => {
         const { orgEmployees, totalPages, totalEmployees } = response.data;
 
         if (isNewSearch) {
-          setEmployees(orgEmployees); // Replace the list for a new search
+          setEmployees(orgEmployees);
         } else {
           setEmployees((prev) => {
             const existingIds = new Set(prev.map((item) => item._id));
             const newItems = orgEmployees.filter((item: any) => !existingIds.has(item._id));
-            return [...prev, ...newItems]; // Append new items for pagination
+            return [...prev, ...newItems];
           });
         }
 
@@ -73,12 +73,10 @@ const OrgEmployeeList = () => {
     }
   };
 
-  // Initial load
   useEffect(() => {
     fetchEmployees(1, true, searchTerm);
   }, []);
 
-  // Handle search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       setPage(1);
@@ -88,7 +86,6 @@ const OrgEmployeeList = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Infinite scroll handler
   useEffect(() => {
     const handleScroll = () => {
       if (isLoadingRef.current || !hasMore) return;
@@ -170,12 +167,11 @@ const OrgEmployeeList = () => {
         </div>
       </div>
 
-      {/* Search Input */}
       <div className="mb-3">
         <Form.Group controlId="searchEmployees">
           <Form.Control
             type="text"
-            placeholder="Search by username, email, or phone number..."
+            placeholder="Search by username, email, phone number, or designation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -189,18 +185,18 @@ const OrgEmployeeList = () => {
       ) : (
         <Row>
           {orgemployees.length > 0 ? (
-            orgemployees.map((orgemployees) => (
-              <Col md={6} xl={3} className="mb-3" key={orgemployees._id}>
+            orgemployees.map((employee) => (
+              <Col md={6} xl={3} className="mb-3" key={employee._id}>
                 <Card
                   className="product-box h-100 shadow-sm position-relative"
                   style={{ transition: "all 0.3s ease-in-out", cursor: "pointer" }}
-                  onClick={() => navigate(`/apps/organizations/employ/details/${orgemployees._id}`)}
+                  onClick={() => navigate(`/apps/organizations/employ/details/${employee._id}`)}
                 >
                   <Card.Body className="d-flex flex-column align-items-center text-center">
                     <div className="position-relative">
                       <img
-                        src={orgemployees.profile_picture || "https://via.placeholder.com/150"}
-                        alt={orgemployees.username}
+                        src={employee.profile_picture || "https://via.placeholder.com/150"}
+                        alt={employee.username}
                         className="rounded-circle mb-2"
                         style={{
                           width: "80px",
@@ -214,21 +210,19 @@ const OrgEmployeeList = () => {
                     <div className="product-info mt-auto w-100">
                       <h5 className="font-16 mt-0 sp-line-1">
                         <Link to="#" className="text-dark text-decoration-none">
-                          {orgemployees.username}
+                          {employee.username}
                         </Link>
                       </h5>
-                      <h6 className="m-0 text-muted">Email: {orgemployees.email}</h6>
-                      <h6 className="m-0 text-muted">Phone: {orgemployees.phone_number}</h6>
+                      <h6 className="m-0 text-muted">Email: {employee.email}</h6>
+                      <h6 className="m-0 text-muted">Phone: {employee.phone_number}</h6>
                       <h6 className="m-0 text-muted">
-                        Designation: {orgemployees.designation?.designation_name || "Unknown"}
+                        Designation: {employee.designation?.designation_name || "Unknown"}
                       </h6>
                       <h6 className="m-0">
                         <span
-                          className={`badge ${
-                            orgemployees.employee_status === "Active" ? "bg-success" : "bg-danger"
-                          }`}
+                          className={`badge ${employee.employee_status === "Active" ? "bg-success" : "bg-danger"}`}
                         >
-                          {orgemployees.employee_status}
+                          {employee.employee_status}
                         </span>
                       </h6>
                     </div>
@@ -240,7 +234,7 @@ const OrgEmployeeList = () => {
                         className="me-1"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleEdit(orgemployees._id);
+                          handleEdit(employee._id);
                         }}
                       >
                         <Pencil size={16} />
@@ -251,24 +245,20 @@ const OrgEmployeeList = () => {
                         className="me-1"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete(orgemployees._id);
+                          handleDelete(employee._id);
                         }}
                       >
                         <Trash size={16} />
                       </Button>
                       <Button
-                        variant={orgemployees.employee_status === "Active" ? "warning" : "secondary"}
+                        variant={employee.employee_status === "Active" ? "warning" : "secondary"}
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleToggleStatus(orgemployees._id);
+                          handleToggleStatus(employee._id);
                         }}
                       >
-                        {orgemployees.employee_status === "Active" ? (
-                          <ToggleLeft size={16} />
-                        ) : (
-                          <ToggleRight size={16} />
-                        )}
+                        {employee.employee_status === "Active" ? <ToggleLeft size={16} /> : <ToggleRight size={16} />}
                       </Button>
                     </div>
                   </Card.Body>
@@ -276,7 +266,22 @@ const OrgEmployeeList = () => {
               </Col>
             ))
           ) : (
-            <p className="text-center">No employees found.</p>
+            <Col>
+              <Card>
+                <Card.Body className="text-center">
+                  <i className="mdi mdi-account-off text-muted" style={{ fontSize: "48px" }}></i>
+                  <h4 className="mt-3">No Employees Found</h4>
+                  <p className="text-muted">
+                    {searchTerm
+                      ? `No employees match your search criteria "${searchTerm}".`
+                      : "There are no employees in the system yet."}
+                  </p>
+                  <Button variant="primary" onClick={() => navigate("/apps/organizations/employ/add")}>
+                    Add New Employee
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
           )}
         </Row>
       )}

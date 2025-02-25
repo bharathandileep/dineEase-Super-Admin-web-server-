@@ -40,7 +40,7 @@ const EmployeeList = () => {
       const params = {
         page: currentPage,
         limit: 8,
-        search: searchQuery, // Pass search term to the backend
+        search: searchQuery,
       };
 
       const response = await getAllEmployees(params);
@@ -48,12 +48,12 @@ const EmployeeList = () => {
         const { employees, totalPages, totalEmployees } = response.data;
 
         if (isNewSearch) {
-          setEmployees(employees); // Replace the list for a new search
+          setEmployees(employees);
         } else {
           setEmployees((prev) => {
             const existingIds = new Set(prev.map((item) => item._id));
             const newItems = employees.filter((item: any) => !existingIds.has(item._id));
-            return [...prev, ...newItems]; // Append new items for pagination
+            return [...prev, ...newItems];
           });
         }
 
@@ -73,12 +73,10 @@ const EmployeeList = () => {
     }
   };
 
-  // Initial load
   useEffect(() => {
     fetchEmployees(1, true, searchTerm);
   }, []);
 
-  // Handle search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       setPage(1);
@@ -88,7 +86,6 @@ const EmployeeList = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Infinite scroll handler
   useEffect(() => {
     const handleScroll = () => {
       if (isLoadingRef.current || !hasMore) return;
@@ -170,12 +167,11 @@ const EmployeeList = () => {
         </div>
       </div>
 
-      {/* Search Input */}
       <div className="mb-3">
         <Form.Group controlId="searchEmployees">
           <Form.Control
             type="text"
-            placeholder="Search by username, email, or phone number..."
+            placeholder="Search by username, email, phone number, or designation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -266,7 +262,22 @@ const EmployeeList = () => {
               </Col>
             ))
           ) : (
-            <p className="text-center">No employees found.</p>
+            <Col>
+              <Card>
+                <Card.Body className="text-center">
+                  <i className="mdi mdi-account-off text-muted" style={{ fontSize: "48px" }}></i>
+                  <h4 className="mt-3">No Employees Found</h4>
+                  <p className="text-muted">
+                    {searchTerm
+                      ? `No employees match your search criteria "${searchTerm}".`
+                      : "There are no employees in the system yet."}
+                  </p>
+                  <Button variant="primary" onClick={() => navigate("/apps/employee/add")}>
+                    Add New Employee
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
           )}
         </Row>
       )}
