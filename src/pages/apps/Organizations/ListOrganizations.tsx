@@ -257,17 +257,18 @@ function ListOrganizations() {
                           {item?.organizationName}
                         </Link>
                       </h5>
-                      <p className="text-muted">
+                      <p className="text-black font-14 ">
+                        
                         <i className="mdi mdi-map-marker me-1"></i>
                         {item?.addresses[0]?.street_address},{" "}
                         {item?.addresses[0]?.city},{" "}
                         {item?.addresses[0]?.country}
                       </p>
-                      <p className="text-muted">
+                      <p className="text-black">
                         <i className="mdi mdi-phone-classic me-1"></i>
                         {item?.contact_number}
                       </p>
-                      <p className="text-muted">
+                      <p className="text-black">
                         <i className="mdi mdi-email me-1"></i>
                         {item?.email}
                       </p>
