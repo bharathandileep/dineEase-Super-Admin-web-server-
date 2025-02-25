@@ -5,7 +5,6 @@ import { apiConfig } from "../../helpers/api/apis";
 
 export const getAllKitches = async (query:any) => {
   try {
-    console.log("haii")
     const response = await axiosInstance.get(
       `${apiConfig.kitchens.getAllkitchens(query)}`
     );
@@ -77,16 +76,18 @@ export const kitchenCreateCategory = async (data: any) => {
   }
 };
 
-export const kitchensGetAllCategories = async () => {
+export const kitchensGetAllCategories = async (query: any) => {
   try {
     const response = await axiosInstance.get(
-      apiConfig.kitchens.getAllCategories
+      `${apiConfig.kitchens.getAllCategories(query)}`
     );
     return response.data;
   } catch (error: any) {
-    console.error("Error:", error.response?.data || error.message);
+    console.error("Error fetching kitechn categories", error.response?.data || error.message);
+    throw error.response?.data || error;
   }
 };
+
 
 export const kitchensUpdateCategory = async (
   id: string | undefined,

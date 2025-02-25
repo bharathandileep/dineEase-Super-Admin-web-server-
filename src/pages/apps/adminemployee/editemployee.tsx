@@ -7,11 +7,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 
 import FileUploader from "../../../components/FileUploader";
-import { FormInput } from "../../../components/";
+import { FormInput } from "../../../components";
 import {
   getEmployeeById,
   updateEmployee,
-} from "../../../server/admin/employeemanagment";
+} from "../../../server/admin/employeeManagment";
 import { getAllDesignations } from "../../../server/admin/designations";
 
 const EditEmployee = () => {
@@ -23,8 +23,7 @@ const EditEmployee = () => {
   const [aadharImagePreview, setAadharImagePreview] = useState<string | null>(null);
   const [panImage, setPanImage] = useState<File | null>(null);
   const [panImagePreview, setPanImagePreview] = useState<string | null>(null);
-  const [designations, setDesignations] = useState<
-    { _id: string; designation_name: string }[]
+  const [designations, setDesignations] = useState<any[]
   >([]);
   const [loading, setLoading] = useState(false);
   const [employee, setEmployee] = useState<any>(null);
@@ -69,9 +68,11 @@ const EditEmployee = () => {
     const fetchDesignations = async () => {
       setLoading(true);
       try {
-        const response = await getAllDesignations();
+        const response = await getAllDesignations({page:1,limit:100});
+       console.log(response)
         if (response.status) {
-          setDesignations(response.data);
+          setDesignations(response.data.designations);
+         
         } else {
           toast.error("Failed to load designations.");
         }
@@ -83,7 +84,7 @@ const EditEmployee = () => {
       }
     };
     fetchDesignations();
-  }, []);
+  }, [id]);
 
   // Validation Schema
   const schema = yup.object().shape({
@@ -274,13 +275,13 @@ const EditEmployee = () => {
                   type='select'
                 >
                   <option value=''>Select Designation</option>
-                  {designations.map((designation) => (
+                  {designations?.map((designation) => (
                     <option
-                      key={designation._id}
-                      value={designation._id}
-                      selected={designation._id === employee?.designation}
+                      key={designation?._id}
+                      value={designation?._id}
+                      selected={designation?._id === employee?.designation}
                     >
-                      {designation.designation_name}
+                      {designation?.designation_name}
                     </option>
                   ))}
                 </FormInput>

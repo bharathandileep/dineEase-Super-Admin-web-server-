@@ -1,7 +1,9 @@
 import { APICore, axiosInstance } from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
 import { firebaseAuth } from "../../firebase.config";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
 
 interface UserData {
   username: string;

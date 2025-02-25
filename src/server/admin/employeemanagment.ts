@@ -1,10 +1,12 @@
 import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
-// ✅ Get all employees
-export const getAllEmployees = async () => {
+
+export const getAllEmployees = async (query:any) => {
   try {
-    const response = await axiosInstance.get(apiConfig.employee.getAllEmployees);
+    const response = await axiosInstance.get(
+       `${apiConfig.employee.getAllEmployees(query)}`
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error fetching employees:", error.response?.data || error.message);
@@ -12,11 +14,13 @@ export const getAllEmployees = async () => {
   }
 };
 
-// ✅ Get a single employee by ID
+
 export const getEmployeeById = async (id: string | undefined) => {
   try {
     const response = await axiosInstance.get(apiConfig.employee.getEmployeeById(id));
     const employee = response.data;
+
+  
     const address = employee.address || {};
 
     return {
@@ -29,7 +33,8 @@ export const getEmployeeById = async (id: string | undefined) => {
   }
 };
 
-// ✅ Create a new employee
+
+
 export const createEmployee = async (data: any) => {
     try {
       const response = await axiosInstance.post(apiConfig.employee.createEmployee, data, {
@@ -43,7 +48,9 @@ export const createEmployee = async (data: any) => {
     }
   };
   
-// ✅ Update employee details
+  
+
+
 export const updateEmployee = async (id: string, data: FormData) => {
   try {
     const response = await axiosInstance.put(apiConfig.employee.updateEmployee(id), data,  {
@@ -56,7 +63,7 @@ export const updateEmployee = async (id: string, data: FormData) => {
     throw error.response?.data || error;
   }
 };
-// ✅ Toggle employee status (Activate/Deactivate)
+
 export const toggleEmployeeStatus = async (id: string) => {
   try {
     const response = await axiosInstance.patch(apiConfig.employee.toggleEmployeeStatus(id));
@@ -67,7 +74,7 @@ export const toggleEmployeeStatus = async (id: string) => {
   }
 };
 
-// ✅ Soft delete an employee
+
 export const deleteEmployee = async (id: string) => {
   try {
     const response = await axiosInstance.delete(apiConfig.employee.deleteEmployee(id));

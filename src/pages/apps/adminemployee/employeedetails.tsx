@@ -2,8 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Card, Button, Row, Col, Spinner, Badge } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getEmployeeById, deleteEmployee, toggleEmployeeStatus } from "../../../server/admin/employeemanagment";
-import { Pencil, Trash, ToggleLeft, ToggleRight, User, Mail, Phone, MapPin, Building } from "lucide-react";
+import {
+  getEmployeeById,
+  deleteEmployee,
+  toggleEmployeeStatus,
+} from "../../../server/admin/employeeManagment";
+import {
+  Pencil,
+  Trash,
+  ToggleLeft,
+  ToggleRight,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Building,
+} from "lucide-react";
 
 interface Employee {
   _id: string;
@@ -15,8 +29,8 @@ interface Employee {
   profile_picture: string;
   aadhar_number?: string;
   pan_number: string;
-  aadhar_image: string; 
-  pan_image: string; 
+  aadhar_image: string;
+  pan_image: string;
   address: {
     street_address: string;
     city: string;
@@ -83,7 +97,8 @@ const EmployeeDetails = () => {
             prev
               ? {
                   ...prev,
-                  employee_status: prev.employee_status === "Active" ? "Inactive" : "Active",
+                  employee_status:
+                    prev.employee_status === "Active" ? "Inactive" : "Active",
                 }
               : null
           );
@@ -99,15 +114,15 @@ const EmployeeDetails = () => {
 
   if (loading) {
     return (
-      <div className="text-center my-5">
-        <Spinner animation="border" />
+      <div className='text-center my-5'>
+        <Spinner animation='border' />
       </div>
     );
   }
 
   if (!employee) {
     return (
-      <div className="text-center my-5">
+      <div className='text-center my-5'>
         <h4>Employee not found.</h4>
       </div>
     );
@@ -116,30 +131,35 @@ const EmployeeDetails = () => {
   return (
     <React.Fragment>
       {/* Breadcrumb Navigation */}
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb m-2">
-          <li className="breadcrumb-item">
-            <Link to="/employees/list">Employees</Link>
+      <nav aria-label='breadcrumb'>
+        <ol className='breadcrumb m-2'>
+          <li className='breadcrumb-item'>
+            <Link to='/employees/list'>Employees</Link>
           </li>
-          <li className="breadcrumb-item active" aria-current="page">
+          <li className='breadcrumb-item active' aria-current='page'>
             Employee Details
           </li>
         </ol>
       </nav>
 
       {/* Page Header */}
-      <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
-        <div className="d-flex align-items-center justify-content-between">
-          <h3 className="page-title m-0" style={{ color: "#fff" }}>Employee Details</h3>
-          <div className="d-flex gap-2">
+      <div
+        className='mb-3'
+        style={{ backgroundColor: "#5bd2bc", padding: "10px" }}
+      >
+        <div className='d-flex align-items-center justify-content-between'>
+          <h3 className='page-title m-0' style={{ color: "#fff" }}>
+            Employee Details
+          </h3>
+          <div className='d-flex gap-2'>
             <Button
-              variant="light"
+              variant='light'
               onClick={() => navigate(`/apps/employee/edit/${employee._id}`)}
             >
-              <Pencil size={16} className="me-1" /> Edit
+              <Pencil size={16} className='me-1' /> Edit
             </Button>
-            <Button variant="danger" onClick={handleDelete}>
-              <Trash size={16} className="me-1" /> Delete
+            <Button variant='danger' onClick={handleDelete}>
+              <Trash size={16} className='me-1' /> Delete
             </Button>
           </div>
         </div>
@@ -148,13 +168,15 @@ const EmployeeDetails = () => {
       {/* Employee Details */}
       <Row>
         <Col md={4}>
-          <Card className="mb-3 shadow-sm">
-            <Card.Body className="text-center">
+          <Card className='mb-3 shadow-sm'>
+            <Card.Body className='text-center'>
               {/* Profile Picture */}
               <img
-                src={employee.profile_picture || "https://via.placeholder.com/150"}
+                src={
+                  employee.profile_picture || "https://via.placeholder.com/150"
+                }
                 alt={employee.username}
-                className="rounded-circle mb-3"
+                className='rounded-circle mb-3'
                 style={{
                   width: "150px",
                   height: "150px",
@@ -163,41 +185,35 @@ const EmployeeDetails = () => {
               />
 
               {/* Employee Name */}
-              <h4 className="mb-2">{employee.username}</h4>
+              <h4 className='mb-2'>{employee.username}</h4>
               <Badge
-                bg={employee.employee_status === "Active" ? "success" : "danger"}
-                className="mb-3"
+                bg={
+                  employee.employee_status === "Active" ? "success" : "danger"
+                }
+                className='mb-3'
+                onClick={handleToggleStatus}
+                style={{ cursor: "pointer" }} // Add this to indicate the badge is clickable
               >
                 {employee.employee_status}
               </Badge>
 
               {/* Toggle Status Button */}
-              <Button
-                variant={employee.employee_status === "Active" ? "warning" : "secondary"}
-                className="w-100 mb-3"
-                onClick={handleToggleStatus}
-              >
-                {employee.employee_status === "Active" ? (
-                  <ToggleLeft size={16} className="me-1" />
-                ) : (
-                  <ToggleRight size={16} className="me-1" />
-                )}
-                Toggle Status
-              </Button>
 
               {/* Contact Information */}
-              <div className="text-start">
-                <div className="d-flex align-items-center mb-2">
-                  <Mail size={16} className="me-2" />
+              <div className='text-start'>
+                <div className='d-flex align-items-center mb-2'>
+                  <Mail size={16} className='me-2' />
                   <span>{employee.email}</span>
                 </div>
-                <div className="d-flex align-items-center mb-2">
-                  <Phone size={16} className="me-2" />
+                <div className='d-flex align-items-center mb-2'>
+                  <Phone size={16} className='me-2' />
                   <span>{employee.phone_number}</span>
                 </div>
-                <div className="d-flex align-items-center mb-2">
-                  <Building size={16} className="me-2" />
-                  <span>{employee.designation?.designation_name || "Unknown"}</span>
+                <div className='d-flex align-items-center mb-2'>
+                  <Building size={16} className='me-2' />
+                  <span>
+                    {employee.designation?.designation_name || "Unknown"}
+                  </span>
                 </div>
               </div>
             </Card.Body>
@@ -205,21 +221,26 @@ const EmployeeDetails = () => {
         </Col>
 
         <Col md={8}>
-          <Card className="mb-3 shadow-sm">
+          <Card className='mb-3 shadow-sm'>
             <Card.Body>
-              <h5 className="card-title mb-3">Identity Documents</h5>
+              <h5 className='card-title mb-3'>Identity Documents</h5>
               <Row>
                 <Col md={6}>
                   <p>
-                    <strong>Aadhaar Number:</strong> {employee.aadhar_number || "N/A"}
+                    <strong>Aadhaar Number:</strong>{" "}
+                    {employee.aadhar_number || "N/A"}
                   </p>
                   {employee.aadhar_image && (
-                    <div className="mt-2">
+                    <div className='mt-2'>
                       <strong>Aadhaar Image:</strong>
                       <img
                         src={employee.aadhar_image}
-                        alt="Aadhaar Card"
-                        style={{ maxWidth: "100%", height: "auto", marginTop: "10px" }}
+                        alt='Aadhaar Card'
+                        style={{
+                          maxWidth: "100%",
+                          height: "auto",
+                          marginTop: "10px",
+                        }}
                       />
                     </div>
                   )}
@@ -229,12 +250,16 @@ const EmployeeDetails = () => {
                     <strong>PAN Number:</strong> {employee.pan_number || "N/A"}
                   </p>
                   {employee.pan_image && (
-                    <div className="mt-2">
+                    <div className='mt-2'>
                       <strong>PAN Image:</strong>
                       <img
                         src={employee.pan_image}
-                        alt="PAN Card"
-                        style={{ maxWidth: "100%", height: "auto", marginTop: "10px" }}
+                        alt='PAN Card'
+                        style={{
+                          maxWidth: "100%",
+                          height: "auto",
+                          marginTop: "10px",
+                        }}
                       />
                     </div>
                   )}
@@ -243,21 +268,25 @@ const EmployeeDetails = () => {
             </Card.Body>
           </Card>
 
-          <Card className="shadow-sm">
+          <Card className='shadow-sm'>
             <Card.Body>
-              <h5 className="card-title mb-3">Address Details</h5>
-              <div className="d-flex flex-column gap-2">
-                <div className="d-flex align-items-center">
-                  <MapPin size={16} className="me-2" />
+              <h5 className='card-title mb-3'>Address Details</h5>
+              <div className='d-flex flex-column gap-2'>
+                <div className='d-flex align-items-center'>
+                  <MapPin size={16} className='me-2' />
                   <span>{employee.address.street_address}</span>
                 </div>
-                <div className="d-flex align-items-center">
-                  <span>{employee.address.city}, {employee.address.district}</span>
+                <div className='d-flex align-items-center'>
+                  <span>
+                    {employee.address.city}, {employee.address.district}
+                  </span>
                 </div>
-                <div className="d-flex align-items-center">
-                  <span>{employee.address.state}, {employee.address.pincode}</span>
+                <div className='d-flex align-items-center'>
+                  <span>
+                    {employee.address.state}, {employee.address.pincode}
+                  </span>
                 </div>
-                <div className="d-flex align-items-center">
+                <div className='d-flex align-items-center'>
                   <span>{employee.address.country}</span>
                 </div>
               </div>

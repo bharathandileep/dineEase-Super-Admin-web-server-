@@ -13,14 +13,18 @@ export const createCategory = async (data: any) => {
   }
 };
 
-export const getAllCategories = async () => {
+export const getAllCategories = async (query: any) => {
   try {
-    const response = await axiosInstance.get(apiConfig.menu.getAllCategories);
+    const response = await axiosInstance.get(
+      `${apiConfig.menu.getAllCategories(query)}`
+      );
     return response.data;
   } catch (error: any) {
-    console.error("Error:", error.response?.data || error.message);
+    console.error("Error fetching categories", error.response?.data || error.message);
+    throw error.response?.data || error;
   }
 };
+
 export const getAllCategoriesByStatus = async () => {
   try {
     const response = await axiosInstance.get(
@@ -93,16 +97,18 @@ export const getSubcategoriesByCategory = async (
   }
 };
 
-export const getSubcategories = async () => {
+export const getSubcategories = async (query: any) => {
   try {
     const response = await axiosInstance.get(
-      apiConfig.menu.getAllSubCategories
+      `${apiConfig.menu.getAllSubCategories(query)}`
     );
     return response.data;
   } catch (error: any) {
-    console.error("Error:", error.response?.data || error.message);
+    console.error("Error fetching subcategories", error.response?.data || error.message);
+    throw error.response?.data || error;
   }
 };
+
 
 export const getSubcategoryById = async (id: string | undefined) => {
   try {

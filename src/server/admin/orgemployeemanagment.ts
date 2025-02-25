@@ -1,10 +1,12 @@
 import { axiosInstance } from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
-// ✅ Get all organization employees
-export const getAllOrgEmployees = async () => {
+
+export const getAllOrgEmployees = async (query:any) => {
   try {
-    const response = await axiosInstance.get(apiConfig.orgemployee.getAllOrgEmployees);
+    const response = await axiosInstance.get(
+      `${apiConfig.orgemployee.getAllOrgEmployees(query)}`
+  );
     return response.data;
   } catch (error: any) {
     console.error("Error fetching organization employees:", error.response?.data || error.message);
@@ -12,7 +14,7 @@ export const getAllOrgEmployees = async () => {
   }
 };
 
-// ✅ Get a single organization employee by ID
+
 export const getOrgEmployeeById = async (id: string | undefined) => {
   try {
     const response = await axiosInstance.get(apiConfig.orgemployee.getOrgEmployeeById(id));
@@ -30,6 +32,8 @@ export const getOrgEmployeeById = async (id: string | undefined) => {
     throw error.response?.data || error;
   }
 };
+
+
 export const createOrgEmployee = async (data: any) => {
   try {
     const response = await axiosInstance.post(apiConfig.orgemployee.createOrgEmployee, data, {
@@ -43,7 +47,7 @@ export const createOrgEmployee = async (data: any) => {
   }
 };
 
-// ✅ Update organization employee details
+
 export const updateOrgEmployee = async (id: string, data: FormData) => {
   try {
     const response = await axiosInstance.put(apiConfig.orgemployee.updateOrgEmployee(id), data, {

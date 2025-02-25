@@ -27,7 +27,7 @@ const EditFoodItem = () => {
       try {
         const response = await getItemById(id);
         if (response.status) {
-          setItem(response.data);
+          setItem(response.data.categories);
           setSelectedCategoryId(response.data.category || "");
         } else {
           toast.error("Failed to load item details.");
@@ -44,8 +44,9 @@ const EditFoodItem = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await getAllCategories();
-      if (response.status) setCategories(response.data);
+      const response = await getAllCategories( { page: 1, limit: 100 } );
+      if (response.status) setCategories(response.data.categories);
+      
     };
     fetchCategories();
   }, []);
@@ -54,7 +55,7 @@ const EditFoodItem = () => {
     if (selectedCategoryId) {
       const fetchSubcategories = async () => {
         const response = await getSubcategoriesByCategory(selectedCategoryId);
-        if (response.status) setSubcategories(response.data);
+        if (response.status) setSubcategories(response.data.categories);
       };
       fetchSubcategories();
     } else {
@@ -134,7 +135,7 @@ const EditFoodItem = () => {
                   
                   <FormInput name="category" label="Category" register={register} errors={errors} control={control} type="select" onChange={(e) => setSelectedCategoryId(e.target.value)}>
                     <option value="">Select Category</option>
-                    {categories.map((cat) => (
+                    {categories?.map((cat) => (
                       <option key={cat._id} value={cat._id} selected={item?.category === cat._id}>
                         {cat.category}
                       </option>

@@ -102,7 +102,7 @@ function KitchensSubCategories() {
       try {
         const response = await kitchensGetSubcategories();
         if (response.status) {
-          setMenuItems(response.data);
+          setMenuItems(response.data.categories);
         } else {
           toast.error("Failed to load subcategories.");
         }
@@ -293,7 +293,7 @@ function KitchensSubCategories() {
                 pageSize={10}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
-                pagination={false}
+                pagination={true}
                 isSelectable={false}
                 theadClass="table-light"
                 searchBoxClass="mb-2"

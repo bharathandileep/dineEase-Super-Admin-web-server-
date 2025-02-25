@@ -45,7 +45,7 @@ const AddkitchenCategory = ({
 
   const fetchAllCategories = async () => {
     try {
-      const response = await kitchensGetAllCategories();
+      const response = await kitchensGetAllCategories( {page: 1, limit: 100} );
       if (response.status) {
         setMenuItems(response.data);
       }

@@ -240,9 +240,9 @@ export function WizardForm({ initialData }: WizardFormProps) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await kitchensGetAllCategories();
+        const response = await kitchensGetAllCategories( {page: 1, limit: 100} );
         if (response.status) {
-          setCategories(response.data);
+          setCategories(response.data.categories);
         } else {
           toast.error("Failed to load categories.");
         }
@@ -551,7 +551,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
                               className="form-select form-control"
                             >
                               <option value="">Select Category</option>
-                              {categories.map((cat) => (
+                              {categories?.map((cat) => (
                                 <option key={cat._id} value={cat._id}>
                                   {cat?.category}
                                 </option>

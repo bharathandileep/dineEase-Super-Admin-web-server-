@@ -34,7 +34,7 @@ export const apiConfig = {
       `/kitchens/${kitchenId}`,
 
     createCategory: "/kitchens/categories",
-    getAllCategories: "/kitchens/categories/all",
+    getAllCategories:(query:any)=> `/kitchens/categories/all?page=${query.page}&limit=${query.limit}`,    
     updateCategory: (id: string | undefined) => `/kitchens/categories/${id}`,
     deleteCategory: (id: string | undefined) => `/kitchens/categories/${id}`,
     toggleCategoryStatus: (id: string | undefined) =>
@@ -65,7 +65,7 @@ export const apiConfig = {
     getAllCategoriesByStatus: "/organization/category/status",
 
     createCategory: "/organization/categories",
-    getAllCategories: "/organization/categories/all",
+    getAllCategories:(query:any)=> `/organization/categories/all?page=${query.page}&limit=${query.limit}`,    
     updateCategory: (id: string | undefined) =>
       `/organization/categories/${id}`,
     deleteCategory: (id: string | undefined) =>
@@ -74,7 +74,7 @@ export const apiConfig = {
       `/organization/categories/${id}/toggle-status`,
 
     createSubcategory: "/organization/subcategories",
-    getAllSubCategories: "/organization/subcategories/all",
+    getAllSubCategories:(query:any)=> `/organization/subcategories/all?page=${query.page}&limit=${query.limit}`,    
     getSubcategoriesByCategory: (categoryId: string | undefined) =>
       `/organization/categories/${categoryId}/subcategories`,
     getSubcategoryById: (id: string | undefined) =>
@@ -88,7 +88,7 @@ export const apiConfig = {
   },
   menu: {
     createCategory: "/menu-category/categories",
-    getAllCategories: "/menu-category/categories",      
+    getAllCategories:(query:any)=> `/menu-category/categories?page=${query.page}&limit=${query.limit}`,       
     updateCategory: (id: string | undefined) =>
       `/menu-category/categories/${id}`,
     deleteCategory: (id: string | undefined) =>
@@ -98,7 +98,8 @@ export const apiConfig = {
 
     createSubcategory: "/sub-menu-category/subcategories",
     getAllCategoriesByStatus: "/sub-menu-category/category/status",
-    getAllSubCategories: "/sub-menu-category/subcategories",
+    getAllSubCategories:(query:any)=> `/sub-menu-category/subcategories?page=${query.page}&limit=${query.limit}`,       
+
     getSubcategoriesByCategory: (categoryId: string | undefined) =>
       `/sub-menu-category/categories/${categoryId}/subcategories`,
     getSubcategoryById: (id: string | undefined) =>
@@ -120,7 +121,7 @@ export const apiConfig = {
   },
   designation: {
     createDesignation: "/designation/designations",
-    getAllDesignations: "/designation/designations/all",
+   getAllDesignations:(query:any)=> `/designation/designations/all?page=${query.page}&limit=${query.limit}`,  
     getDesignationById: (id: string | undefined) =>
       `/designation/designations/${id}`,
     updateDesignation: (id: string | undefined) =>
@@ -132,7 +133,7 @@ export const apiConfig = {
   },
   employee: {
     createEmployee: "/employee/employees",
-    getAllEmployees: "/employee/employees/all",
+    getAllEmployees: (query: any) => `/employee/employees/all?page=${query.page}&limit=${query.limit}&search=${query.search || ''}`,
     getEmployeeById: (id: string | undefined) => `/employee/employees/${id}`,
     updateEmployee: (id: string | undefined) => `/employee/employees/${id}`,
     deleteEmployee: (id: string | undefined) => `/employee/employees/${id}`,
@@ -141,7 +142,7 @@ export const apiConfig = {
   },
   orgemployee: {
     createOrgEmployee: "/org-employee/orgemployee",
-    getAllOrgEmployees: "/org-employee/orgemployee/all",
+    getAllOrgEmployees:(query:any)=> `/org-employee/orgemployee/all?page=${query.page}&limit=${query.limit}&search=${query.search || ''}`,  
     getOrgEmployeeById: (id: string | undefined) =>
       `/org-employee/orgemployee/${id}`,
     updateOrgEmployee: (id: string | undefined) =>

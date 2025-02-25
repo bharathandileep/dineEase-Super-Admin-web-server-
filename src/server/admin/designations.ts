@@ -1,10 +1,11 @@
 import {axiosInstance} from "../../helpers/api/apiCore";
 import { apiConfig } from "../../helpers/api/apis";
 
-
-export const getAllDesignations = async () => {
+export const getAllDesignations = async (query: any) => {
   try {
-    const response = await axiosInstance.get(apiConfig.designation.getAllDesignations);
+    const response = await axiosInstance.get(
+      `${apiConfig.designation.getAllDesignations(query)}`
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error fetching designations:", error.response?.data || error.message);

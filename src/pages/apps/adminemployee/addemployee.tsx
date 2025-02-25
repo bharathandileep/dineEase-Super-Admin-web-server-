@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import FileUploader from "../../../components/FileUploader";
 import { FormInput } from "../../../components";
-import { createEmployee } from "../../../server/admin/employeemanagment";
+import { createEmployee } from "../../../server/admin/employeeManagment";
 import { getAllDesignations } from "../../../server/admin/designations";
 
 const EmployeeManagement = () => {
@@ -22,9 +22,9 @@ const EmployeeManagement = () => {
     const fetchDesignations = async () => {
       setLoading(true);
       try {
-        const response = await getAllDesignations();
+        const response = await getAllDesignations( {page:1,limit:100});
         if (response.status) {
-          setDesignations(response.data);
+          setDesignations(response.data.designations);
         } else {
           toast.error("Failed to load designations.");
         }

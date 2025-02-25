@@ -6,7 +6,7 @@ import {
   getOrgEmployeeById,
   deleteOrgEmployee,
   toggleOrgEmployeeStatus,
-} from "../../../server/admin/orgemployeemanagment";
+} from "../../../server/admin/orgEmployeeManagment";
 import {
   Pencil,
   Trash,
@@ -179,8 +179,10 @@ const OrgEmployeeDetails = () => {
                   objectFit: "contain",
                 }}
               />
+
+              {/* Employee Name */}
               <h4 className="mb-2 text-2xl font-bold">
-                {orgemployee?.username}
+                {orgemployee.username}
               </h4>
               <Badge
                 bg={
@@ -189,25 +191,13 @@ const OrgEmployeeDetails = () => {
                     : "danger"
                 }
                 className="mb-3"
+                onClick={handleToggleStatus}
+                style={{ cursor: "pointer" }} // Add this to indicate the badge is clickable
               >
                 {orgemployee.employee_status}
               </Badge>
-              <Button
-                variant={
-                  orgemployee.employee_status === "Active"
-                    ? "warning"
-                    : "secondary"
-                }
-                className="w-100 mb-3"
-                onClick={handleToggleStatus}
-              >
-                {orgemployee.employee_status === "Active" ? (
-                  <ToggleLeft size={16} className="me-1" />
-                ) : (
-                  <ToggleRight size={16} className="me-1" />
-                )}
-                Toggle Status
-              </Button>
+
+              {/* Contact Information */}
               <div className="text-start">
                 <div className="d-flex align-items-center mb-2">
                   <Mail size={16} className="me-2" />
