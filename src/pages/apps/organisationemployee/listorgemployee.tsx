@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, Button, Row, Col, Spinner } from "react-bootstrap";
+import { Card, Button, Row, Col, Spinner, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getAllOrgEmployees, deleteOrgEmployee, toggleOrgEmployeeStatus } from "../../../server/admin/orgemployeemanagment";
+import { getAllOrgEmployees, deleteOrgEmployee, toggleOrgEmployeeStatus } from "../../../server/admin/orgEmployeeManagment";
 import { Pencil, Trash, ToggleLeft, ToggleRight } from "lucide-react";
 
 interface OrgEmployee {
@@ -22,12 +22,11 @@ const OrgEmployeeList = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
-  // Use a ref to store the current loading state to access in scroll handler
   const isLoadingRef = useRef(false);
 
-  const fetchEmployees = async (currentPage: number, isNewSearch: boolean = false) => {
+  const fetchEmployees = async (currentPage: number, isNewSearch: boolean = false, searchQuery: string = "") => {
     if (isLoadingRef.current) return;
 
     if (isNewSearch) {
@@ -38,17 +37,23 @@ const OrgEmployeeList = () => {
     isLoadingRef.current = true;
 
     try {
-      const response = await getAllOrgEmployees({ page: currentPage, limit: 10 });
+      const params = {
+        page: currentPage,
+        limit: 8,
+        search: searchQuery, // Pass search term to the backend
+      };
+
+      const response = await getAllOrgEmployees(params);
       if (response.status) {
-        const { orgEmployees, totalPages, totalEmployees } = response.data; // Changed from data to orgEmployees
+        const { orgEmployees, totalPages, totalEmployees } = response.data;
 
         if (isNewSearch) {
-          setEmployees(orgEmployees); // Changed from data to orgEmployees
+          setEmployees(orgEmployees); // Replace the list for a new search
         } else {
           setEmployees((prev) => {
             const existingIds = new Set(prev.map((item) => item._id));
             const newItems = orgEmployees.filter((item: any) => !existingIds.has(item._id));
-            return [...prev, ...newItems];
+            return [...prev, ...newItems]; // Append new items for pagination
           });
         }
 
@@ -67,13 +72,23 @@ const OrgEmployeeList = () => {
       isLoadingRef.current = false;
     }
   };
-  
+
   // Initial load
   useEffect(() => {
-    fetchEmployees(1, true);
+    fetchEmployees(1, true, searchTerm);
   }, []);
 
-  // Scroll handler with throttling
+  // Handle search with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1);
+      fetchEmployees(1, true, searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Infinite scroll handler
   useEffect(() => {
     const handleScroll = () => {
       if (isLoadingRef.current || !hasMore) return;
@@ -83,13 +98,13 @@ const OrgEmployeeList = () => {
       const clientHeight = document.documentElement.clientHeight;
 
       if (scrollTop + clientHeight >= scrollHeight - 100) {
-        fetchEmployees(page, false);
+        fetchEmployees(page, false, searchTerm);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, page]);
+  }, [hasMore, page, searchTerm]);
 
   const handleEdit = (id: string) => {
     navigate(`/apps/organizations/employ/edit/${id}`);
@@ -135,7 +150,6 @@ const OrgEmployeeList = () => {
 
   return (
     <React.Fragment>
-      {/* Breadcrumb Navigation */}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb m-2">
           <li className="breadcrumb-item">
@@ -147,17 +161,27 @@ const OrgEmployeeList = () => {
         </ol>
       </nav>
 
-      {/* Page Header */}
       <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
         <div className="d-flex align-items-center justify-content-between">
-          <h3 className="page-title m-0" style={{ color: "#fff" }}>Organisation Employees</h3>
+          <h3 className="page-title m-0" style={{ color: "#fff" }}>Employees</h3>
           <Link to="/apps/organizations/employ/add" className="btn btn-danger waves-effect waves-light">
             <i className="mdi mdi-plus-circle me-1"></i> Add New Employee
           </Link>
         </div>
       </div>
 
-      {/* Loading Spinner */}
+      {/* Search Input */}
+      <div className="mb-3">
+        <Form.Group controlId="searchEmployees">
+          <Form.Control
+            type="text"
+            placeholder="Search by username, email, or phone number..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Form.Group>
+      </div>
+
       {loading ? (
         <div className="text-center my-3">
           <Spinner animation="border" />
@@ -173,7 +197,6 @@ const OrgEmployeeList = () => {
                   onClick={() => navigate(`/apps/organizations/employ/details/${orgemployees._id}`)}
                 >
                   <Card.Body className="d-flex flex-column align-items-center text-center">
-                    {/* Profile Picture */}
                     <div className="position-relative">
                       <img
                         src={orgemployees.profile_picture || "https://via.placeholder.com/150"}
@@ -182,16 +205,17 @@ const OrgEmployeeList = () => {
                         style={{
                           width: "80px",
                           height: "80px",
-                          objectFit: "contain",
+                          objectFit: "cover",
                           transition: "transform 0.3s ease-in-out",
                         }}
                       />
                     </div>
 
-                    {/* User Details */}
                     <div className="product-info mt-auto w-100">
-                      <h5 className="text-2xl mt-0 sp-line-1">
-                        <Link to="#" className="text-dark text-decoration-none">{orgemployees.username}</Link>
+                      <h5 className="font-16 mt-0 sp-line-1">
+                        <Link to="#" className="text-dark text-decoration-none">
+                          {orgemployees.username}
+                        </Link>
                       </h5>
                       <h6 className="m-0 text-muted">Email: {orgemployees.email}</h6>
                       <h6 className="m-0 text-muted">Phone: {orgemployees.phone_number}</h6>
@@ -199,20 +223,23 @@ const OrgEmployeeList = () => {
                         Designation: {orgemployees.designation?.designation_name || "Unknown"}
                       </h6>
                       <h6 className="m-0">
-                        <span className={`badge ${orgemployees.employee_status === "Active" ? "bg-success" : "bg-danger"}`}>
+                        <span
+                          className={`badge ${
+                            orgemployees.employee_status === "Active" ? "bg-success" : "bg-danger"
+                          }`}
+                        >
                           {orgemployees.employee_status}
                         </span>
                       </h6>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="product-action d-flex justify-content-center mt-2">
                       <Button
                         variant="success"
                         size="sm"
                         className="me-1"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevents triggering card click
+                          e.stopPropagation();
                           handleEdit(orgemployees._id);
                         }}
                       >
@@ -237,7 +264,11 @@ const OrgEmployeeList = () => {
                           handleToggleStatus(orgemployees._id);
                         }}
                       >
-                        {orgemployees.employee_status === "Active" ? <ToggleLeft size={16} /> : <ToggleRight size={16} />}
+                        {orgemployees.employee_status === "Active" ? (
+                          <ToggleLeft size={16} />
+                        ) : (
+                          <ToggleRight size={16} />
+                        )}
                       </Button>
                     </div>
                   </Card.Body>
@@ -251,8 +282,8 @@ const OrgEmployeeList = () => {
       )}
 
       {loadingMore && (
-        <div className="text-center my-4">
-          <i className="mdi mdi-spin mdi-loading me-1"></i> Loading more...
+        <div className="text-center my-3">
+          <Spinner animation="border" size="sm" />
         </div>
       )}
     </React.Fragment>

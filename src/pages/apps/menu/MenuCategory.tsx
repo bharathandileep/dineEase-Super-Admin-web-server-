@@ -22,15 +22,22 @@ function MenuCategory() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
     const fetchAllCategories = async () => {
       setLoading(true);
       try {
-        const response = await getAllCategories();
-         console.log(response.data)
+        // Updated to include pagination parameters
+        const response = await getAllCategories({ page: currentPage, limit: pageSize });
+        console.log(response.data);
         if (response.status) {
           setMenuItems(response.data.categories);
+          setTotalPages(response.data.pagination?.totalPages || 1); // Adjust based on your backend response
+          setTotalItems(response.data.pagination?.totalItems || response.data.categories.length);
         } else {
           toast.error("Failed to load menu categories.");
         }
@@ -42,11 +49,13 @@ function MenuCategory() {
       }
     };
     fetchAllCategories();
-  }, [isDeleted, show]);
+  }, [currentPage, pageSize, isDeleted, show]);
 
   const onSearchData = (searchValue: string) => {
     setSearchTerm(searchValue.toLowerCase());
+    setCurrentPage(1); // Reset to first page on search
   };
+
   const handleToggleStatus = async (id: string) => {
     try {
       const response = await toggleCategoryStatus(id);
@@ -64,6 +73,7 @@ function MenuCategory() {
       toast.error("Error toggling status.");
     }
   };
+
   const handleEdit = (id: string) => {
     const item = menuItems.find((menu) => menu._id === id);
     setAction("edit");
@@ -71,33 +81,8 @@ function MenuCategory() {
     setShow(true);
   };
 
-  const filteredMenuItems = useMemo(() => {
-    return menuItems.filter((value) => {
-      const categoryName = value.category?.toLowerCase() || "";
-      const searchLower = searchTerm.toLowerCase();
-
-      // Ensure category name search works properly
-      const categoryMatch = categoryName.includes(searchLower);
-
-      // Handle date conversion safely
-      const createdAtString = value.createdAt
-        ? new Date(value.createdAt).toLocaleDateString()
-        : "";
-      const createdAtMatch = createdAtString
-        .toLowerCase()
-        .includes(searchLower);
-
-      // **Fix status filtering logic**
-      let statusMatch = true;
-      if (statusFilter === "active") statusMatch = value.status === true;
-      if (statusFilter === "inactive") statusMatch = value.status === false;
-
-      return (categoryMatch || createdAtMatch) && statusMatch;
-    });
-  }, [searchTerm, statusFilter, menuItems]);
   const handleDelete = async (id: any) => {
-    if (!window.confirm("Are you sure you want to delete this category?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this category?")) return;
     try {
       const response = await deleteCategory(id);
       if (response.status) {
@@ -111,7 +96,35 @@ function MenuCategory() {
       toast.error("Delete failed. Please try again.");
     }
   };
-  /* order column render */
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleSizePerPageChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
+  const filteredMenuItems = useMemo(() => {
+    return menuItems.filter((value) => {
+      const categoryName = value.category?.toLowerCase() || "";
+      const searchLower = searchTerm.toLowerCase();
+      const categoryMatch = categoryName.includes(searchLower);
+      const createdAtString = value.createdAt
+        ? new Date(value.createdAt).toLocaleDateString()
+        : "";
+      const createdAtMatch = createdAtString.toLowerCase().includes(searchLower);
+      let statusMatch = true;
+      if (statusFilter === "active") statusMatch = value.status === true;
+      if (statusFilter === "inactive") statusMatch = value.status === false;
+      return (categoryMatch || createdAtMatch) && statusMatch;
+    });
+  }, [searchTerm, statusFilter, menuItems]);
+
+  /* Column render functions */
   const CategoryColumn = ({ row }: { row: any }) => {
     return <span className="fw-bold">{row?.original?.category}</span>;
   };
@@ -154,26 +167,10 @@ function MenuCategory() {
 
   // Define columns
   const columns = [
-    {
-      Header: "Category",
-      accessor: "category",
-      Cell: CategoryColumn,
-    },
-    {
-      Header: "Created At",
-      accessor: "createdAt",
-      Cell: CreatedAtColumn,
-    },
-    {
-      Header: "Status",
-      accessor: "status",
-      Cell: StatusColumn,
-    },
-    {
-      Header: "Action",
-      accessor: "action",
-      Cell: ActionColumn,
-    },
+    { Header: "Category", accessor: "category", Cell: CategoryColumn },
+    { Header: "Created At", accessor: "createdAt", Cell: CreatedAtColumn },
+    { Header: "Status", accessor: "status", Cell: StatusColumn },
+    { Header: "Action", accessor: "action", Cell: ActionColumn },
   ];
 
   const sizePerPageList = [
@@ -181,24 +178,18 @@ function MenuCategory() {
     { text: "20", value: 20 },
     { text: "50", value: 50 },
   ];
+
   return (
     <>
       <div className="container py-2">
         <PageTitle
           breadCrumbItems={[
             { label: "Menu", path: "/apps/menu/category" },
-            {
-              label: "Category",
-              path: "/apps/menu/customers",
-              active: true,
-            },
+            { label: "Category", path: "/apps/menu/customers", active: true },
           ]}
-          title={"Customers"}
+          title={"Customers"} // Note: This might be a typo; should it be "Menu Categories"?
         />
-        <div
-          className="mb-3"
-          style={{ backgroundColor: "#5bd2bc", padding: "10px" }}
-        >
+        <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
           <div className="d-flex align-items-center justify-content-between">
             <h3 className="page-title m-0" style={{ color: "#fff" }}>
               Menu Category
@@ -206,7 +197,10 @@ function MenuCategory() {
             <Link
               to="#"
               className="btn btn-danger waves-effect waves-light"
-              onClick={() => setShow(true)}
+              onClick={() => {
+                setAction("add"); // Set action for adding new category
+                setShow(true);
+              }}
             >
               <i className="mdi mdi-plus-circle me-1"></i> Add New
             </Link>
@@ -219,10 +213,7 @@ function MenuCategory() {
                 <Row className="justify-content-between">
                   <Col className="col-auto">
                     <form className="d-flex align-items-center">
-                      <label
-                        htmlFor="inputPassword2"
-                        className="visually-hidden"
-                      >
+                      <label htmlFor="inputPassword2" className="visually-hidden">
                         Search
                       </label>
                       <div>
@@ -238,9 +229,7 @@ function MenuCategory() {
                   </Col>
                   <Col className="col-auto">
                     <div className="d-flex align-items-center">
-                      <label htmlFor="status-select" className="me-2 mb-0">
-                        Sort By
-                      </label>
+                      <label htmlFor="status-select" className="me-2 mb-0">Sort By</label>
                       <div>
                         <Form.Select
                           className="w-auto"
@@ -278,14 +267,17 @@ function MenuCategory() {
               <Table
                 columns={columns}
                 data={filteredMenuItems}
-                isSearchable={false}
-                pageSize={10}
+                isSearchable={false} // Keep custom search above table
+                pageSize={pageSize}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
                 isSelectable={false}
                 theadClass="table-light"
-                searchBoxClass="mb-2"
+                onPageChange={handlePageChange}
+                onSizePerPageChange={handleSizePerPageChange}
+                totalPages={totalPages}
+                currentPage={currentPage}
               />
             )}
           </div>

@@ -6,7 +6,7 @@ import {
   getEmployeeById,
   deleteEmployee,
   toggleEmployeeStatus,
-} from "../../../server/admin/employeemanagment";
+} from "../../../server/admin/employeeManagment";
 import {
   Pencil,
   Trash,

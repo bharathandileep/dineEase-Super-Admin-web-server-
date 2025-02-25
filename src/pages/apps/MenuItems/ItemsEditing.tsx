@@ -44,7 +44,7 @@ const EditFoodItem = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await getAllCategories();
+      const response = await getAllCategories( { page: 1, limit: 100 } );
       if (response.status) setCategories(response.data.categories);
       
     };

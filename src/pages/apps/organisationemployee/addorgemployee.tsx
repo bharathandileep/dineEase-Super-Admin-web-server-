@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import FileUploader from "../../../components/FileUploader";
 import { FormInput } from "../../../components";
-import { createOrgEmployee } from "../../../server/admin/orgemployeemanagment";
+import { createOrgEmployee } from "../../../server/admin/orgEmployeeManagment";
 import { getAllDesignations } from "../../../server/admin/designations";
 
 const OrgEmployeeManagement = () => {

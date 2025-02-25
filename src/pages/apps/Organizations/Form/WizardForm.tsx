@@ -195,7 +195,7 @@ export function WizardForm({ initialData }: WizardFormProps) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await orgGetAllCategories();
+        const response = await orgGetAllCategories( {page:1, limit: 100});
         if (response.status) {
           setCategories(response.data.categories);
         } else {

@@ -1,3 +1,4 @@
+// Designations.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Card, Row, Col, Button, Spinner, Form } from "react-bootstrap";
@@ -9,10 +10,10 @@ import {
   deleteDesignation,
   toggleDesignationStatus,
 } from "../../../server/admin/designations";
-import DesignationModal from "./modal/DesignationModal";
+import DesignationModal from "./modal/designationModal";
 import PageTitle from "../../../components/PageTitle";
 import Table from "../../../components/Table";
- 
+
 function Designations() {
   const [action, setAction] = useState("");
   const [show, setShow] = useState<boolean>(false);
@@ -22,14 +23,20 @@ function Designations() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
- 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
   useEffect(() => {
     const fetchAllDesignations = async () => {
       setLoading(true);
       try {
-        const response = await getAllDesignations( {page:1,limit:10});
+        const response = await getAllDesignations({ page: currentPage, limit: pageSize });
         if (response.status) {
-          setDesignations(response.data.designations); 
+          setDesignations(response.data.designations);
+          setTotalPages(response.data.pagination.totalPages);
+          setTotalItems(response.data.pagination.totalItems);
         } else {
           toast.error("Failed to load designations.");
         }
@@ -41,12 +48,13 @@ function Designations() {
       }
     };
     fetchAllDesignations();
-  }, [isDeleted, show]);
- 
+  }, [currentPage, pageSize, isDeleted, show]);
+
   const onSearchData = (searchValue: string) => {
     setSearchTerm(searchValue.toLowerCase());
+    setCurrentPage(1);
   };
- 
+
   const handleToggleStatus = async (id: string) => {
     try {
       const response = await toggleDesignationStatus(id);
@@ -64,14 +72,14 @@ function Designations() {
       toast.error("Error toggling status.");
     }
   };
- 
+
   const handleEdit = (id: string) => {
     const item = designations.find((designation) => designation._id === id);
     setAction("edit");
     setSelectedItem(item);
     setShow(true);
   };
- 
+
   const handleDelete = async (id: any) => {
     if (!window.confirm("Are you sure you want to delete this designation?"))
       return;
@@ -88,7 +96,18 @@ function Designations() {
       toast.error("Delete failed. Please try again.");
     }
   };
- 
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleSizePerPageChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
   const filteredDesignations = useMemo(() => {
     return designations?.filter((value) => {
       const designationMatch = value.designation_name
@@ -106,16 +125,18 @@ function Designations() {
       return (designationMatch || createdAtMatch) && statusMatch;
     });
   }, [searchTerm, statusFilter, designations]);
- 
+
   /* Column render functions */
   const DesignationColumn = ({ row }: { row: any }) => {
     return <span className="fw-bold">{row?.original?.designation_name}</span>;
   };
- 
+  const NumberColumn = ({ row }: { row: any }) => {
+    return <span className="fw-bold">{row.index + 1}</span>;
+  };
   const CreatedAtColumn = ({ row }: { row: any }) => {
     return <span>{new Date(row?.original?.createdAt).toLocaleString()}</span>;
   };
- 
+
   const StatusColumn = ({ row }: { row: any }) => {
     return (
       <button
@@ -128,7 +149,7 @@ function Designations() {
       </button>
     );
   };
- 
+
   const ActionColumn = ({ row }: { row: any }) => {
     return (
       <>
@@ -147,9 +168,13 @@ function Designations() {
       </>
     );
   };
- 
-  // Define columns
+
   const columns = [
+    {
+      Header: "No.",
+      accessor: "number",
+      Cell: NumberColumn,
+    },
     {
       Header: "Designation",
       accessor: "designation_name",
@@ -171,24 +196,20 @@ function Designations() {
       Cell: ActionColumn,
     },
   ];
- 
+
   const sizePerPageList = [
     { text: "10", value: 10 },
     { text: "20", value: 20 },
     { text: "50", value: 50 },
   ];
- 
+
   return (
     <>
       <div className="container py-2">
         <PageTitle
           breadCrumbItems={[
             { label: "Designations", path: "/apps/designations/list" },
-            {
-              label: "List",
-              path: "/apps/designations/list",
-              active: true,
-            },
+            { label: "List", path: "/apps/designations/list", active: true },
           ]}
           title={"Designations"}
         />
@@ -219,10 +240,7 @@ function Designations() {
                 <Row className="justify-content-between">
                   <Col className="col-auto">
                     <form className="d-flex align-items-center">
-                      <label
-                        htmlFor="inputPassword2"
-                        className="visually-hidden"
-                      >
+                      <label htmlFor="inputPassword2" className="visually-hidden">
                         Search
                       </label>
                       <div>
@@ -259,7 +277,7 @@ function Designations() {
             </Card>
           </Col>
         </Row>
- 
+
         <div className="card shadow">
           <div className="table-responsive">
             {loading ? (
@@ -279,20 +297,24 @@ function Designations() {
               <Table
                 columns={columns}
                 data={filteredDesignations}
-                isSearchable={true}
-                pageSize={10}
+                isSearchable={false} // Disable the built-in search box
+                pageSize={pageSize}
                 sizePerPageList={sizePerPageList}
                 isSortable={true}
                 pagination={true}
-                isSelectable={true}
+                isSelectable={false}
                 theadClass="table-light"
-                searchBoxClass="mb-2"
+                // Remove searchBoxClass prop entirely
+                onPageChange={handlePageChange}
+                onSizePerPageChange={handleSizePerPageChange}
+                totalPages={totalPages}
+                currentPage={currentPage}
               />
             )}
           </div>
         </div>
       </div>
- 
+
       <DesignationModal
         show={show}
         onHide={() => setShow(false)}
@@ -302,6 +324,5 @@ function Designations() {
     </>
   );
 }
- 
+
 export default Designations;
- 

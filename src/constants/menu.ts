@@ -151,7 +151,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
             url:"/apps/kitchen/editing/:id"
           }
         ]
-      }
+      },
+      {
+        key: "apps-employee",
+        label: "Employee-list",
+        url: "/apps/employee/list",
+      },
     ],
   },
   {
@@ -168,13 +173,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
   //   icon: "user",
   //   url: "/apps/employee/add",
   // },
-  {
-    key: "apps-employee",
-    label: "Employee-list",
-    isTitle: false,
-    icon: "user",
-    url: "/apps/employee/list",
-  },
+ 
 ];
 
 const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [

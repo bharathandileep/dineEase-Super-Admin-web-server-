@@ -109,7 +109,7 @@ function ListKitchens() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, page]); // Add dependencies that the scroll handler needs
+  }, [hasMore, page]); 
 
   const filteredMenuItems = useMemo(() => {
     if (!searchTerm.trim()) return companyInfo;

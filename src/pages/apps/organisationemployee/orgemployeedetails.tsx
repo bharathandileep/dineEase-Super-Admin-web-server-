@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Card, Button, Row, Col, Spinner, Badge } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getOrgEmployeeById, deleteOrgEmployee, toggleOrgEmployeeStatus } from "../../../server/admin/orgemployeemanagment";
+import { getOrgEmployeeById, deleteOrgEmployee, toggleOrgEmployeeStatus } from "../../../server/admin/orgEmployeeManagment";
 import { Pencil, Trash, ToggleLeft, ToggleRight, User, Mail, Phone, MapPin, Building } from "lucide-react";
 
 interface Employee {

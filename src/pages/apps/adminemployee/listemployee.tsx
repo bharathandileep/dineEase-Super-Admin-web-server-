@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, Button, Row, Col, Spinner } from "react-bootstrap";
+import { Card, Button, Row, Col, Spinner, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getAllEmployees, deleteEmployee, toggleEmployeeStatus } from "../../../server/admin/employeemanagment";
-import { Pencil, Trash, ToggleLeft, ToggleRight } from "lucide-react"; 
+import { getAllEmployees, deleteEmployee, toggleEmployeeStatus } from "../../../server/admin/employeeManagment";
+import { Pencil, Trash, ToggleLeft, ToggleRight } from "lucide-react";
 
 interface Employee {
   _id: string;
@@ -22,13 +22,11 @@ const EmployeeList = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
   const isLoadingRef = useRef(false);
 
-
-
-  const fetchEmployees = async (currentPage: number, isNewSearch: boolean = false) => {
+  const fetchEmployees = async (currentPage: number, isNewSearch: boolean = false, searchQuery: string = "") => {
     if (isLoadingRef.current) return;
 
     if (isNewSearch) {
@@ -39,17 +37,23 @@ const EmployeeList = () => {
     isLoadingRef.current = true;
 
     try {
-      const response = await getAllEmployees({ page: currentPage, limit: 8 });
+      const params = {
+        page: currentPage,
+        limit: 8,
+        search: searchQuery, // Pass search term to the backend
+      };
+
+      const response = await getAllEmployees(params);
       if (response.status) {
-        const { employees, totalPages, totalEmployees } = response.data; // Changed from data to orgEmployees
+        const { employees, totalPages, totalEmployees } = response.data;
 
         if (isNewSearch) {
-          setEmployees(employees); // Changed from data to orgEmployees
+          setEmployees(employees); // Replace the list for a new search
         } else {
           setEmployees((prev) => {
             const existingIds = new Set(prev.map((item) => item._id));
             const newItems = employees.filter((item: any) => !existingIds.has(item._id));
-            return [...prev, ...newItems];
+            return [...prev, ...newItems]; // Append new items for pagination
           });
         }
 
@@ -68,13 +72,23 @@ const EmployeeList = () => {
       isLoadingRef.current = false;
     }
   };
-  
+
   // Initial load
   useEffect(() => {
-    fetchEmployees(1, true);
+    fetchEmployees(1, true, searchTerm);
   }, []);
 
-  // Scroll handler with throttling
+  // Handle search with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1);
+      fetchEmployees(1, true, searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Infinite scroll handler
   useEffect(() => {
     const handleScroll = () => {
       if (isLoadingRef.current || !hasMore) return;
@@ -84,13 +98,13 @@ const EmployeeList = () => {
       const clientHeight = document.documentElement.clientHeight;
 
       if (scrollTop + clientHeight >= scrollHeight - 100) {
-        fetchEmployees(page, false);
+        fetchEmployees(page, false, searchTerm);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, page]);
+  }, [hasMore, page, searchTerm]);
 
   const handleEdit = (id: string) => {
     navigate(`/apps/employee/edit/${id}`);
@@ -134,10 +148,8 @@ const EmployeeList = () => {
     }
   };
 
-
   return (
     <React.Fragment>
-      {/* Breadcrumb Navigation */}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb m-2">
           <li className="breadcrumb-item">
@@ -149,7 +161,6 @@ const EmployeeList = () => {
         </ol>
       </nav>
 
-      {/* Page Header */}
       <div className="mb-3" style={{ backgroundColor: "#5bd2bc", padding: "10px" }}>
         <div className="d-flex align-items-center justify-content-between">
           <h3 className="page-title m-0" style={{ color: "#fff" }}>Employees</h3>
@@ -159,7 +170,18 @@ const EmployeeList = () => {
         </div>
       </div>
 
-      {/* Loading Spinner */}
+      {/* Search Input */}
+      <div className="mb-3">
+        <Form.Group controlId="searchEmployees">
+          <Form.Control
+            type="text"
+            placeholder="Search by username, email, or phone number..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Form.Group>
+      </div>
+
       {loading ? (
         <div className="text-center my-3">
           <Spinner animation="border" />
@@ -175,7 +197,6 @@ const EmployeeList = () => {
                   onClick={() => navigate(`/apps/employee/details/${employee._id}`)}
                 >
                   <Card.Body className="d-flex flex-column align-items-center text-center">
-                    {/* Profile Picture */}
                     <div className="position-relative">
                       <img
                         src={employee.profile_picture || "https://via.placeholder.com/150"}
@@ -190,7 +211,6 @@ const EmployeeList = () => {
                       />
                     </div>
 
-                    {/* User Details */}
                     <div className="product-info mt-auto w-100">
                       <h5 className="font-16 mt-0 sp-line-1">
                         <Link to="#" className="text-dark text-decoration-none">{employee.username}</Link>
@@ -207,14 +227,13 @@ const EmployeeList = () => {
                       </h6>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="product-action d-flex justify-content-center mt-2">
                       <Button
                         variant="success"
                         size="sm"
                         className="me-1"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevents triggering card click
+                          e.stopPropagation();
                           handleEdit(employee._id);
                         }}
                       >
@@ -250,6 +269,12 @@ const EmployeeList = () => {
             <p className="text-center">No employees found.</p>
           )}
         </Row>
+      )}
+
+      {loadingMore && (
+        <div className="text-center my-3">
+          <Spinner animation="border" size="sm" />
+        </div>
       )}
     </React.Fragment>
   );

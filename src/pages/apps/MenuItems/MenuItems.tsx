@@ -208,7 +208,7 @@ const AddFoodItem = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getAllCategories();
+        const response = await getAllCategories( { page: 1, limit: 100 });
         if (response.status) {
           setCategories(response.data.categories);
         } else {

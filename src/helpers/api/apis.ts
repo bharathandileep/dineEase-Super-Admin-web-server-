@@ -133,7 +133,7 @@ export const apiConfig = {
   },
   employee: {
     createEmployee: "/employee/employees",
-    getAllEmployees:(query:any)=> `/employee/employees/all?page=${query.page}&limit=${query.limit}`,  
+    getAllEmployees: (query: any) => `/employee/employees/all?page=${query.page}&limit=${query.limit}&search=${query.search || ''}`,
     getEmployeeById: (id: string | undefined) => `/employee/employees/${id}`,
     updateEmployee: (id: string | undefined) => `/employee/employees/${id}`,
     deleteEmployee: (id: string | undefined) => `/employee/employees/${id}`,
@@ -142,7 +142,7 @@ export const apiConfig = {
   },
   orgemployee: {
     createOrgEmployee: "/org-employee/orgemployee",
-    getAllOrgEmployees:(query:any)=> `/org-employee/orgemployee/all?page=${query.page}&limit=${query.limit}`,  
+    getAllOrgEmployees:(query:any)=> `/org-employee/orgemployee/all?page=${query.page}&limit=${query.limit}&search=${query.search || ''}`,  
     getOrgEmployeeById: (id: string | undefined) =>
       `/org-employee/orgemployee/${id}`,
     updateOrgEmployee: (id: string | undefined) =>
